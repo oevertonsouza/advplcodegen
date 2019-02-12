@@ -1,71 +1,70 @@
 # -*- encoding: utf-8 -*-
-import sys, os, settings
+import sys, os, settings, csv
+
 from core import managedb, commandController, apiController
-from string import Template
 
 class ApiControl:
 
     def __init__(
-                self, 
-                apiPath = None, 
-                daoPath = None, 
-                seekerPath = None, 
-                entityPath = None, 
-                libPath = None,
-                templatePath = None,
-                templateEntityPath = None,
+                self
             ):
-
-        self.apiPath = os.path.join(settings.PATH_PROJECT, "api")
-        self.daoPath = os.path.join(self.apiPath, "dao")
-        self.seekerPath = os.path.join(self.apiPath, "seeker")
-        self.entityPath = os.path.join(self.apiPath, "entity")
-        self.libPath = os.path.join(self.apiPath, "lib")
-        self.templatePath = os.path.join(settings.PATH_PROJECT, "templates")
-        self.templateEntityPath = os.path.join(self.templatePath, "entity")
-        
         return
 
     def startProject(self):
         
-        os.mkdir(self.apiPath)
-        os.mkdir(self.daoPath)
-        os.mkdir(self.seekerPath)
-        os.mkdir(self.entityPath)
-        os.mkdir(self.libPath)
+        os.mkdir(settings.PATH_API)
+        os.mkdir(settings.PATH_API_DAO)
+        os.mkdir(settings.PATH_API_ENTITY)
+        os.mkdir(settings.PATH_API_LIB)
+        os.mkdir(settings.PATH_API_SEEKER)
 
         return 
 
     def newApi(self, entity, alias):
-        
-        properts = ''
-        gets     = ''
-        setters  = ''
 
-        mdb = managedb.ManagementDb()
-        columnInfo = mdb.getColumnInfo(entity, alias)
+        if self.apiExist(entity, alias):
+            print('Entity '+ entity + ' already added! Execute command #advplapi.py listapi ')
 
-        for column in columnInfo:
-            properts += '    Method get'+ column[0].replace("_", "").capitalize() + '() \n'
-            gets     += (
-                            '    Method get'+ column[0].replace("_", "").capitalize() + '() Class '+ alias + ' \n'
-                            '    Return self:getValue("' + column[0].replace("_", "").lower() + '") \n\n'
-                        )
+        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  "apistorage.txt")
+        dataStorage = entity+';'+ alias+'\n'
+        exists = os.path.isfile(storagePathFile) 
 
-        className = alias
-        d={ 'className': className, 'properts' : properts, 'gets': gets }
-        
-        fileIn = open(os.path.join(self.templateEntityPath, 'EntityTempFile.txt'))   
-        temp = Template(fileIn.read())
-        result = temp.substitute(d)
 
-        f = open(os.path.join(self.entityPath , alias.title() + ".prw") , "w+")
-        f.write(result)
-        f.close()
+        if exists:
+            with open(storagePathFile, 'a') as file:
+                file.write(dataStorage)
+                file.close()
+        else:
+            f = open(storagePathFile , "w+")
+            f.write(dataStorage)
+            f.close()
+        return
 
-        #f = open(os.path.join(os.path.join(path, "seeker"), "Skr" + run[2].title()) + ".prw" , "w+")
-        #f.close()
-        #f = open(os.path.join(os.path.join(path, "entity"), run[2].title()) + ".prw" , "w+")        
-        #f.close()
-        
-        return 
+    def listApi(self):
+
+        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  "apistorage.txt")
+        exists = os.path.isfile(storagePathFile) 
+
+        if exists:
+            with open(storagePathFile) as datafile:
+                data = csv.reader(datafile, delimiter=';')
+                print("Your Api's Add")
+                for row in data:
+                    print('Entity ' + row[0] + ' - Alias Name '+ row[1])
+        else:
+            print("Not found api, add newapp!")
+        return
+
+    def apiExist(self, entity, alias):
+
+        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  "apistorage.txt")
+        exists = os.path.isfile(storagePathFile) 
+
+        if exists:
+            with open(storagePathFile) as datafile:
+                data = csv.reader(datafile, delimiter=';')
+                for row in data:
+                    if row[0] == entity:
+                        return True
+        return False
+

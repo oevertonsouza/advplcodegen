@@ -11,7 +11,7 @@ class ManagementDb:
             database=settings.DATABASES['default']['NAME']
         )
         return conn    
-    
+
     #Testa uma conexão com o banco executando uma query simples
     def testeConnect(self):
         
@@ -26,7 +26,6 @@ class ManagementDb:
             print("Connection " + settings.DATABASES['default']['NAME'] + " OK! ")
         else:
             print("Connection " + settings.DATABASES['default']['NAME'] + " Fail! =( ")
-
         return
 
     #Retorna o tipo da coluna no banco de dados
