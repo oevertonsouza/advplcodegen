@@ -1,0 +1,28 @@
+#include "TOTVS.CH"
+#include "autorizador.ch"
+
+/*/{Protheus.doc} 
+    Classe concreta da Entidade $className
+    @type  Class
+    @author FrameworkApi 1.0
+    @since 20190211
+/*/
+Class $className from AbstractEntity
+
+    Method New(oDao)
+  
+$properts
+
+    Method serialize(oJsonControl)
+    Method getFields()
+
+    Method destroy()
+
+EndClass
+
+Method New(oDao) Class $className
+	_Super:New(oDao)
+Return self
+
+$gets
+

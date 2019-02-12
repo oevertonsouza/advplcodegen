@@ -1,0 +1,140 @@
+#include "TOTVS.CH"
+#include "autorizador.ch"
+
+/*/{Protheus.doc} 
+    Classe concreta da Entidade HistElegibilidade
+    @type  Class
+    @author victor.silva
+    @since 20190211
+/*/
+Class HistElegibilidade from AbstractEntity
+
+	Method New(oDao)
+
+	Method getId()
+	Method getProtocol()
+	Method getSubscriberId()
+	Method getHealthProviderId()
+	Method getAuthorizationType()
+	Method getProcedureCode()
+	Method getTableCode()
+	Method getAttedanceLocationCode()
+	Method getProfessionalId()
+	Method getCbos()
+	Method getApproved()
+	Method getRejectionCode()
+	Method getPaymentShare()
+	Method getPayError()
+	Method getTimeStamp()
+	Method getCreatorId()
+
+	Method serialize(oJsonControl)
+	Method getFields()
+
+	Method destroy()
+
+EndClass
+
+Method New(oDao) Class HistElegibilidade
+	_Super:New(oDao)
+Return self
+
+Method getId() Class HistElegibilidade
+Return self:getValue("id")
+
+Method getProtocol() Class HistElegibilidade
+Return self:getValue("protocol")
+
+Method getSubscriberId() Class HistElegibilidade
+Return self:getValue("subscriberId")
+
+Method getHealthProviderId() Class HistElegibilidade
+Return self:getValue("healthProviderId")
+
+Method getAuthorizationType() Class HistElegibilidade
+Return self:getValue("authorizationType")
+
+Method getProcedureCode() Class HistElegibilidade
+Return self:getValue("procedureCode")
+
+Method getTableCode() Class HistElegibilidade
+Return self:getValue("tableCode")
+
+Method getAttedanceLocationCode() Class HistElegibilidade
+Return self:getValue("attedanceLocationCode")
+
+Method getProfessionalId() Class HistElegibilidade
+Return self:getValue("professionalId")
+
+Method getCbos() Class HistElegibilidade
+Return self:getValue("cbos")
+
+Method getApproved() Class HistElegibilidade
+Return self:getValue("approved")
+
+Method getRejectionCode() Class HistElegibilidade
+Return self:getValue("rejectionCode")
+
+Method getPaymentShare() Class HistElegibilidade
+Return self:getValue("paymentShare")
+
+Method getPayError() Class HistElegibilidade
+Return self:getValue("payError")
+
+Method getTimeStamp() Class HistElegibilidade
+Return self:getValue("timeStamp")
+
+Method getCreatorId() Class HistElegibilidade
+Return self:getValue("creatorId")
+
+
+Method serialize(oJsonControl) Class HistElegibilidade
+	local oJson          := JsonObject():New()
+	default oJsonControl := AutJsonControl():New()
+
+	oJsonControl:setProp(oJson,"id",self:getId())
+	oJsonControl:setProp(oJson,"protocol",self:getProtocol())
+	oJsonControl:setProp(oJson,"subscriberId",self:getSubscriberId())
+	oJsonControl:setProp(oJson,"healthProviderId",self:getHealthProviderId())
+	oJsonControl:setProp(oJson,"authorizationType",self:getAuthorizationType())
+	oJsonControl:setProp(oJson,"procedureCode",self:getProcedureCode())
+	oJsonControl:setProp(oJson,"tableCode",self:getTableCode())
+	oJsonControl:setProp(oJson,"attedanceLocationCode",self:getAttedanceLocationCode())
+	oJsonControl:setProp(oJson,"professionalId",self:getProfessionalId())
+	oJsonControl:setProp(oJson,"cbos",self:getCbos())
+	oJsonControl:setProp(oJson,"approved",self:getApproved())
+	oJsonControl:setProp(oJson,"rejectionCode",self:getRejectionCode())
+	oJsonControl:setProp(oJson,"paymentShare",self:getPaymentShare())
+	oJsonControl:setProp(oJson,"payError",self:getPayError())
+	oJsonControl:setProp(oJson,"timeStamp",self:getTimeStamp())
+	oJsonControl:setProp(oJson,"creatorId",self:getCreatorId())
+
+Return oJson
+
+Method getFields() Class HistElegibilidade
+	self:oFields := HMList():New()
+
+	self:oFields:push({"Protocolo", self:getProtocol()})
+	self:oFields:push({"MatriculaBeneficiario", self:getSubscriberId()})
+	self:oFields:push({"PrestadorID", self:getHealthProviderId()})
+	self:oFields:push({"TipoGuia", self:getAuthorizationType()})
+	self:oFields:push({"CodigoProcedimento", self:getProcedureCode()})
+	self:oFields:push({"CodigoTabela", self:getTableCode()})
+	self:oFields:push({"CodigoLocalAtendimento", self:getAttedanceLocationCode()})
+	self:oFields:push({"ProfissionalID", self:getProfessionalId()})
+	self:oFields:push({"CBOS", self:getCbos()})
+	self:oFields:push({"AtendimentoPermitido", self:getApproved()})
+	self:oFields:push({"CodigoGlosa", self:getRejectionCode()})
+	self:oFields:push({"Coparticipacao", self:getPaymentShare()})
+	self:oFields:push({"ErroCoparticipacao", self:getPayError()})
+	self:oFields:push({"TimeStamp", self:getTimeStamp()})
+	self:oFields:push({"UserID", self:getCreatorId()})
+
+Return self:oFields
+
+Method destroy() Class HistElegibilidade
+
+	_Super:destroy()
+	DelClassIntF()
+
+return
