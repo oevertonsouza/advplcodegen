@@ -2,10 +2,10 @@ import os
 
 DATABASES = {
     'default': {
-        'NAME': 'P12Atual',
-        'USER': 'sa',
-        'PASSWORD': 'masterkey',
-        'HOST': '10.171.67.105',
+        'NAME': 'NAME',
+        'USER': 'USER',
+        'PASSWORD': 'PASSWORD',
+        'HOST': 'HOST',
     }
 }
 
