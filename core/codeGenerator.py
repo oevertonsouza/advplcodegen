@@ -6,7 +6,7 @@ from string import Template
 
 class CodeGenerator:
 
-    def builderEntity(self, path, entity, alias):
+    def builderEntity(self, entity, alias):
         properts  = ''
         gets      = ''
         setters   = ''
@@ -24,23 +24,22 @@ class CodeGenerator:
                         )
             serialize   += '    oJsonControl:setProp(oJson,"' + column[0].replace("_", "").lower() + '",self:get'+ column[0].replace("_", "").capitalize() +'()) \n'
             fields      += '    self:oFields:push({"'+column[0].replace("_", "").capitalize()+'", self:get'+ column[0].replace("_", "").capitalize() +'()})\n'
-        
-        className = alias
-        
+
         d = { 
-                'className': className, 
+                'className': alias, 
                 'properts' : properts, 
                 'gets': gets,
                 'serialize' : serialize,
                 'fields' : fields,
+                'entity' : entity,
             }
 
         
-        fileIn = open(os.path.join(self.templateEntityPath, 'EntityTempFile.txt'))   
+        fileIn = open(os.path.join(settings.PATH_TEMPLATE_ENTITY, 'EntityTempFile.txt'))   
         temp = Template(fileIn.read())
         result = temp.substitute(d)
 
-        f = open(os.path.join(self.entityPath , alias.title() + ".prw") , "w+")
+        f = open(os.path.join(settings.PATH_API_ENTITY, alias.title() + ".prw") , "w+")
         f.write(result)
         f.close()
 

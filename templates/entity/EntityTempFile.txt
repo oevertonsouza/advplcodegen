@@ -2,7 +2,7 @@
 #include "autorizador.ch"
 
 /*/{Protheus.doc} 
-    Classe concreta da Entidade $className
+    Classe concreta da Entidade $entity
     @type  Class
     @author FrameworkApi 1.0
     @since 20190211

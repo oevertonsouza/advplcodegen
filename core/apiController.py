@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 import sys, os, settings, csv
 
-from core import managedb, commandController, apiController
+from core import managedb, commandController, apiController, codeGenerator
 
 class ApiControl:
 
@@ -22,8 +22,13 @@ class ApiControl:
 
     def newApi(self, entity, alias):
 
-        if self.apiExist(entity, alias):
+        if self.entityExist(entity, alias):
             print('Entity '+ entity + ' already added! Execute command #advplapi.py listapi ')
+            return
+        
+        if self.aliasExist(entity, alias):
+            print('Alias '+ alias + ' already added! Execute command #advplapi.py listapi to check api added.')
+            return
 
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  "apistorage.txt")
         dataStorage = entity+';'+ alias+'\n'
@@ -55,7 +60,7 @@ class ApiControl:
             print("Not found api, add newapp!")
         return
 
-    def apiExist(self, entity, alias):
+    def entityExist(self, entity, alias):
 
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  "apistorage.txt")
         exists = os.path.isfile(storagePathFile) 
@@ -64,7 +69,43 @@ class ApiControl:
             with open(storagePathFile) as datafile:
                 data = csv.reader(datafile, delimiter=';')
                 for row in data:
+                    print(row[0])
                     if row[0] == entity:
                         return True
+        else:
+            return False
         return False
+
+
+    def aliasExist(self, entity, alias):
+
+        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  "apistorage.txt")
+        exists = os.path.isfile(storagePathFile) 
+
+        if exists:
+            with open(storagePathFile) as datafile:
+                data = csv.reader(datafile, delimiter=';')
+                for row in data:
+                    if row[1] == alias:
+                        return True
+        else:
+            return False
+        return False
+
+    def builderApi(self):
+
+        cgen = codeGenerator.CodeGenerator()
+
+        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  "apistorage.txt")
+        exists = os.path.isfile(storagePathFile) 
+
+        if exists:
+            with open(storagePathFile) as datafile:
+                data = csv.reader(datafile, delimiter=';')
+                for row in data:
+                    cgen.builderEntity(row[0], row[1])
+
+
+        return False
+
 

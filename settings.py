@@ -2,10 +2,10 @@ import os
 
 DATABASES = {
     'default': {
-        'NAME': 'dbname',
-        'USER': 'user',
-        'PASSWORD': 'pass',
-        'HOST': 'yourHost',
+        'NAME': 'P12Atual',
+        'USER': 'sa',
+        'PASSWORD': 'masterkey',
+        'HOST': '10.171.67.105',
     }
 }
 
@@ -21,5 +21,5 @@ PATH_API_ENTITY = os.path.join(PATH_API, "entity")
 PATH_API_LIB = os.path.join(PATH_API, "lib")
 
 #Inside Template Path
-PATH_TEMPLATE_ENTITY = os.path.join(PATH_PROJECT, "entity")
+PATH_TEMPLATE_ENTITY = os.path.join(PATH_TEMPLATE, "entity")
 
