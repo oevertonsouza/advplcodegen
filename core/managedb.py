@@ -29,7 +29,7 @@ class ManagementDb:
         return
 
     #Retorna o tipo da coluna no banco de dados
-    def getColumnInfo(self, table, column):
+    def getColumnInfo(self, entity):
 
         conn = self.conn()
 
@@ -40,7 +40,7 @@ class ManagementDb:
                     " CHARACTER_MAXIMUM_LENGTH " 
                     " FROM INFORMATION_SCHEMA.COLUMNS " 
                     " WHERE " 
-                    " TABLE_NAME = '" + table + "' "  
+                    " TABLE_NAME = '" + entity + "' "  
                 )
 
         cursor = conn.cursor()

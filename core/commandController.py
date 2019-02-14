@@ -5,7 +5,7 @@ from core import managedb, apiController
 class ComandsController:
     
     def __init__(self, firstComands=None, runOk=None):
-        self.firstComands = ['startproject','addcolumn','testconnect', 'newapi', 'listapi', 'builderapi']
+        self.firstComands = ['startproject','addcolumn','testconnect', 'addentity', 'list', 'build']
         self.runOk = False
         return
 
@@ -19,14 +19,14 @@ class ComandsController:
             if run[1] == 'startproject':
                 api.startProject()
                 return
-            if run[1] == 'newapi':
-                api.newApi(run[2], run[3])
+            if run[1] == 'addentity':
+                api.addEntity(run[2], run[3])
                 return
-            if run[1] == 'listapi':
-                api.listApi()
+            if run[1] == 'list':
+                api.list()
                 return       
-            if run[1] == 'builderapi':
-                api.builderApi()
+            if run[1] == 'build':
+                api.build()
         return 
 
         

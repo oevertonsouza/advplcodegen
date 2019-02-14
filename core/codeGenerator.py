@@ -14,7 +14,7 @@ class CodeGenerator:
         fields    = ''
 
         mdb = managedb.ManagementDb()
-        columnInfo = mdb.getColumnInfo(entity, alias)
+        columnInfo = mdb.getColumnInfo(entity)
 
         for column in columnInfo:
             properts += '    Method get'+ column[0].replace("_", "").capitalize() + '() \n'

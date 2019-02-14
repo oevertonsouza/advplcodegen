@@ -20,7 +20,7 @@ class ApiControl:
 
         return 
 
-    def newApi(self, entity, alias):
+    def addEntity(self, entity, alias):
 
         if self.entityExist(entity, alias):
             print('Entity '+ entity + ' already added! Execute command #advplapi.py listapi ')
@@ -30,9 +30,10 @@ class ApiControl:
             print('Alias '+ alias + ' already added! Execute command #advplapi.py listapi to check api added.')
             return
 
-        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  "apistorage.txt")
+        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  "apistorage.entity")
         dataStorage = entity+';'+ alias+'\n'
         exists = os.path.isfile(storagePathFile) 
+        
 
 
         if exists:
@@ -43,11 +44,14 @@ class ApiControl:
             f = open(storagePathFile , "w+")
             f.write(dataStorage)
             f.close()
+
+        self.generateColumnsStorage(entity)
+
         return
 
-    def listApi(self):
+    def list(self):
 
-        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  "apistorage.txt")
+        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  "apistorage.entity")
         exists = os.path.isfile(storagePathFile) 
 
         if exists:
@@ -69,7 +73,6 @@ class ApiControl:
             with open(storagePathFile) as datafile:
                 data = csv.reader(datafile, delimiter=';')
                 for row in data:
-                    print(row[0])
                     if row[0] == entity:
                         return True
         else:
@@ -79,7 +82,7 @@ class ApiControl:
 
     def aliasExist(self, entity, alias):
 
-        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  "apistorage.txt")
+        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  "apistorage.entity")
         exists = os.path.isfile(storagePathFile) 
 
         if exists:
@@ -92,11 +95,11 @@ class ApiControl:
             return False
         return False
 
-    def builderApi(self):
+    def build(self):
 
         cgen = codeGenerator.CodeGenerator()
 
-        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  "apistorage.txt")
+        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  "apistorage.entity")
         exists = os.path.isfile(storagePathFile) 
 
         if exists:
@@ -107,5 +110,19 @@ class ApiControl:
 
 
         return False
+
+    def generateColumnsStorage(self, entity):
+        
+        f = open(os.path.join(settings.PATH_FILESTORAGE , entity + ".columns"), "w+")
+
+        mdb = managedb.ManagementDb()
+        columnInfo = mdb.getColumnInfo(entity)
+
+        for column in columnInfo:
+            f.write(column[0] +';;'+column[1]+'\n')
+        
+        f.close()
+
+        return    
 
 
