@@ -1,0 +1,82 @@
+#INCLUDE "TOTVS.CH"
+
+Class Dao${className} from Dao
+
+    Method New() Constructor
+
+    Method getFields()
+    Method buscar()
+    Method getFilters()
+    Method commit()
+    Method bsc${className}()
+    
+EndClass
+
+Method New() Class Dao${className}
+	_Super:New()
+    self:cAlias := "${alias}"
+Return self
+
+Method getFields() Class Dao${className}
+
+	If empty(self:cFields)
+		self:cFields := ""
+$fields
+    Endif
+	 
+Return self:cFields
+
+Method buscar() Class Dao${className}
+	Local lFound := .F.
+    lFound := _Super:buscar()
+    If lFound 
+		${alias}->(DbGoto((self:getAliasTemp())->RECNO))
+    EndIf
+Return lFound
+
+Method getFilters() Class Dao${className}
+    Local xValue    := ""
+    Local cFilter   := ""
+
+    cFilter += " WHERE "
+    cFilter += " ${alias}_FILIAL = '" + xFilial("${alias}") + "' "
+${getFielters}
+    cFilter += " AND ${alias}.D_E_L_E_T_ = ? "
+    aAdd(self:aMapBuilder, ' ')
+
+Return cFilter
+
+Method bsc${className}() Class Dao${className}
+
+    Local lFound := .F.
+	Local cQuery := ""
+
+	cQuery := " SELECT * FROM " + RetSqlName('${alias}') + " "
+	cQuery += " WHERE 1=1 "
+	cQuery += " AND	${alias}_FILIAL = '" + xFilial("${alias}") + "' "
+${bscKey}
+    self:setQuery(cQuery)
+	lFound := self:executaQuery()
+
+return lFound
+
+Method commit() Class Dao${className}
+
+    Local lFound := .F.
+	lInclui := !self:bsc${className}()
+
+	If RecLock("${alias}",lInclui)
+		${alias}->${alias}_FILIAL := xFilial("${alias}")
+${commit}
+        ${alias}->(MsUnlock())
+        lFound := .T.
+    EndIf
+Return lFound
+
+
+
+
+
+
+
+

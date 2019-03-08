@@ -27,14 +27,11 @@ $gets
 Method serialize(oJsonControl) Class $className
 	local oJson          := JsonObject():New()
 	default oJsonControl := AutJsonControl():New()
-
 $serialize
 Return oJson
 
 Method getFields() Class $className
-
 	self:oFields := HMList():New()
-
 $fields
 
 Return self:oFields

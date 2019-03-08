@@ -5,7 +5,7 @@ from core import managedb, apiController
 class ComandsController:
     
     def __init__(self, firstComands=None, runOk=None):
-        self.firstComands = ['startproject','addcolumn','testconnect', 'addentity', 'list', 'build']
+        self.firstComands = ['startproject','addcolumn','testconnect', 'addentity', 'list', 'build', 'setcolumnalias']
         self.runOk = False
         return
 
@@ -24,9 +24,18 @@ class ComandsController:
                 return
             if run[1] == 'list':
                 api.list()
-                return       
+                return
             if run[1] == 'build':
                 api.build()
-        return 
+                return
+            if run[1] == 'setcolumnalias':
+                script = run[0]
+                command = run[1]
+                entity = run[2]
+                columnName = run[3]
+                aliasName = run[4]
+                api.setColumnAlias(entity, columnName, aliasName)
+                return
+        return
 
         

@@ -19,7 +19,7 @@ PATH_API_DAO = os.path.join(PATH_API, "dao")
 PATH_API_SEEKER = os.path.join(PATH_API, "seeker")
 PATH_API_ENTITY = os.path.join(PATH_API, "entity")
 PATH_API_LIB = os.path.join(PATH_API, "lib")
+PATH_API_DOC = os.path.join(PATH_API, "doc")
 
 #Inside Template Path
 PATH_TEMPLATE_ENTITY = os.path.join(PATH_TEMPLATE, "entity")
-

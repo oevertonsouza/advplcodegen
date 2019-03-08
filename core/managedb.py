@@ -34,13 +34,54 @@ class ManagementDb:
         conn = self.conn()
 
         query = (
-                    " SELECT " 
-                    " COLUMN_NAME, " 
-                    " DATA_TYPE, " 
-                    " CHARACTER_MAXIMUM_LENGTH " 
-                    " FROM INFORMATION_SCHEMA.COLUMNS " 
-                    " WHERE " 
-                    " TABLE_NAME = '" + entity + "' "  
+                    "   SELECT  "
+                    "   	COLUMN_NAME,    "
+                    "   	DATA_TYPE,  "
+                    "   	CHARACTER_MAXIMUM_LENGTH,   "
+                    "   	INDEX_NUM = COUNT(*)    "
+                    "   FROM    "
+                    "   (   "
+                    "   SELECT  "
+                    "   	sf.COLUMN_NAME, "
+                    "   	sf.DATA_TYPE,   "
+                    "   	sf.CHARACTER_MAXIMUM_LENGTH "
+                    "   FROM    "
+                    "        sys.indexes ind    "
+                    "   INNER JOIN  "
+                    "        sys.index_columns ic ON  ind.object_id = ic.object_id and ind.index_id = ic.index_id   "
+                    "   INNER JOIN  "
+                    "        sys.columns col ON ic.object_id = col.object_id and ic.column_id = col.column_id   "
+                    "   INNER JOIN  "
+                    "        sys.tables t ON ind.object_id = t.object_id    "
+                    "   LEFT JOIN   "
+                    "        INFORMATION_SCHEMA.COLUMNS sf ON sf.COLUMN_NAME = col.name "
+                    "   WHERE   "
+                    "       ind.is_primary_key = 0  "
+                    "       AND ind.is_unique = 0   "
+                    "       AND ind.is_unique_constraint = 0    "
+                    "       AND t.is_ms_shipped = 0     "
+                    "   	AND ind.name= '" + entity + "1' "
+                    "   group by    "
+                    "   	sf.COLUMN_NAME, "
+                    "   	sf.DATA_TYPE,   "
+                    "   	sf.CHARACTER_MAXIMUM_LENGTH "
+                    "   UNION ALL   "
+                    "   SELECT      "
+                    "   	COLUMN_NAME,    "
+                    "   	DATA_TYPE,  "
+                    "   	CHARACTER_MAXIMUM_LENGTH    "
+                    "   FROM INFORMATION_SCHEMA.COLUMNS     "
+                    "   WHERE   "
+                    "   TABLE_NAME = '" + entity + "'   "
+                    "   ) INFO  "
+                    "   where   "
+                    "   	COLUMN_NAME not in ('R_E_C_N_O_', 'D_E_L_E_T_','R_E_C_D_E_L_')  "
+                    "   group by    "
+                    "   	COLUMN_NAME,    "
+                    "   	DATA_TYPE,  "
+                    "   	CHARACTER_MAXIMUM_LENGTH    "
+                    "   ORDER BY    "
+                    "   	INDEX_NUM desc  "
                 )
 
         cursor = conn.cursor()
@@ -49,6 +90,3 @@ class ManagementDb:
         cursor.close()
 
         return result
-
-
-
