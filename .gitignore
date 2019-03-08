@@ -11,3 +11,5 @@ api/**
 core/__pycache__/storage\.cpython-37\.pyc
 
 *.pyc
+
+__pycache__/
