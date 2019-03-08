@@ -41,13 +41,13 @@ class CodeGenerator:
                 temp = Template(fileIn.read())
                 result = temp.substitute(d)
 
-                f = open(os.path.join(settings.PATH_API_ENTITY, name.title() + ".prw") , "w+")
+                f = open(os.path.join(settings.PATH_SRC_ENTITY, name.title() + ".prw") , "w+")
                 f.write(result)
                 f.close()
 
                 return
 
-    def buildDao(self,entity, name):
+    def buildCollection(self,entity, name):
 
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  entity + ".columns")
         exists = os.path.isfile(storagePathFile)
@@ -62,14 +62,14 @@ class CodeGenerator:
                 temp = Template(fileIn.read())
                 result = temp.substitute(d)
 
-                f = open(os.path.join(settings.PATH_API_COLLECTION, "Col"+ name.title() + ".prw") , "w+")
+                f = open(os.path.join(settings.PATH_SRC_COLLECTION, "Col"+ name.title() + ".prw") , "w+")
                 f.write(result)
                 f.close()                    
 
         return
 
     
-    def buildCollection(self,entity, name):
+    def buildDao(self,entity, name):
 
         fields = ''
         alias  = entity[:3]
@@ -114,15 +114,62 @@ class CodeGenerator:
                 temp = Template(fileIn.read())
                 result = temp.substitute(d)
 
-                f = open(os.path.join(settings.PATH_API_DAO, "Dao"+ name.title() + ".prw") , "w+")
+                f = open(os.path.join(settings.PATH_SRC_DAO, "Dao"+ name.title() + ".prw") , "w+")
                 f.write(result)
                 f.close()                    
 
         return
 
+    def buildTest(self,entity, name):
+        self.buildTestGroup(entity, name)
+        self.buildTestSuite(entity, name)
+        return
+
+    def buildTestSuite(self,entity, name):
+
+        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  entity + ".columns")
+        exists = os.path.isfile(storagePathFile)
+
+        if exists:
+                d = { 
+                        'className': name, 
+                        'entity' : entity,
+                    }
+
+                fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'TestSuiteTempFile.txt'))
+                temp = Template(fileIn.read())
+                result = temp.substitute(d)
+
+                f = open(os.path.join(settings.PATH_SRC_TEST_SUITE, name.title() + "TestSuite.prw") , "w+")
+                f.write(result)
+                f.close()
+
+        return        
+
+    def buildTestGroup(self,entity, name):
+
+        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  entity + ".columns")
+        exists = os.path.isfile(storagePathFile)
+
+        if exists:
+                d = { 
+                        'className': name, 
+                        'entity' : entity,
+                    }
+
+                fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'TestGroupTempFile.txt'))
+                temp = Template(fileIn.read())
+                result = temp.substitute(d)
+
+                f = open(os.path.join(settings.PATH_SRC_TEST_GROUP, name.title() + "TestGroup.prw") , "w+")
+                f.write(result)
+                f.close()
+
+        return
+
     def copyLibs(self):
         src = settings.PATH_TEMPLATE_LIBS
-        dest = settings.PATH_API_LIB
+        dest = settings.PATH_SRC_LIB
         src_files = os.listdir(src)
         for file_name in src_files:
             full_file_name = os.path.join(src, file_name)

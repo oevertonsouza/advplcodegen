@@ -13,13 +13,23 @@ class ApiControl:
     #inicia um projeto criando o diretorio e sub-diretórios
     def startProject(self):
         
+        #project
         os.mkdir(settings.PATH_SRC)
+
+        #Inside SRC
         os.mkdir(settings.PATH_SRC_DAO)
         os.mkdir(settings.PATH_SRC_ENTITY)
         os.mkdir(settings.PATH_SRC_LIB)
         os.mkdir(settings.PATH_SRC_COLLECTION)
         os.mkdir(settings.PATH_SRC_DOC)
         os.mkdir(settings.PATH_SRC_API)
+        os.mkdir(settings.PATH_SRC_MAPPER)
+        os.mkdir(settings.PATH_SRC_TEST)
+        
+        #Arvore de testes
+        os.mkdir(settings.PATH_SRC_TEST_CASES)
+        os.mkdir(settings.PATH_SRC_TEST_GROUP)
+        os.mkdir(settings.PATH_SRC_TEST_SUITE)
 
         return 
 
@@ -117,12 +127,9 @@ class ApiControl:
                     cgen.buildEntity(row[0], row[1])
                     cgen.buildDao(row[0], row[1])
                     cgen.buildCollection(row[0], row[1])
-
+                    cgen.buildTest(row[0], row[1])
         cgen.copyLibs()
-        
         return False
-
-
 
     #Gera as colunas no arquivo .storage, para usar no build
     def setColumnAlias(self, entity, columnName, aliasName):
