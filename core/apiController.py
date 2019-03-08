@@ -13,12 +13,13 @@ class ApiControl:
     #inicia um projeto criando o diretorio e sub-diretórios
     def startProject(self):
         
-        os.mkdir(settings.PATH_API)
-        os.mkdir(settings.PATH_API_DAO)
-        os.mkdir(settings.PATH_API_ENTITY)
-        os.mkdir(settings.PATH_API_LIB)
-        os.mkdir(settings.PATH_API_COLLECTION)
-        os.mkdir(settings.PATH_API_DOC)
+        os.mkdir(settings.PATH_SRC)
+        os.mkdir(settings.PATH_SRC_DAO)
+        os.mkdir(settings.PATH_SRC_ENTITY)
+        os.mkdir(settings.PATH_SRC_LIB)
+        os.mkdir(settings.PATH_SRC_COLLECTION)
+        os.mkdir(settings.PATH_SRC_DOC)
+        os.mkdir(settings.PATH_SRC_API)
 
         return 
 
@@ -115,7 +116,7 @@ class ApiControl:
                 for row in data:
                     cgen.buildEntity(row[0], row[1])
                     cgen.buildDao(row[0], row[1])
-
+                    cgen.buildCollection(row[0], row[1])
 
         cgen.copyLibs()
         

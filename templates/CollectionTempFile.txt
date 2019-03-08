@@ -1,0 +1,31 @@
+#include "TOTVS.CH"
+
+Class Col${className} from Collection
+	   
+    Method New() Constructor
+
+    Method initEntity()
+    Method bsc${className}()
+    Method commit()
+
+EndClass
+
+Method New() Class Col${className}
+    _Super:new()
+    self:oDao := ${className}():New()
+    self:oMapper := Mpr${className}():New()
+return self
+
+Method initEntity() Class Col${className}
+return ${className}():New()
+
+Method commit() Class Col${className}
+    
+    self:lFound := self:getDao():commit()
+    If !self:found()
+        self:setError("Não conseguiu gravar a entidade ${entity}.")
+    EndIf
+
+return self:found()
+
+

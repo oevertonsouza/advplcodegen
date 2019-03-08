@@ -1,8 +1,7 @@
 #include "TOTVS.CH"
-#include "autorizador.ch"
 
 /*/{Protheus.doc} 
-    Classe concreta da Entidade $entity
+    Classe concreta da Entidade ${className}
     @type  Class
     @author FrameworkApi 1.0
     @since 20190211
@@ -14,31 +13,31 @@ Class $className from AbstractEntity
 $properts
     Method serialize(oJsonControl)
     Method getFields()
-
     Method destroy()
 
 EndClass
 
-Method New(oDao) Class $className
+Method New(oDao) Class ${className}
 	_Super:New(oDao)
 Return self
 
 $gets 
-Method serialize(oJsonControl) Class $className
+Method serialize(oJsonControl) Class ${className}
+
 	local oJson          := JsonObject():New()
 	default oJsonControl := AutJsonControl():New()
+
 $serialize
 Return oJson
 
-Method getFields() Class $className
-	self:oFields := HMList():New()
-$fields
+Method getFields() Class ${className}
 
+	self:oFields := HMList():New()
+
+$fields
 Return self:oFields
 
-Method destroy() Class className
-
+Method destroy() Class ${className}
 	_Super:destroy()
 	DelClassIntF()
-
 return

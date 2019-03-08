@@ -10,16 +10,17 @@ DATABASES = {
 }
 
 PATH_PROJECT = os.path.dirname(os.path.abspath(__file__))
-PATH_API = os.path.join(PATH_PROJECT, "api")
+PATH_SRC = os.path.join(PATH_PROJECT, "src")
 PATH_TEMPLATE = os.path.join(PATH_PROJECT, "templates")
 PATH_FILESTORAGE = os.path.join(PATH_PROJECT, "filestorage")
 
 #Inside API Path
-PATH_API_DAO = os.path.join(PATH_API, "dao")
-PATH_API_COLLECTION = os.path.join(PATH_API, "collection")
-PATH_API_ENTITY = os.path.join(PATH_API, "entity")
-PATH_API_LIB = os.path.join(PATH_API, "lib")
-PATH_API_DOC = os.path.join(PATH_API, "doc")
+PATH_SRC_API = os.path.join(PATH_SRC, "api")
+PATH_SRC_DAO = os.path.join(PATH_SRC, "dao")
+PATH_SRC_COLLECTION = os.path.join(PATH_SRC, "collection")
+PATH_SRC_ENTITY = os.path.join(PATH_SRC, "entity")
+PATH_SRC_LIB = os.path.join(PATH_SRC, "lib")
+PATH_SRC_DOC = os.path.join(PATH_SRC, "doc")
 
 #libs Dir
 PATH_TEMPLATE_LIBS = os.path.join(PATH_TEMPLATE, "libs")
