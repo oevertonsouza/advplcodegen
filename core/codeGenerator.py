@@ -37,7 +37,7 @@ class CodeGenerator:
                         'entity' : entity,
                     }
 
-                fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'EntityTempFile.txt'))   
+                fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'Entity.template'))   
                 temp = Template(fileIn.read())
                 result = temp.substitute(d)
 
@@ -58,7 +58,7 @@ class CodeGenerator:
                         'entity' : entity,
                     }
 
-                fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'CollectionTempFile.txt'))
+                fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'Collection.template'))
                 temp = Template(fileIn.read())
                 result = temp.substitute(d)
 
@@ -110,7 +110,7 @@ class CodeGenerator:
                         'bscKey': bscKey,
                     }
 
-                fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'DaoTempFile.txt'))
+                fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'Dao.template'))
                 temp = Template(fileIn.read())
                 result = temp.substitute(d)
 
@@ -136,7 +136,7 @@ class CodeGenerator:
                         'entity' : entity,
                     }
 
-                fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'TestSuiteTempFile.txt'))
+                fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'TestSuite.template'))
                 temp = Template(fileIn.read())
                 result = temp.substitute(d)
 
@@ -157,7 +157,7 @@ class CodeGenerator:
                         'entity' : entity,
                     }
 
-                fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'TestGroupTempFile.txt'))
+                fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'TestGroup.template'))
                 temp = Template(fileIn.read())
                 result = temp.substitute(d)
 
@@ -166,6 +166,35 @@ class CodeGenerator:
                 f.close()
 
         return
+
+    def buildMapper(self,entity, name):
+
+        mapFromDao = ''
+
+        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  entity + ".columns")
+        exists = os.path.isfile(storagePathFile)
+
+        if exists:
+            with open(storagePathFile) as datafile:
+                columnInfo = csv.reader(datafile, delimiter=';')
+                for column in columnInfo:            
+                    mapFromDao += '    self:oEntity:setValue("'+ column[1] +'", AllTrim((oDao:cAliasTemp)->'+ column[0] +'))\n'
+                
+                d = { 
+                        'className': name, 
+                        'entity' : entity,
+                        'mapFromDao' : mapFromDao,
+                    }
+
+                fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'Mapper.template'))
+                temp = Template(fileIn.read())
+                result = temp.substitute(d)
+
+                f = open(os.path.join(settings.PATH_SRC_MAPPER, "Mpr"+ name.title() + ".prw") , "w+")
+                f.write(result)
+                f.close()
+
+        return        
 
     def copyLibs(self):
         src = settings.PATH_TEMPLATE_LIBS

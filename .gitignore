@@ -6,8 +6,8 @@ core/__pycache__/managedb.cpython-37.pyc
 filestorage/apistorage.txt
 filestorage/storage.txt
 settings.py
-api
+*src/*
+*filestorage/*
 api/**
-core/__pycache__/storage\.cpython-37\.pyc
+core/__pycache__/*
 *.pyc
-__pycache__/

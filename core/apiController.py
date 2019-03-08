@@ -10,13 +10,11 @@ class ApiControl:
             ):
         return
 
-    #inicia um projeto criando o diretorio e sub-diretórios
+    #Criate project folders 
     def startProject(self):
         
-        #project
         os.mkdir(settings.PATH_SRC)
 
-        #Inside SRC
         os.mkdir(settings.PATH_SRC_DAO)
         os.mkdir(settings.PATH_SRC_ENTITY)
         os.mkdir(settings.PATH_SRC_LIB)
@@ -26,14 +24,12 @@ class ApiControl:
         os.mkdir(settings.PATH_SRC_MAPPER)
         os.mkdir(settings.PATH_SRC_TEST)
         
-        #Arvore de testes
         os.mkdir(settings.PATH_SRC_TEST_CASES)
         os.mkdir(settings.PATH_SRC_TEST_GROUP)
         os.mkdir(settings.PATH_SRC_TEST_SUITE)
 
         return 
 
-    #Adiciona um entidade
     def addEntity(self, entity, name):
 
         stg = storage.Storage()
@@ -63,7 +59,7 @@ class ApiControl:
 
         return
 
-    #Lista as Entidades cadastradas
+    #List Entity
     def list(self):
 
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  "storage.entity")
@@ -79,7 +75,6 @@ class ApiControl:
             print("Not found api, add newapp!")
         return
 
-    #Verifica se uma coluna está se repetindo
     def entityExist(self, entity, name):
 
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  "storage.txt")
@@ -95,8 +90,6 @@ class ApiControl:
             return False
         return False
 
-
-    #Verifica se um alias está se repetindo
     def nameExist(self, entity, name):
 
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  "storage.entity")
@@ -112,7 +105,6 @@ class ApiControl:
             return False
         return False
 
-    #Efetua o build dos codigos -- Cria os codigos com base nas configurações
     def build(self):
 
         cgen = codeGenerator.CodeGenerator()
@@ -128,10 +120,10 @@ class ApiControl:
                     cgen.buildDao(row[0], row[1])
                     cgen.buildCollection(row[0], row[1])
                     cgen.buildTest(row[0], row[1])
+                    cgen.buildMapper(row[0], row[1])
         cgen.copyLibs()
         return False
 
-    #Gera as colunas no arquivo .storage, para usar no build
     def setColumnAlias(self, entity, columnName, aliasName):
         
         temp = ''

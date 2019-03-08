@@ -1,0 +1,33 @@
+#include "TOTVS.CH"
+
+Class Mpr${className} from Mapper
+
+    Method New(oEntity) Constructor
+
+    Method mapFromJson()
+    Method mapFromDao()
+
+EndClass
+
+Method New(oEntity) Class Mpr${className}
+    Default oEntity := ${className}():New()
+    _Super:new(oEntity)
+Return self
+
+Method mapFromJson(oJson) Class Mpr${className}
+
+    Local aProperties := oJson:getNames()
+    Local nLenProperties := Len(aProperties)
+    Local nProperty := 1
+    
+    while nProperty <= nLenProperties
+        self:oEntity:setValue(aProperties[nProperty],oJson[aProperties[nProperty]])
+        nProperty++
+    enddo
+
+Return
+
+Method mapFromDao(oDao) Class Mpr${className}
+
+${mapFromDao}
+Return
