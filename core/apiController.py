@@ -26,7 +26,6 @@ class ApiControl:
     def addEntity(self, entity, name):
 
         stg = storage.Storage()
-        cgen = codeGenerator.CodeGenerator()
 
         if self.entityExist(entity, name):
             print('Entity '+ entity + ' already added! Execute command #advplapi.py listapi ')
@@ -50,7 +49,6 @@ class ApiControl:
             f.close()
 
         stg.genColumnStorage(entity)
-        cgen.copyLibs()
 
         return
 
@@ -117,6 +115,10 @@ class ApiControl:
                 for row in data:
                     cgen.buildEntity(row[0], row[1])
                     cgen.buildDao(row[0], row[1])
+
+
+        cgen.copyLibs()
+        
         return False
 
 

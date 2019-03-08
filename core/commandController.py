@@ -11,7 +11,6 @@ class ComandsController:
 
     def run(self, run):
         api = apiController.ApiControl()
-        cgen = codeGenerator.CodeGenerator()
         for comand in self.firstComands:
             if run[1] == 'testconnect':
                 mdb = managedb.ManagementDb()
@@ -38,7 +37,6 @@ class ComandsController:
                 api.setColumnAlias(entity, columnName, aliasName)
                 return
             if run[1] == 'testefun':
-                cgen.copyLibs()
                 print("teste")
                 return
         return

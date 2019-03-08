@@ -35,11 +35,13 @@ Method buscar() Class Dao${className}
 Return lFound
 
 Method getFilters() Class Dao${className}
+
     Local xValue    := ""
     Local cFilter   := ""
 
     cFilter += " WHERE "
     cFilter += " ${alias}_FILIAL = '" + xFilial("${alias}") + "' "
+
 ${getFielters}
     cFilter += " AND ${alias}.D_E_L_E_T_ = ? "
     aAdd(self:aMapBuilder, ' ')
@@ -66,7 +68,8 @@ Method commit() Class Dao${className}
 	lInclui := !self:bsc${className}()
 
 	If RecLock("${alias}",lInclui)
-		${alias}->${alias}_FILIAL := xFilial("${alias}")
+		
+        ${alias}->${alias}_FILIAL := xFilial("${alias}")
 ${commit}
         ${alias}->(MsUnlock())
         lFound := .T.
