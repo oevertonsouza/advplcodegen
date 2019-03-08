@@ -18,6 +18,8 @@ Base de dados e ambiente protheus configurados.
 1 - Faça o clone do projeto.
 2 - No arquivo settings.py preencha os dados de acesso ao banco de dados do seu ambiente.
 
+```python
+
 DATABASES = {
     'default': {
         'NAME': 'NAME',
@@ -27,4 +29,5 @@ DATABASES = {
     }
 }
 
+```
 -- Em construção
