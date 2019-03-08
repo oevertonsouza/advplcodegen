@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 import sys, os, settings
-from core import managedb, apiController
+from core import managedb, apiController, codeGenerator
 
 class ComandsController:
     
@@ -11,6 +11,7 @@ class ComandsController:
 
     def run(self, run):
         api = apiController.ApiControl()
+        cgen = codeGenerator.CodeGenerator()
         for comand in self.firstComands:
             if run[1] == 'testconnect':
                 mdb = managedb.ManagementDb()
@@ -35,6 +36,10 @@ class ComandsController:
                 columnName = run[3]
                 aliasName = run[4]
                 api.setColumnAlias(entity, columnName, aliasName)
+                return
+            if run[1] == 'testefun':
+                cgen.copyLibs()
+                print("teste")
                 return
         return
 

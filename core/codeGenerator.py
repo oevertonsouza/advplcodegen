@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-import sys, os, settings, csv
+import sys, os, settings, csv, shutil
 from core import managedb, commandController, apiController
 from string import Template
 
@@ -97,3 +97,14 @@ class CodeGenerator:
                 f.close()                    
 
         return
+
+    def copyLibs(self):
+        src = settings.PATH_TEMPLATE_LIBS
+        dest = settings.PATH_API_LIB
+        src_files = os.listdir(src)
+        for file_name in src_files:
+            full_file_name = os.path.join(src, file_name)
+            if (os.path.isfile(full_file_name)):
+                shutil.copy(full_file_name, dest)
+
+        return        
