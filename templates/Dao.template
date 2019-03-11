@@ -56,6 +56,7 @@ Method bsc${className}() Class Dao${className}
 	cQuery := " SELECT * FROM " + RetSqlName('${alias}') + " "
 	cQuery += " WHERE 1=1 "
 	cQuery += " AND	${alias}_FILIAL = '" + xFilial("${alias}") + "' "
+    
 ${bscKey}
     self:setQuery(cQuery)
 	lFound := self:executaQuery()

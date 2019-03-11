@@ -7,9 +7,7 @@ from string import Template
 class CodeGenerator:
 
     def buildEntity(self, entity, name):
-        properts  = ''
-        gets      = ''
-        setters   = ''
+
         serialize = ''
         fields    = ''
 
@@ -20,18 +18,16 @@ class CodeGenerator:
             with open(storagePathFile) as datafile:
                 columnInfo = csv.reader(datafile, delimiter=';')
                 for column in columnInfo:
-                    properts += '    Method get'+ column[1] + '()\n'
-                    gets     += (
-                                    'Method get'+ column[1] + '() Class '+ name + '\n'
-                                    'Return self:getValue("' + column[1] + '")\n\n'
-                                )
+                    #properts += '    Method get'+ column[1] + '()\n'
+                    #gets     += (
+                    #                'Method get'+ column[1] + '() Class '+ name + '\n'
+                    #                'Return self:getValue("' + column[1] + '")\n\n'
+                    #            )
                     serialize   += '    oJsonControl:setProp(oJson,"' + column[1].lower() + '",self:get'+ column[1] +'())\n'
                     fields      += '    self:oFields:push({"'+column[1]+'", self:get'+ column[1]+'()})\n'
                     
                 d = { 
                         'className': name, 
-                        'properts' : properts, 
-                        'gets': gets,
                         'serialize' : serialize,
                         'fields' : fields,
                         'entity' : entity,
@@ -97,7 +93,11 @@ class CodeGenerator:
                     commit += '        '+alias+'->'+column[0]+' := self:getValue("'+column[1]+'")\n'
                     
                     if column[4] == "1" :
-                        bscKey += '    cQuery += " AND ' +column[0]+ ' = "'" + self:getValue('"+column[1]+"') + "'" "\n'
+                        bscKey += '    xValue = self:getValue("'+column[1]+'")\n'
+                        bscKey += '    if !empty(xValue)\n'
+                        bscKey += '        cFilter += " AND ' +column[0]+ ' = ? "\n'
+                        bscKey += '        aAdd(self:aMapBuilder, self:toString(xValue))\n'
+                        bscKey += '    EndIf\n'
                                     
                 d = { 
                         'className': name, 

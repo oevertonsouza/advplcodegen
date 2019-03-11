@@ -75,7 +75,7 @@ class ManagementDb:
                     "   TABLE_NAME = '" + entity + "'   "
                     "   ) INFO  "
                     "   where   "
-                    "   	COLUMN_NAME not in ('R_E_C_N_O_', 'D_E_L_E_T_','R_E_C_D_E_L_')  "
+                    "   	COLUMN_NAME not in ('R_E_C_N_O_', 'D_E_L_E_T_','R_E_C_D_E_L_','" + entity[:3] + "_FILIAL')"
                     "   group by    "
                     "   	COLUMN_NAME,    "
                     "   	DATA_TYPE,  "
@@ -83,6 +83,8 @@ class ManagementDb:
                     "   ORDER BY    "
                     "   	INDEX_NUM desc  "
                 )
+
+        print(query)
 
         cursor = conn.cursor()
         cursor.execute(query)

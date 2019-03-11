@@ -10,7 +10,6 @@ Class $className from AbstractEntity
 
     Method New(oDao)
   
-$properts
     Method serialize(oJsonControl)
     Method getFields()
     Method destroy()
@@ -21,7 +20,6 @@ Method New(oDao) Class ${className}
 	_Super:New(oDao)
 Return self
 
-$gets 
 Method serialize(oJsonControl) Class ${className}
 
 	local oJson          := JsonObject():New()
