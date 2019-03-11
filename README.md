@@ -15,8 +15,8 @@ Base de dados e ambiente protheus configurados.
 
 # Configuração de Ambiente
 
-.md - Faça o clone do projeto.
-.md - No arquivo settings.py preencha os dados de acesso ao banco de dados do seu ambiente.
+* Item 1 - Faça o clone do projeto.
+* Item 2 - No arquivo settings.py preencha os dados de acesso ao banco de dados do seu ambiente.
 
 ```python
 
