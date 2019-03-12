@@ -8,6 +8,8 @@ filestorage/storage.txt
 settings.py
 *src/*
 *filestorage/*
+*build/*
+*__pycache__/*
 api/**
-core/__pycache__/*
+*core/__pycache__/*
 *.pyc
