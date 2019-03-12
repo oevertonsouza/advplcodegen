@@ -1,11 +1,20 @@
 import os
 
+#DataBase Info
 DATABASES = {
     'default': {
         'NAME': 'NAME',
         'USER': 'USER',
         'PASSWORD': 'PASSWORD',
         'HOST': 'HOST',
+    }
+}
+
+#Protheus Info
+PROTHEUS_ENVIORMENT = {
+    'default': {
+        'EMPRESA': 'T1',
+        'FILIAL': 'M SP 01',
     }
 }
 
@@ -25,6 +34,7 @@ PATH_SRC_LIB = os.path.join(PATH_SRC, "lib")
 PATH_SRC_DOC = os.path.join(PATH_SRC, "doc")
 PATH_SRC_TEST = os.path.join(PATH_SRC, "test")
 PATH_SRC_MAPPER = os.path.join(PATH_SRC, "mapper")
+PATH_SRC_RESTREQUEST = os.path.join(PATH_SRC, "restRequest")
 
 #Inside Template
 PATH_TEMPLATE_LIBS = os.path.join(PATH_TEMPLATE, "libs")

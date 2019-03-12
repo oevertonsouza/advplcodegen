@@ -7,12 +7,13 @@ Class Col${className} from Collection
     Method initEntity()
     Method bsc${className}()
     Method commit()
+    Method delete()
 
 EndClass
 
 Method New() Class Col${className}
     _Super:new()
-    self:oDao := ${className}():New()
+    self:oDao := Dao${className}():New()
     self:oMapper := Mpr${className}():New()
 return self
 
@@ -23,9 +24,20 @@ Method commit() Class Col${className}
     
     self:lFound := self:getDao():commit()
     If !self:found()
-        self:setError("Não conseguiu gravar a entidade ${entity}.")
+        self:setError("Não conseguiu gravar/alterar o registro na entidade ${entity}.")
     EndIf
 
 return self:found()
+
+Method delete() Class Col${className}
+    
+    self:lFound := self:getDao():delete()
+    If !self:found()
+        self:setError("Não conseguiu deletar o registro na entidade ${entity}.")
+    EndIf
+
+return self:found()
+
+
 
 

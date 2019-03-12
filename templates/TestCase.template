@@ -1,1 +1,51 @@
+#Include 'Protheus.ch'
 
+CLASS ${className}TestCase FROM FWDefaultTestCase
+	
+	METHOD ${className}TestCase()
+	METHOD SetUpClass()
+	METHOD TearDownClass()
+	METHOD getSingle_001()
+	METHOD getCollection_002()
+	METHOD insert_003()
+	METHOD update_004()
+	METHOD delete_005()
+
+ENDCLASS
+
+METHOD ${className}TestCase() CLASS ${className}TestCase
+	_Super:FWDefaultTestCase()
+	self:AddTestMethod( "getSingle_001",,"Busca um registro na tabela ${entity}." )
+	self:AddTestMethod( "getCollection_002",,"Busca uma coleção de registros na tabela ${entity}." )
+	self:AddTestMethod( "insert_003",,"Insere um registro na tabela ${entity}." )
+	self:AddTestMethod( "update_004",,"Altera um registro na tabela ${entity}." )
+	self:AddTestMethod( "delete_005",,"Deleta um registro na tabela ${entity}." )
+Return
+
+METHOD SetUpClass() CLASS ${className}TestCase
+Return _Super:SetUpClass()
+
+METHOD TearDownClass() CLASS ${className}TestCase
+	Local oResult := FWTestHelper():New()
+
+    oResult:UTRestParam(oResult:aParam)
+	DelClassIntf()
+	
+Return oResult
+
+METHOD delete_005() CLASS ${className}TestCase
+
+	Local oResult := FWTestHelper():New()
+	Local oCollection := Col${className}():New()
+	Local lFound := .F.
+    
+	/* Include first index values from ${alias}  */
+${deleteValues}
+	oResult:activate()
+	lFound := oCollection:delete()
+
+	oResult:AssertTrue(lFound, "Não foi possivel deletar o registro na entidade ${entity} com os dados informados.")
+	oCollection:destroy()
+	oResult:deactivate()
+
+Return oResult

@@ -1,28 +1,12 @@
 #include "PROTHEUS.CH"
 
-CLASS ${className}TestSuite FROM FWDefaultTestSuite
+CLASS ${className}TestGroup FROM FWDefaultTestSuite
 
-	DATA aParam
-	
-	METHOD ${className}TestSuite() CONSTRUCTOR
-	METHOD SetUpSuite()
-	METHOD TearDownSuite()
+	METHOD ${className}TestGroup() CONSTRUCTOR
 	
 ENDCLASS
 
-METHOD ${className}TestSuite() CLASS ${className}TestSuite
-
+METHOD ${className}TestGroup() CLASS ${className}TestGroup
 	_Super:FWDefaultTestSuite()
-	Self:AddTestSuite(${className}TestGroup():${className}TestGroup() )
-	
+	Self:AddTestCase(${className}TestCase():${className}TestCase() )
 Return
-
-METHOD SetUpSuite() CLASS ${className}TestSuite
-	Local oHelper := AutTestHelper():New()
-	oHelper:Activate()
-Return oHelper
-
-METHOD TearDownSuite() CLASS ${className}TestSuite
-	Local oHelper := AutTestHelper():New()
-	oHelper:UTRestParam()
-Return oHelper

@@ -22,8 +22,8 @@ Return self
 
 Method serialize(oJsonControl) Class ${className}
 
-	local oJson          := JsonObject():New()
-	default oJsonControl := AutJsonControl():New()
+	local oJson := JsonObject():New()
+	default oJsonControl := JsonControl():New()
 
 $serialize
 Return oJson

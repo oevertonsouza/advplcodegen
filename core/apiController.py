@@ -14,7 +14,6 @@ class ApiControl:
     def startProject(self):
         
         os.mkdir(settings.PATH_SRC)
-
         os.mkdir(settings.PATH_SRC_DAO)
         os.mkdir(settings.PATH_SRC_ENTITY)
         os.mkdir(settings.PATH_SRC_LIB)
@@ -22,11 +21,14 @@ class ApiControl:
         os.mkdir(settings.PATH_SRC_DOC)
         os.mkdir(settings.PATH_SRC_API)
         os.mkdir(settings.PATH_SRC_MAPPER)
+        os.mkdir(settings.PATH_SRC_RESTREQUEST)
         os.mkdir(settings.PATH_SRC_TEST)
-        
         os.mkdir(settings.PATH_SRC_TEST_CASES)
         os.mkdir(settings.PATH_SRC_TEST_GROUP)
         os.mkdir(settings.PATH_SRC_TEST_SUITE)
+
+        cgen = codeGenerator.CodeGenerator()
+        cgen.copyLibs()
 
         return 
 
@@ -108,7 +110,6 @@ class ApiControl:
     def build(self):
 
         cgen = codeGenerator.CodeGenerator()
-
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  "storage.entity")
         exists = os.path.isfile(storagePathFile) 
 
@@ -121,7 +122,8 @@ class ApiControl:
                     cgen.buildCollection(row[0], row[1])
                     cgen.buildTest(row[0], row[1])
                     cgen.buildMapper(row[0], row[1])
-        cgen.copyLibs()
+                    cgen.buildRequest(row[0], row[1])
+        
         return False
 
     def setColumnAlias(self, entity, columnName, aliasName):

@@ -1,6 +1,13 @@
 #include "TOTVS.CH"
 
-Class Entity 
+#DEFINE CARACTER "C"
+#DEFINE NUMBER "N"
+#DEFINE BOOLEAN "L"
+#DEFINE DATE "D"
+#DEFINE ARRAY "A"
+#DEFINE OBJECT "O"
+
+Class EntityAbstract
 
     Data hMap
     Data oFields
@@ -13,16 +20,17 @@ Class Entity
 
 EndClass
 
-Method New() Class Entity
+Method New() Class EntityAbstract
 	self:hMap := THashMap():New()
 Return self
 
-Method hasValue(cProperty,cType) Class Entity
+Method hasValue(cProperty,cType) Class EntityAbstract
+
     Local anyValue := ""
     default cType := CARACTER
 
     lFound := self:hMap:get(cProperty,@anyValue)
-    lFound := !(empty(anyValue))
+    lFound := !empty(anyValue)
 	
 	if !lFound
         DO CASE
@@ -43,16 +51,16 @@ Method hasValue(cProperty,cType) Class Entity
 
 Return lFound
 
-Method getValue(cProperty) Class Entity
+Method getValue(cProperty) Class EntityAbstract
 	Local anyValue := ""
 	self:hMap:get(cProperty,@anyValue)
 Return anyValue
 
-Method setValue(cProperty,anyValue) Class Entity
+Method setValue(cProperty,anyValue) Class EntityAbstract
 	self:hMap:set(cProperty,@anyValue)
 Return 
 
-Method getFields() Class Entity
+Method getFields() Class EntityAbstract
 	self:oFields := HMList():New()
 	self:initFields()
 Return self:oFields

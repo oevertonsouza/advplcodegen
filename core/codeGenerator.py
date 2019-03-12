@@ -18,13 +18,8 @@ class CodeGenerator:
             with open(storagePathFile) as datafile:
                 columnInfo = csv.reader(datafile, delimiter=';')
                 for column in columnInfo:
-                    #properts += '    Method get'+ column[1] + '()\n'
-                    #gets     += (
-                    #                'Method get'+ column[1] + '() Class '+ name + '\n'
-                    #                'Return self:getValue("' + column[1] + '")\n\n'
-                    #            )
-                    serialize   += '    oJsonControl:setProp(oJson,"' + column[1].lower() + '",self:get'+ column[1] +'())\n'
-                    fields      += '    self:oFields:push({"'+column[1]+'", self:get'+ column[1]+'()})\n'
+                    serialize   += '    oJsonControl:setProp(oJson,"' + column[1] + '",self:get'+ column[1] +'()) /* Column '+ column[0] +' */ \n'
+                    fields      += '    self:oFields:push({"'+column[1]+'", self:get'+ column[1]+'()}) /* Column '+ column[0] +' */ \n'
                     
                 d = { 
                         'className': name, 
@@ -37,7 +32,7 @@ class CodeGenerator:
                 temp = Template(fileIn.read())
                 result = temp.substitute(d)
 
-                f = open(os.path.join(settings.PATH_SRC_ENTITY, name.title() + ".prw") , "w+")
+                f = open(os.path.join(settings.PATH_SRC_ENTITY, name + ".prw") , "w+")
                 f.write(result)
                 f.close()
 
@@ -58,7 +53,7 @@ class CodeGenerator:
                 temp = Template(fileIn.read())
                 result = temp.substitute(d)
 
-                f = open(os.path.join(settings.PATH_SRC_COLLECTION, "Col"+ name.title() + ".prw") , "w+")
+                f = open(os.path.join(settings.PATH_SRC_COLLECTION, "Col"+ name + ".prw") , "w+")
                 f.write(result)
                 f.close()                    
 
@@ -90,7 +85,7 @@ class CodeGenerator:
                     getFielters += '        aAdd(self:aMapBuilder, self:toString(xValue))\n'
                     getFielters += '    EndIf\n'
                     
-                    commit += '        '+alias+'->'+column[0]+' := self:getValue("'+column[1]+'")\n'
+                    commit += '        '+alias+'->'+column[0]+' := self:getValue("'+column[1]+'") /* Column '+ column[0] +' */\n'
                     
                     if column[4] == "1" :
                         bscKey += '    xValue = self:getValue("'+column[1]+'")\n'
@@ -114,7 +109,7 @@ class CodeGenerator:
                 temp = Template(fileIn.read())
                 result = temp.substitute(d)
 
-                f = open(os.path.join(settings.PATH_SRC_DAO, "Dao"+ name.title() + ".prw") , "w+")
+                f = open(os.path.join(settings.PATH_SRC_DAO, "Dao"+ name + ".prw") , "w+")
                 f.write(result)
                 f.close()                    
 
@@ -123,26 +118,63 @@ class CodeGenerator:
     def buildTest(self,entity, name):
         self.buildTestGroup(entity, name)
         self.buildTestSuite(entity, name)
+        self.buildTestCase(entity, name)
+        return
+    
+    def buildTestCase(self,entity, name):
+
+        deleteValues = ''
+        alias = entity[:3]
+
+        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  entity + ".columns")
+        exists = os.path.isfile(storagePathFile)
+
+        if exists:
+            with open(storagePathFile) as datafile:
+                columnInfo = csv.reader(datafile, delimiter=';')
+                for column in columnInfo:
+                    if column[4] == "1":
+                        deleteValues += '    oCollection:setValue("'+ column[1] +'", "" ) /* Column '+ column[0] +' */ \n'
+                    
+                d = { 
+                        'className': name, 
+                        'entity' : entity,
+                        'deleteValues' : deleteValues,
+                        'alias' : alias,
+                    }
+
+                fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'TestCase.template'))
+                temp = Template(fileIn.read())
+                result = temp.substitute(d)
+
+                f = open(os.path.join(settings.PATH_SRC_TEST_CASES, name + "TestCase.prw") , "w+")
+                f.write(result)
+                f.close()
+
         return
 
     def buildTestSuite(self,entity, name):
 
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  entity + ".columns")
         exists = os.path.isfile(storagePathFile)
+        
+        empresa = settings.PROTHEUS_ENVIORMENT['default']['EMPRESA']
+        filial = settings.PROTHEUS_ENVIORMENT['default']['FILIAL']
 
-        if exists:
-                d = { 
-                        'className': name, 
-                        'entity' : entity,
-                    }
+        d = { 
+                'className': name, 
+                'entity' : entity,
+                'empresa' : empresa,
+                'filial' : filial,
+            }
 
-                fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'TestSuite.template'))
-                temp = Template(fileIn.read())
-                result = temp.substitute(d)
+        fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'TestSuite.template'))
+        temp = Template(fileIn.read())
+        result = temp.substitute(d)
 
-                f = open(os.path.join(settings.PATH_SRC_TEST_SUITE, name.title() + "TestSuite.prw") , "w+")
-                f.write(result)
-                f.close()
+        f = open(os.path.join(settings.PATH_SRC_TEST_SUITE, name + "TestSuite.prw") , "w+")
+        f.write(result)
+        f.close()
 
         return        
 
@@ -150,20 +182,19 @@ class CodeGenerator:
 
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  entity + ".columns")
         exists = os.path.isfile(storagePathFile)
+            
+        d = { 
+                'className': name, 
+                'entity' : entity,
+            }
 
-        if exists:
-                d = { 
-                        'className': name, 
-                        'entity' : entity,
-                    }
+        fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'TestGroup.template'))
+        temp = Template(fileIn.read())
+        result = temp.substitute(d)
 
-                fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'TestGroup.template'))
-                temp = Template(fileIn.read())
-                result = temp.substitute(d)
-
-                f = open(os.path.join(settings.PATH_SRC_TEST_GROUP, name.title() + "TestGroup.prw") , "w+")
-                f.write(result)
-                f.close()
+        f = open(os.path.join(settings.PATH_SRC_TEST_GROUP, name + "TestGroup.prw") , "w+")
+        f.write(result)
+        f.close()
 
         return
 
@@ -190,11 +221,33 @@ class CodeGenerator:
                 temp = Template(fileIn.read())
                 result = temp.substitute(d)
 
-                f = open(os.path.join(settings.PATH_SRC_MAPPER, "Mpr"+ name.title() + ".prw") , "w+")
+                f = open(os.path.join(settings.PATH_SRC_MAPPER, "Mpr"+ name + ".prw") , "w+")
                 f.write(result)
                 f.close()
 
-        return        
+        return
+    
+    def buildRequest(self, entity, name):
+        
+        alias = entity[:3]
+        
+        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  entity + ".columns")
+        exists = os.path.isfile(storagePathFile)
+
+        d = {
+                'className': name,                     
+                'entity' : entity,                    
+            }
+
+        fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'RestRequest.template'))
+        temp = Template(fileIn.read())
+        result = temp.substitute(d)
+
+        f = open(os.path.join(settings.PATH_SRC_RESTREQUEST, "Res"+ name +".prw") , "w+")
+        f.write(result)
+        f.close()
+
+        return
 
     def copyLibs(self):
         src = settings.PATH_TEMPLATE_LIBS
