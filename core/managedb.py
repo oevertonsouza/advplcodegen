@@ -84,8 +84,6 @@ class ManagementDb:
                     "   	INDEX_NUM desc  "
                 )
 
-        print(query)
-
         cursor = conn.cursor()
         cursor.execute(query)
         result = cursor.fetchall()
