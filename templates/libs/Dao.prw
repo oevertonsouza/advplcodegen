@@ -381,7 +381,7 @@ Method getFilters() Class Dao
     Local cQuery := ""
 
     cQuery += " "+ self:cAlias + "_FILIAL = '" + xFilial( self:cAlias ) + "' "
-    cQuery += " AND " + self:cAlias + ".D_E_L_E_T_ 	= ? "
+    cQuery += " AND D_E_L_E_T_ 	= ? "
     aAdd(self:aMapBuilder, ' ')
 
 Return cQuery

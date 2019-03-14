@@ -11,5 +11,5 @@ settings.py
 *build/*
 *__pycache__/*
 api/**
-*core/__pycache__/*
-*.pyc
+*/core/__pycache__/*
+__pycache__/*.pyc

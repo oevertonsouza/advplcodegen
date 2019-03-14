@@ -123,7 +123,8 @@ class CodeGenerator:
     
     def buildTestCase(self,entity, name):
 
-        deleteValues = ''
+        keyValues = ''
+        noKeyValues = ''
         alias = entity[:3]
 
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  entity + ".columns")
@@ -134,13 +135,16 @@ class CodeGenerator:
                 columnInfo = csv.reader(datafile, delimiter=';')
                 for column in columnInfo:
                     if column[4] == "1":
-                        deleteValues += '    oCollection:setValue("'+ column[1] +'", "" ) /* Column '+ column[0] +' */ \n'
-                    
-                d = { 
+                        keyValues += '    oCollection:setValue("'+ column[1] +'", "" ) /* Column '+ column[0] +' */ \n'
+                    else:
+                        noKeyValues +=  '    oCollection:setValue("'+ column[1] +'", "" ) /* Column '+ column[0] +' */ \n'
+
+                d = {
                         'className': name, 
                         'entity' : entity,
-                        'deleteValues' : deleteValues,
                         'alias' : alias,
+                        'keyValues' : keyValues,
+                        'noKeyValues' : noKeyValues,
                     }
 
                 fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'TestCase.template'))
