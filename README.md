@@ -6,12 +6,13 @@ O propósito desse projeto é utilizar classes abstratas que possuam métodos qu
 
 # Compatibilidade
 
-Sqlserver 2012
-Protheus 12.1.17
+* Python 2x 
+* 1 Sqlserver 2012 
+* 2 Protheus 12.1.17
 
 # Pré-requisitos
 
-Base de dados e ambiente protheus configurados.
+Python instalado, base de dados e ambiente protheus configurados.
 
 # Configuração de Ambiente
 
