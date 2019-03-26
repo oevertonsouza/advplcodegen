@@ -13,8 +13,10 @@ DATABASES = {
 #Protheus Info
 PROTHEUS_ENVIORMENT = {
     'default': {
-        'EMPRESA': 'T1',
-        'FILIAL': 'M SP 01',
+        'EMPRESA' : 'EMPRESA',
+        'FILIAL' : 'FILIAL',
+        'SEGMENT' : 'SEGMENT',
+        'PREFIX' : 'PREFIX',
     }
 }
 

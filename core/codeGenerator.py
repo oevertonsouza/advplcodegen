@@ -62,13 +62,13 @@ class CodeGenerator:
     
     def buildDao(self,entity, name):
 
-        fields = ''
         alias  = entity[:3]
         order  = ''
         table  = ''
-        getFielters = ''  
         commit = ''
-        bscKey = ''
+        bscChaPrim = ''
+        loadOrder = ''
+        cfieldOrder = []
 
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  entity + ".columns")
         exists = os.path.isfile(storagePathFile)
@@ -76,33 +76,29 @@ class CodeGenerator:
         if exists:
             with open(storagePathFile) as datafile:
                 columnInfo = csv.reader(datafile, delimiter=';')
+
                 for column in columnInfo:
-                    fields += '        self:cFields += " '+column[0].upper()+', "\n'
-                    
-                    getFielters += '    xValue := self:getValue("'+column[1]+'")\n'
-                    getFielters += '    if !empty(xValue)\n'
-                    getFielters += '        cFilter += " AND '+column[0].upper()+' = ? "\n'
-                    getFielters += '        aAdd(self:aMapBuilder, self:toString(xValue))\n'
-                    getFielters += '    EndIf\n'
+                    loadOrder += '    self:oHashOrder:set("'+ column[0] +'", "'+ column[1] +'")\n'
                     
                     commit += '        '+alias+'->'+column[0]+' := self:getValue("'+column[1]+'") /* Column '+ column[0] +' */\n'
                     
                     if column[4] == "1" :
-                        bscKey += '    xValue = self:getValue("'+column[1]+'")\n'
-                        bscKey += '    if !empty(xValue)\n'
-                        bscKey += '        cFilter += " AND ' +column[0]+ ' = ? "\n'
-                        bscKey += '        aAdd(self:aMapBuilder, self:toString(xValue))\n'
-                        bscKey += '    EndIf\n'
-                                    
+                        cfieldOrder.append(column[0])
+                        bscChaPrim += '    xValue = self:getValue("'+column[1]+'")\n'
+                        bscChaPrim += '    if !empty(xValue)\n'
+                        bscChaPrim += '        cFilter += " AND ' +column[0]+ ' = ? "\n'
+                        bscChaPrim += '        aAdd(self:aMapBuilder, self:toString(xValue))\n'
+                        bscChaPrim += '    EndIf\n'
+                        
                 d = { 
-                        'className': name, 
-                        'fields' : fields, 
+                        'className': name,
                         'alias': alias,
                         'entity' : entity,
                         'order' : order,
-                        'getFielters': getFielters,
                         'commit': commit,
-                        'bscKey': bscKey,
+                        'loadOrder' : loadOrder,
+                        'cfieldOrder' : ','.join(cfieldOrder),
+                        'bscChaPrim' : bscChaPrim,
                     }
 
                 fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'Dao.template'))
@@ -111,7 +107,7 @@ class CodeGenerator:
 
                 f = open(os.path.join(settings.PATH_SRC_DAO, "Dao"+ name + ".prw") , "w+")
                 f.write(result)
-                f.close()                    
+                f.close()
 
         return
 
@@ -134,6 +130,7 @@ class CodeGenerator:
             with open(storagePathFile) as datafile:
                 columnInfo = csv.reader(datafile, delimiter=';')
                 for column in columnInfo:
+                    
                     if column[4] == "1":
                         keyValues += '    oCollection:setValue("'+ column[1] +'", "" ) /* Column '+ column[0] +' */ \n'
                     else:
@@ -204,7 +201,7 @@ class CodeGenerator:
 
     def buildMapper(self,entity, name):
 
-        mapFromDao = ''
+        mapper = ''
 
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  entity + ".columns")
         exists = os.path.isfile(storagePathFile)
@@ -212,13 +209,13 @@ class CodeGenerator:
         if exists:
             with open(storagePathFile) as datafile:
                 columnInfo = csv.reader(datafile, delimiter=';')
-                for column in columnInfo:            
-                    mapFromDao += '    self:oEntity:setValue("'+ column[1] +'", AllTrim((oDao:cAliasTemp)->'+ column[0] +'))\n'
+                for column in columnInfo:
+                    mapper += '    aAdd(self:aFields,{"'+ column[0] +'" ,"'+ column[1] +'"})\n'
                 
                 d = { 
                         'className': name, 
                         'entity' : entity,
-                        'mapFromDao' : mapFromDao,
+                        'mapper' : mapper,
                     }
 
                 fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'Mapper.template'))
@@ -254,12 +251,18 @@ class CodeGenerator:
         return
 
     def copyLibs(self):
-        src = settings.PATH_TEMPLATE_LIBS
+        
+        prefix = settings.PROTHEUS_ENVIORMENT['default']['PREFIX']
         dest = settings.PATH_SRC_LIB
-        src_files = os.listdir(src)
+        src_files = os.listdir(settings.PATH_TEMPLATE_LIBS)
         for file_name in src_files:
-            full_file_name = os.path.join(src, file_name)
-            if (os.path.isfile(full_file_name)):
-                shutil.copy(full_file_name, dest)
-
+            fileIn = open(os.path.join(settings.PATH_TEMPLATE_LIBS, file_name))
+            temp = Template(fileIn.read())
+            result = temp.substitute({'prefix': prefix})
+            fileIn.close()
+            file = file_name.split('.')
+            f = open(os.path.join(settings.PATH_SRC_LIB, prefix+file[0]+'.prw' ) , "w+")
+            f.write(result)
+            f.close()
+            
         return        

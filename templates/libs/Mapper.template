@@ -1,0 +1,60 @@
+#include "TOTVS.CH"
+
+#Define DBFIELD 1
+#Define JSONFIELD 2
+
+/*/{Protheus.doc} 
+    Classe abstrata de um ${prefix}Mapper
+    @type  Class
+    @author victor.silva
+    @since 20180718
+/*/
+Class ${prefix}Mapper
+
+    Data oEntity
+    Data nType
+    Data aFields
+
+    Method New() Constructor
+    Method getEntity()
+    Method setEntity(oEntity)
+    Method mapFromDao(oDao) 
+    Method mapFromJson(oJson)
+    Method getFields()
+
+EndClass
+
+Method New(oEntity) Class ${prefix}Mapper
+    self:oEntity := oEntity
+    self:aFields := {}
+Return self
+
+Method getEntity() Class ${prefix}Mapper
+Return self:oEntity
+
+Method setEntity(oEntity) Class ${prefix}Mapper
+    self:oEntity := oEntity
+Return
+
+Method mapFromDao(oDao) Class ${prefix}Mapper
+    Local nField := 0
+    Local nLen   := Len(self:aFields)
+
+    For nField := 1 to nLen
+        self:oEntity:setValue(self:aFields[nField][JSONFIELD],AllTrim( (oDao:cAliasTemp)->&(self:aFields[nField][DBFIELD]) ) )
+    Next nField
+Return
+
+Method mapFromJson(oJson) Class ${prefix}Mapper
+    Local nField := 0
+    Local nLen   := Len(self:aFields)
+
+    For nField := 1 to nLen
+        cField := self:aFields[nField][JSONFIELD]
+        self:oEntity:setValue(cField,oJson[cField])
+    Next nField
+    
+Return self:getEntity()
+
+Method getFields() Class ${prefix}Mapper
+Return self:aFields

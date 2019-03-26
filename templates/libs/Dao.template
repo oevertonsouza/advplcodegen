@@ -6,7 +6,9 @@
 #DEFINE INSERT "03"
 #DEFINE DELETE "04"
 #DEFINE UPDATE "05"
-#DEFINE LOTE "06"
+
+#Define DBFIELD 1
+#Define JSONFIELD 2
 
 #DEFINE SQLSERVER  "MSSQL"
 
@@ -18,12 +20,11 @@
     @version version
 /*/
 
-Class Dao
+Class ${prefix}Dao
 
 	Data cQuery
 	Data cAlias
 	Data cAliasTemp
-	Data cCodOpe
 	Data cNumPage
 	Data cPageSize
 	Data cDB
@@ -31,18 +32,17 @@ Class Dao
 	Data cfieldOrder
 	Data oHashOrder
 	Data aMapBuilder
+	Data aFields
     Data oStatement  
 	Data hMap
 	Data cError
 
-	Method New() Constructor
+	Method New(aFields) Constructor
 
 	Method destroy()
 	Method getQuery()
 	Method setValue(cProperty,xData)
 	Method getValue(cProperty)
-	Method getCodOpe()
-	Method setCodOpe(cCodOpe)
 	Method setNumPage(cNumPage)
 	Method setPageSize(cPageSize)
 	Method getNumPage()
@@ -55,7 +55,6 @@ Class Dao
 	Method aliasSelected()
 	Method executaQuery()
 	Method execStatement()
-	Method getQtd()
 	Method fechaQuery()
 	Method verificaPos(nRecno)
 	Method getTypeOpe(lExiste, nType)
@@ -64,73 +63,80 @@ Class Dao
 	Method setOrder(cOrder)
 	Method queryBuilder(cQuery)
 	Method buscar()
-	Method bscRecno()
 	Method delete()
 	Method getFields()
 	Method getFilters()
-	Method seekByIndex(listKeys, listValues)
-	Method FilterByKey(listKeys, listValues)
-	Method getError()
 	Method toString(xValue)
-	Method hasNext()
+	Method hasNext(nRecno)
+	Method setError(cMsg)
+	Method getError()
 
 EndClass
 
-Method New() Class Dao
-	self:cDB := TcGetDB()
+Method New(aFields) Class ${prefix}Dao
+    self:oStatement := FWPreparedStatement():New()
 	self:oHashOrder := THashMap():New()
-	self:aMapBuilder := {}
-    self:oStatement :=  FWPreparedStatement():New()
-    self:cNumPage 	:=  "1"
-    self:cPageSize 	:=  "0"
-	self:hMap := THashMap():New()
+	self:hMap 		:= THashMap():New()
+	self:aMapBuilder:= {}
+	self:aFields 	:= aFields
+	self:cDB 		:= TcGetDB()
+    self:cNumPage 	:= "1"
+    self:cPageSize 	:= "0"
+	self:cFields 	:= ""
+	self:cfieldOrder:= ""
 Return self
 
-Method destroy() Class Dao
+Method destroy() Class ${prefix}Dao
 	self:fechaQuery()
+	if !empty(self:hMap)
+        self:hMap:clean()
+        FreeObj(self:hMap)
+        self:hMap := nil
+    endif
+	if !empty(self:oHashOrder)
+        self:oHashOrder:clean()
+        FreeObj(self:oHashOrder)
+        self:oHashOrder := nil
+    endif
+	if !empty(self:oStatement)
+        self:oStatement:destroy()
+        FreeObj(self:oStatement)
+        self:oStatement := nil
+    endif
+
 Return
 
-Method getQuery() Class Dao
+Method getQuery() Class ${prefix}Dao
 Return self:cQuery
 
-Method setValue(cProperty,xData) Class Dao
+Method setValue(cProperty,xData) Class ${prefix}Dao
 Return self:hMap:set(cProperty,xData)
 
-Method getValue(cProperty) Class Dao
-	Local anyValue := ""
-	self:hMap:get(cProperty,@anyValue)
-Return anyValue
+Method getValue(cProperty) Class ${prefix}Dao
+	Local xValue := ""
+	self:hMap:get(cProperty,@xValue)
+Return xValue
 
-Method getCodOpe() Class Dao
-	if empty(self:cCodOpe)
-		self:setCodOpe("0001")
-	endIf
-Return self:cCodOpe
-
-Method setCodOpe(cCodOpe) Class Dao
-	self:cCodOpe := cCodOpe
-Return
-
-Method setNumPage(cNumPage) Class Dao
+Method setNumPage(cNumPage) Class ${prefix}Dao
     self:cNumPage := cNumPage 
 Return
 
-Method setPageSize(cPageSize) Class Dao
+Method setPageSize(cPageSize) Class ${prefix}Dao
     self:cPageSize := cPageSize
 Return
 
-Method getNumPage() Class Dao
+Method getNumPage() Class ${prefix}Dao
 Return self:cNumPage
 
-Method getPageSize() Class Dao
+Method getPageSize() Class ${prefix}Dao
 Return self:cPageSize
 
-Method getRowControl() Class Dao
+Method getRowControl() Class ${prefix}Dao
 
 	Local cQuery := ""
 	
 	// Para fazer o controle da paginação em SQL, usado dessa maneira porque OFFSET e FETCH não funciona em versões sql menor que 2012
-	If SQLSERVER $ self:cDB
+	If SQLSERVER $$ self:cDB
 		cQuery += " WITH " + self:cAlias + " AS ( SELECT ROW_NUMBER() OVER(ORDER BY " + self:cfieldOrder + " ) AS ROW#, "
 	Else
 		cQuery += " SELECT "
@@ -138,14 +144,14 @@ Method getRowControl() Class Dao
 
 Return cQuery
 
-Method getWhereRow() Class Dao
+Method getWhereRow() Class ${prefix}Dao
 
 	Local cQuery := ""
 	Local cNumIni := alltrim(str((val(self:cNumPage ) - 1) * val(self:cPageSize)))
 	Local cNumFim := alltrim(str(((val(self:cNumPage )) * val(self:cPageSize)) + 1))
 
 	// Para fazer o controle da paginação em SQL, usado dessa maneira porque OFFSET e FETCH não funciona em versões sql menor que 2012
-	If SQLSERVER $ self:cDB  
+	If SQLSERVER $$ self:cDB  
 		cQuery += " ) SELECT * FROM " + self:cAlias
 		If val(self:cPageSize) > 0
 			cQuery += " WHERE ROW# > " + cNumIni 
@@ -155,7 +161,7 @@ Method getWhereRow() Class Dao
 
 Return cQuery
 
-Method getQryPage() Class Dao
+Method getQryPage() Class ${prefix}Dao
 
     Local cQuery := ""
     Local cNumPage := alltrim(str((val(self:cNumPage ) - 1) * val(self:cPageSize)))
@@ -165,20 +171,20 @@ Method getQryPage() Class Dao
 
 Return cQuery
 
-Method setQuery(cQuery) Class Dao
+Method setQuery(cQuery) Class ${prefix}Dao
 	self:cQuery := cQuery
 Return
 
-Method getAliasTemp() Class Dao
+Method getAliasTemp() Class ${prefix}Dao
 	if empty(self:cAliasTemp)
 		self:cAliasTemp := getNextAlias()
 	endif
 Return self:cAliasTemp
 
-Method aliasSelected() Class Dao
+Method aliasSelected() Class ${prefix}Dao
 Return Select(self:getAliasTemp()) > 0
 
-Method executaQuery() Class Dao
+Method executaQuery() Class ${prefix}Dao
 	Local lFound := .F.
 
 	self:fechaQuery()
@@ -198,7 +204,7 @@ Method executaQuery() Class Dao
 	
 Return lFound
 
-Method execStatement() Class Dao
+Method execStatement() Class ${prefix}Dao
 	Local lSuccess := .F.
 
 	lSuccess := TcSqlExec(self:getQuery()) >= 0
@@ -207,15 +213,12 @@ Method execStatement() Class Dao
 	Endif
 
 	If !lSuccess
-		self:cError := TcSqlError()
+		self:setError(TcSqlError())
 	EndIf
 	
 Return lSuccess
 
-Method getQtd() Class Dao
-Return (self:getAliasTemp())->QTD
-
-Method fechaQuery() Class Dao
+Method fechaQuery() Class ${prefix}Dao
 	if self:aliasSelected()
 		(self:getAliasTemp())->(dbCloseArea())
 		/*	
@@ -227,7 +230,7 @@ Method fechaQuery() Class Dao
 	endIf
 Return
 
-Method verificaPos(nRecno) Class Dao
+Method verificaPos(nRecno) Class ${prefix}Dao
 
 	If  self:aliasSelected() .and. nRecno != (self:getAliasTemp())->(RECNO())
 		self:posReg(nRecno)
@@ -235,21 +238,19 @@ Method verificaPos(nRecno) Class Dao
 
 Return
 
-Method getTypeOpe(lExiste, nType) Class Dao
+Method getTypeOpe(lExiste, nType) Class ${prefix}Dao
 
-	Local nOperation := nil
+	Local nOperation := MODEL_OPERATION_INSERT
 
-	If (!lExiste .AND. nType == INSERT .OR. nType == LOTE)
-        nOperation := MODEL_OPERATION_INSERT
-    ElseIf (lExiste .AND. nType == DELETE)
+    If lExiste .AND. nType == DELETE
         nOperation := MODEL_OPERATION_DELETE
-    ElseIf (lExiste .AND. nType != INSERT .AND. nType != DELETE ) 
+	ElseIf lExiste
         nOperation := MODEL_OPERATION_UPDATE
     EndIf
 
 Return nOperation
 
-Method posReg(nRecno) Class Dao
+Method posReg(nRecno) Class ${prefix}Dao
 	Local nSkip := 0
 	If self:aliasSelected() 
 		If nRecno < (self:getAliasTemp())->(RECNO())
@@ -267,50 +268,38 @@ Method posReg(nRecno) Class Dao
 	EndIf
 Return
 
-Method posDbRecno(nRecno) Class Dao
+Method posDbRecno(nRecno) Class ${prefix}Dao
 	Local lFound := .F.
 	If nRecno <> (self:cAlias)->(RECNO())
 		(self:cAlias)->(DbGoto(nRecno))
 	EndIf
 Return !(self:cAlias)->(Eof())
 
-Method setOrder(cOrder) Class Dao
-	Local aOrder 
-	Local cDesc
-	Local nI 	 	 := 0
-	Local cField 	 := ""
+Method setOrder(cOrder) Class ${prefix}Dao
+	Local aOrder	:= {}
+	Local nField	:= 0
+	Local nLen		:= 0
+	Local cField	:= ""
 	Local cTypeOrder := " ASC "
 
-	aOrder = StrTokArr(cOrder, "," )
-
 	If !Empty(cOrder)
-		
-		For nI := 1 to Len( aOrder )
-		
-			cField := UPPER(aOrder[nI])
-			cDesc = SubStr(cField,1,1)
-
-			If cDesc == "-"
+		aOrder = StrTokArr(cOrder, "," )
+		nLen := Len( aOrder )
+		For nField := 1 to nLen
+			cField := UPPER(aOrder[nField])
+			If SubStr(cField,1,1) == "-"
 				cField := SubStr(cField, 2, LEN(cField))
 				cTypeOrder := " DESC "
 			EndIf
-
 			If self:oHashOrder:get(cField)
-
 				self:oHashOrder:get(cField, cField)
-
-				If nI = 1
-					self:cfieldOrder := " " + cField + cTypeOrder
-				Else
-					self:cfieldOrder += " , " + cField + cTypeOrder
-				EndIf
-
+				self:cfieldOrder += IIf(nField == 1,""," , ") + cField + cTypeOrder
 			EndIf
-		Next nI
+		Next nField
 	EndIf
 Return
 
-Method queryBuilder(cQuery) Class Dao
+Method queryBuilder(cQuery) Class ${prefix}Dao
 
     Local nStatement := 1
     Local cQryFixed := ""
@@ -326,12 +315,14 @@ Method queryBuilder(cQuery) Class Dao
     self:aMapBuilder := nil
     self:aMapBuilder := {}
 
-    self:oStatement := nil 
+    self:oStatement:destroy()
+	FreeObj(self:oStatement)
+    self:oStatement := nil
     self:oStatement :=  FWPreparedStatement():New()
 
 Return cQryFixed
 
-Method buscar() Class Dao
+Method buscar() Class ${prefix}Dao
 	
     Local cQuery := ""
 	Local lFound := .F.
@@ -340,7 +331,6 @@ Method buscar() Class Dao
     cQuery += self:getFields()
     cQuery += " FROM " + RetSqlName(self:cAlias) + " " + self:cAlias + " "
     cQuery += self:getFilters()
-
     cQuery := self:queryBuilder(cQuery)
 
     self:setQuery(cQuery)
@@ -348,13 +338,12 @@ Method buscar() Class Dao
 
 Return lFound
 
-Method delete() Class Dao
+Method delete() Class ${prefix}Dao
     Local cQuery := ""
     Local lFound := .F.
 
     cQuery := " DELETE FROM "
     cQuery += " " + RetSqlName(self:cAlias) + " "
-    cQuery += " WHERE "
     cQuery += self:getFilters()
     cQuery := self:queryBuilder(cQuery)
     self:setQuery(cQuery)
@@ -362,65 +351,44 @@ Method delete() Class Dao
 
 Return lFound
 
-Method getFields() Class Dao
-	Local cFilter
-	cFilter += " " + self:cAlias + "_FILIAL = '" + xFilial(self:cAlias) + "' "
-    xValue := self:getValue("recno")
-    if !empty(xValue)
-        cFilter += " AND R_E_C_N_O_ =  ? "
-        aAdd(self:aMapBuilder, self:toString(xValue))
-    EndIf
+Method getFields() Class ${prefix}Dao
+
+	Local nField := 0
+    Local nLen   := Len(self:aFields)
+
+	If empty(self:cFields)
+		For nField := 1 to nLen
+			self:cFields += IIf(nField > 1," , ","") + self:aFields[nField][DBFIELD] + " "
+		Next nField
+		self:cFields += " ,R_E_C_N_O_ RECNO "
+	EndIf
+
+Return self:cFields
+
+Method getFilters() Class ${prefix}Dao
+
+    Local cFilter := ""
+    Local xValue  := ""
+    Local nField := 0
+    Local nLen   := Len(self:aFields)
+
+    cFilter += " WHERE "
+    cFilter += " "+ self:cAlias + "_FILIAL = '" + xFilial( self:cAlias ) + "' "
+    
+    For nField := 1 to nLen
+        xValue := self:getValue(self:aFields[nField][JSONFIELD])
+        If !empty(xValue)
+            cFilter += " AND " + self:aFields[nField][DBFIELD] + " = ? "
+            aAdd(self:aMapBuilder, self:toString(xValue))
+        EndIf
+    Next nField
+
     cFilter += " AND D_E_L_E_T_ = ? "
     aAdd(self:aMapBuilder, ' ')
 
-	 
-Return self:cFields
+Return cFilter
 
-Method getFilters() Class Dao
-
-    Local cQuery := ""
-
-    cQuery += " "+ self:cAlias + "_FILIAL = '" + xFilial( self:cAlias ) + "' "
-    cQuery += " AND D_E_L_E_T_ 	= ? "
-    aAdd(self:aMapBuilder, ' ')
-
-Return cQuery
-
-Method seekByIndex(listKeys, listValues) Class Dao
-    
-    Local cQuery := ""
-    Local lFound := .F.
-
-    cQuery += " SELECT "    
-    cQuery += self:getFields()
-    cQuery += " FROM " + RetSqlName(self:cAlias) + " " + self:cAlias + " "
-    cQuery += self:filterByKey(listKeys, listValues)
-    cQuery := self:queryBuilder(cQuery)
-
-    self:setQuery(cQuery)
-    lFound := self:executaQuery()
- 
-Return lFound 
-
-Method FilterByKey(listKeys, listValues) Class Dao
-    Local cFilters := " WHERE "
-    
-    cFilters += " " + self:cAlias + "_FILIAL = '" + xFilial(self:cAlias) + "' "
-
-	while listKeys:hasNext()
-        cFilters += " AND " + listKeys:getNext() + " = ? "
-        aAdd(self:aMapBuilder, listValues:getNext())
-    enddo
-
-    cFilters += " AND " + self:cAlias + ".D_E_L_E_T_ 	= ? "
-    aAdd(self:aMapBuilder, ' ')
-
-Return cFilters
-
-Method getError() Class Dao
-Return ""
-
-Method toString(xValue) Class Dao
+Method toString(xValue) Class ${prefix}Dao
 	Local cValue := ""
 
 	If xValue == Nil
@@ -435,10 +403,18 @@ Method toString(xValue) Class Dao
 
 Return cValue
 
-Method hasNext(nRecno) Class Dao
+Method hasNext(nRecno) Class ${prefix}Dao
     Local lTemProx := .F.
     If self:aliasSelected()
         self:verificaPos(nRecno)
         lTemProx := !(self:getAliasTemp())->(Eof())
     EndIf
 return lTemProx
+
+Method setError(cMsg) Class ${prefix}Dao
+    self:cError := cMsg
+    self:lFault := .T.
+return
+
+Method getError() Class ${prefix}Dao
+return self:cError
