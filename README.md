@@ -17,7 +17,7 @@ Python 3 instalado, base de dados e ambiente protheus configurados.
 # Configuração de Ambiente
 
 * 1 - Faça o clone do projeto.
-* 2 - No arquivo settings.py preencha os dados de acesso ao banco de dados do seu ambiente.
+* 2 - No arquivo settings.py preencha os dados de acesso ao banco de dados do seu ambiente Protheus.
 
 ```python
 
@@ -31,4 +31,24 @@ DATABASES = {
 }
 
 ```
+* 3 - Ainda no arquivo settings.py preencha os dados do seu ambiente Protheus.
+
+EMPRESA = Empresa prefixo das tabelas no seu dicionário
+FILIAL = Filial do seu ambiente
+SEGMENT = Seguimento em que vc atua
+PREFIX = Prefixo com 3 caracteres, será o prefixo das suas classe e nome de fontes para distinguir dos fontes já existentes.
+
+Exemplo:
+
+```python
+PROTHEUS_ENVIORMENT = {
+    'default': {
+        'EMPRESA': 'T1',
+        'FILIAL': 'M SP 01',
+        'SEGMENT' : 'HealthCare',
+        'PREFIX' : 'Cen',
+    }
+}
+```
+
 -- Em construção
