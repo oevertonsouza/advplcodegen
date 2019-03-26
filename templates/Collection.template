@@ -4,40 +4,34 @@ Class Col${className} from Collection
 	   
     Method New() Constructor
 
+    Method New() Constructor
     Method initEntity()
-    Method bsc${className}()
-    Method commit()
+    Method insert()
+    Method update()
     Method delete()
+    Method bscChaPrim()
 
 EndClass
 
-Method New() Class Col${className}
+Method New() Class ${prefix}Clt${className}
     _Super:new()
-    self:oDao := Dao${className}():New()
-    self:oMapper := Mpr${className}():New()
+    self:oDao := ${prefix}Dao${className}():New()
+    self:oMapper := ${prefix}Mpr${className}():New()
 return self
 
-Method initEntity() Class Col${className}
+Method initEntity() Class ${prefix}Clt${className}
 return ${className}():New()
 
-Method commit() Class Col${className}
-    
-    self:lFound := self:getDao():commit()
-    If !self:found()
-        self:setError("Não conseguiu gravar/alterar o registro na entidade ${entity}.")
-    EndIf
+Method insert() Class ${prefix}Clt${className}
+Return _Super:insert()
 
-return self:found()
+Method update() Class ${prefix}Clt${className}
+Return _Super:update()
 
-Method delete() Class Col${className}
-    
-    self:lFound := self:getDao():delete()
-    If !self:found()
-        self:setError("Não conseguiu deletar o registro na entidade ${entity}.")
-    EndIf
+Method delete() Class ${prefix}Clt${className}
+return _Super:delete()
 
-return self:found()
-
-
-
-
+Method bscChaPrim() Class ${prefix}Clt${className}
+    self:lFound := self:getDao():bscChaPrim()
+    self:goTop()
+Return self:found()

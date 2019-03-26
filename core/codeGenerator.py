@@ -41,12 +41,15 @@ class CodeGenerator:
     def buildCollection(self,entity, name):
 
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  entity + ".columns")
+        prefix = settings.PROTHEUS_ENVIORMENT['default']['PREFIX']
+
         exists = os.path.isfile(storagePathFile)
 
         if exists:
                 d = { 
                         'className': name, 
                         'entity' : entity,
+                        'prefix' : prefix,
                     }
 
                 fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'Collection.template'))
