@@ -22,7 +22,7 @@ class Storage:
                 is_indice = "1"
             else:
                 is_indice = "0"
-            f.write( column[0]+';'+column[0].replace("_", "").capitalize()+';'+column[1]+';'+str(column[2])+';'+is_indice+'\n')
+            f.write( column[0]+';'+column[0].replace("_", "").lower()+';'+column[1]+';'+str(column[2])+';'+is_indice+'\n')
         
         f.close()
     

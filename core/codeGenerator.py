@@ -72,6 +72,7 @@ class CodeGenerator:
         bscChaPrim = ''
         loadOrder = ''
         cfieldOrder = []
+        prefix = settings.PROTHEUS_ENVIORMENT['default']['PREFIX']
 
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  entity + ".columns")
         exists = os.path.isfile(storagePathFile)
@@ -102,6 +103,7 @@ class CodeGenerator:
                         'loadOrder' : loadOrder,
                         'cfieldOrder' : ','.join(cfieldOrder),
                         'bscChaPrim' : bscChaPrim,
+                        'prefix' : prefix,
                     }
 
                 fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'Dao.template'))

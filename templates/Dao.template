@@ -1,6 +1,9 @@
 #INCLUDE "TOTVS.CH"
 
-Class Dao${className} from Dao
+#Define DBFIELD 1
+#Define JSONFIELD 2
+
+Class ${prefix}Dao${className} from Dao
 
     Method New() Constructor
 
@@ -8,28 +11,16 @@ Class Dao${className} from Dao
     Method buscar()
     Method getFilters()
     Method commit()
-    Method bsc${className}()
+    Method bscChaPrim()
     
 EndClass
 
-Method New() Class Dao${className}
+Method New() Class ${prefix}Dao${className}
 	_Super:New()
     self:cAlias := "${alias}"
 Return self
 
-Method getFields() Class Dao${className}
-
-	If empty(self:cFields)
-    
-		self:cFields := ""
-$fields
-        _Super:getFields()
-        
-    Endif
-	 
-Return self:cFields
-
-Method buscar() Class Dao${className}
+Method buscar() Class ${prefix}Dao${className}
 	Local lFound := .F.
     lFound := _Super:buscar()
     If lFound 
@@ -37,18 +28,7 @@ Method buscar() Class Dao${className}
     EndIf
 Return lFound
 
-Method getFilters() Class Dao${className}
-
-    Local xValue    := ""
-    Local cFilter   := ""
-
-    cFilter += _Super:getFilters()
-
-${getFielters}
-
-Return cFilter
-
-Method bsc${className}() Class Dao${className}
+Method bscChaPrim() Class ${prefix}Dao${className}
 
     Local lFound := .F.
 	Local cQuery := ""
@@ -57,16 +37,16 @@ Method bsc${className}() Class Dao${className}
 	cQuery += " WHERE 1=1 "
 	cQuery += " AND	${alias}_FILIAL = '" + xFilial("${alias}") + "' "
 
-${bscKey}
+${bscChaPrim}
     self:setQuery(self:queryBuilder(cQuery))
 	lFound := self:executaQuery()
 
 return lFound
 
-Method commit() Class Dao${className}
+Method commit() Class ${prefix}Dao${className}
 
     Local lFound := .F.
-	lInclui := !self:bsc${className}()
+	lInclui := !self:bscChaPrim()
 
 	If RecLock("${alias}",lInclui)
 		
@@ -76,11 +56,3 @@ ${commit}
         lFound := .T.
     EndIf
 Return lFound
-
-
-
-
-
-
-
-
