@@ -33,7 +33,7 @@ DATABASES = {
 ```
 * 3 - Ainda no arquivo settings.py preencha os dados do seu ambiente Protheus.
 
-EMPRESA = Empresa prefixo das tabelas no seu dicionário
+EMPRESA = Empresa prefixo das tabelas no seu dicionário</br>
 FILIAL = Filial do seu ambiente
 SEGMENT = Seguimento em que vc atua
 PREFIX = Prefixo com 3 caracteres, será o prefixo das suas classe e nome de fontes para distinguir dos fontes já existentes.
