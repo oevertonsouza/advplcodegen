@@ -144,10 +144,10 @@ Method commit() Class ${prefix}Collection
 Return self:found()
 
 Method insert() Class ${prefix}Collection
-Return _Super:commit()
+Return self:commit()
 
 Method update() Class ${prefix}Collection
-Return _Super:commit()
+Return self:commit()
 
 Method delete() Class ${prefix}Collection
     self:lFound := self:getDao():delete()

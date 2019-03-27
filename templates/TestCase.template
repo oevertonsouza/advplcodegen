@@ -1,8 +1,8 @@
 #Include 'Protheus.ch'
 
-CLASS ${className}TestCase FROM FWDefaultTestCase
+CLASS ${prefix}${className}TestCase FROM FWDefaultTestCase
 	
-	METHOD ${className}TestCase()
+	METHOD ${prefix}${className}TestCase()
 	METHOD SetUpClass()
 	METHOD TearDownClass()
 	METHOD getSingle_001()
@@ -13,7 +13,7 @@ CLASS ${className}TestCase FROM FWDefaultTestCase
 
 ENDCLASS
 
-METHOD ${className}TestCase() CLASS ${className}TestCase
+METHOD ${prefix}${className}TestCase() CLASS ${prefix}${className}TestCase
 	_Super:FWDefaultTestCase()
 	self:AddTestMethod( "GETSINGLE_001",,"Busca um registro na tabela ${entity}." )
 	self:AddTestMethod( "GETCOLLECTION_002",,"Busca uma coleção de registros na tabela ${entity}." )
@@ -22,10 +22,10 @@ METHOD ${className}TestCase() CLASS ${className}TestCase
 	self:AddTestMethod( "DELETE_005",,"Deleta um registro na tabela ${entity}." )
 Return
 
-METHOD SetUpClass() CLASS ${className}TestCase
+METHOD SetUpClass() CLASS ${prefix}${className}TestCase
 Return _Super:SetUpClass()
 
-METHOD TearDownClass() CLASS ${className}TestCase
+METHOD TearDownClass() CLASS ${prefix}${className}TestCase
 	Local oResult := FWTestHelper():New()
 
     oResult:UTRestParam(oResult:aParam)
@@ -34,17 +34,19 @@ METHOD TearDownClass() CLASS ${className}TestCase
 Return oResult
 
 //Test Single Src
-METHOD getSingle_001() CLASS ${className}TestCase
+METHOD getSingle_001() CLASS ${prefix}${className}TestCase
 
 	Local oResult := FWTestHelper():New()
-	Local oCollection := Col${className}():New()
-	Local o${className} := ${className}():New()
+	Local oCollection := ${prefix}Clt${className}():New()
+	Local o${className} := ${prefix}${className}():New()
 	Local lFound := .F.
     
 	/* Include first index values from ${alias}  */
 ${keyValues}
 	oResult:activate()
-	oProducts := oCollection:getNext()
+	if oCollection:buscar()
+		oProducts := oCollection:getNext()	
+	EndIf
 
 	oResult:AssertTrue(lFound, "Não foi possivel deletar o registro na entidade ${entity} com os dados informados.")
 	oCollection:destroy()
@@ -52,29 +54,88 @@ ${keyValues}
 
 Return oResult
 
-//Test Single Src
-METHOD insert_001() CLASS ${className}TestCase
+//Test All Src
+METHOD getCollection_002() CLASS ${prefix}${className}TestCase
 
 	Local oResult := FWTestHelper():New()
-	Local oCollection := Col${className}():New()
+	Local oCollection := ${prefix}Clt${className}():New()
+	Local o${className} := ${prefix}${className}():New()
 	Local lFound := .F.
     
 	/* Include first index values from ${alias}  */
 ${keyValues}
-	/* Values not key B3J  */
+	oResult:activate()
+	if oCollection:buscar()
+		oProducts := oCollection:getNext()	
+	EndIf	
+
+	oResult:AssertTrue(lFound, "Não foi possivel deletar o registro na entidade ${entity} com os dados informados.")
+	oCollection:destroy()
+	oResult:deactivate()
+
+Return oResult
+
+//Test Insert
+METHOD insert_003() CLASS ${prefix}${className}TestCase
+
+	Local oResult := FWTestHelper():New()
+	Local oCollection := ${prefix}Clt${className}():New()
+	Local lFound := .F.
+    
+	/* Include first index values from ${alias}  */
+${keyValues}
+	/* Values not key ${alias}  */
 ${noKeyValues}
+
+	oResult:activate()
+		oResult:AssertTrue(oCollection:insert(), "Não foi possivel inserir o registro na tabela ${entity} com os dados fornecidos.")
+	oResult:deactivate()
 
 	oCollection:destroy()
 	oResult:deactivate()
 
 Return oResult
 
-
-//Test Delete
-METHOD delete_005() CLASS ${className}TestCase
+//Test Update
+METHOD update_004() CLASS ${prefix}${className}TestCase
 
 	Local oResult := FWTestHelper():New()
-	Local oCollection := Col${className}():New()
+	Local oCollection := ${prefix}Clt${className}():New()
+	Local o${prefix}${className} := ${prefix}${className}():New()
+	Local lFound := .F.
+    
+	/* Include first index values from ${alias}  */
+${keyValues}
+	/* Values not key ${alias} */
+${noKeyValues}
+	oResult:activate()
+		
+    oResult:AssertTrue(oCollection:update(), "Não foi possivel alterar o registro na tabela B3JT10 com os dados fornecidos.")
+	oCollection := nil
+
+	if oResult:lOk
+			
+		oCollection := ${prefix}Clt${className}():New()
+${KeyValuesCompare}
+		oResult:AssertTrue(oCollection:buscar(), "Registro não foi encontrado com os dados informados.")
+		
+		if oResult:lOk .AND. oCollection:hasNext()
+			    
+			o${prefix}${className} := oCollection:getNext() 
+${compare}
+		EndIf
+	EndIf
+
+	oCollection:destroy()
+	oResult:deactivate()
+
+Return oResult
+
+//Test Delete
+METHOD delete_005() CLASS ${prefix}${className}TestCase
+
+	Local oResult := FWTestHelper():New()
+	Local oCollection := ${prefix}Clt${className}():New()
 	Local lFound := .F.
     
 	/* Include first index values from ${alias}  */

@@ -1,6 +1,6 @@
 #include "TOTVS.CH"
 
-Class Mpr${className} from Mapper
+Class ${prefix}Mpr${className} from ${prefix}Mapper
 
     Method New(oEntity) Constructor
 
@@ -9,25 +9,8 @@ Class Mpr${className} from Mapper
 
 EndClass
 
-Method New(oEntity) Class Mpr${className}
-    Default oEntity := ${className}():New()
+Method New(oEntity) Class ${prefix}Mpr${className}
     _Super:new(oEntity)
+
+${mapper}
 Return self
-
-Method mapFromJson(oJson) Class Mpr${className}
-
-    Local aProperties := oJson:getNames()
-    Local nLenProperties := Len(aProperties)
-    Local nProperty := 1
-    
-    while nProperty <= nLenProperties
-        self:oEntity:setValue(aProperties[nProperty],oJson[aProperties[nProperty]])
-        nProperty++
-    enddo
-
-Return
-
-Method mapFromDao(oDao) Class Mpr${className}
-
-${mapFromDao}
-Return

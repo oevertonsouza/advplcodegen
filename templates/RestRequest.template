@@ -10,7 +10,7 @@
 #DEFINE LOTE   "06"
 #DEFINE BUSCA  "07"
 
-Class Req${className} from RestRequest
+Class ${prefix}Req${className} from ${prefix}RestRequest
 
     Method New(oRest,cSvcName) Constructor
     Method applyFilter(nType)
@@ -28,7 +28,7 @@ Class Req${className} from RestRequest
 
 EndClass
 
-Method New(oRest, cSvcName) Class Req${className}
+Method New(oRest, cSvcName) Class ${prefix}Req${className}
     _Super:New(oRest,cSvcName)
     self:oCollection := Col${className}():New(self:oDao)
     self:oJsonObject := JsonObject():New() 
@@ -41,7 +41,7 @@ Method applyPageSize() Class Req${className}
     self:oRespBody["items"] := {}
 Return self:lSuccess
 
-Method buscar(nType) Class Req${className}
+Method buscar(nType) Class ${prefix}Req${className}
 
     Local lFound := .F.
     if self:lSuccess
@@ -59,7 +59,7 @@ Method buscar(nType) Class Req${className}
 
 Return
 
-Method srcSingle() Class Req${className}
+Method srcSingle() Class ${prefix}Req${className}
     
     if self:lSuccess
         self:oRespBody := self:serializeObject(self:oCollection:getNext())
@@ -68,7 +68,7 @@ Method srcSingle() Class Req${className}
 
 Return self:lSuccess
 
-Method srcCollection() Class Req${className}
+Method srcCollection() Class ${prefix}Req${className}
 
     Local nUsers := 1
     if self:lSuccess
@@ -85,7 +85,7 @@ Method srcCollection() Class Req${className}
 
 Return self:lSuccess
 
-Method insert() Class Req${className}
+Method insert() Class ${prefix}Req${className}
 
     Local oDao${className} := nil
     Local o${className} := nil
@@ -112,7 +112,7 @@ Method insert() Class Req${className}
 
 Return self:lSuccess
 
-Method update() Class Req${className}
+Method update() Class ${prefix}Req${className}
 
     Local oDao${className} := nil
     Local o${className} := nil
@@ -138,7 +138,7 @@ Method update() Class Req${className}
 
 Return self:lSuccess
 
-Method delete() Class Req${className}
+Method delete() Class ${prefix}Req${className}
 
     Local oDao${className} := nil
     Local o${className} := nil

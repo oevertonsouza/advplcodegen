@@ -92,7 +92,7 @@ class CodeGenerator:
                         cfieldOrder.append(column[0])
                         bscChaPrim += '    xValue = self:getValue("'+column[1]+'")\n'
                         bscChaPrim += '    if !empty(xValue)\n'
-                        bscChaPrim += '        cFilter += " AND ' +column[0]+ ' = ? "\n'
+                        bscChaPrim += '        cQuery += " AND ' +column[0]+ ' = ? "\n'
                         bscChaPrim += '        aAdd(self:aMapBuilder, self:toString(xValue))\n'
                         bscChaPrim += '    EndIf\n'
                         
@@ -129,7 +129,10 @@ class CodeGenerator:
         keyValues = ''
         noKeyValues = ''
         alias = entity[:3]
-
+        prefix = settings.PROTHEUS_ENVIORMENT['default']['PREFIX']
+        compare = ''
+        KeyValuesCompare = ''
+        
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  entity + ".columns")
         exists = os.path.isfile(storagePathFile)
 
@@ -139,23 +142,29 @@ class CodeGenerator:
                 for column in columnInfo:
                     
                     if column[4] == "1":
-                        keyValues += '    oCollection:setValue("'+ column[1] +'", "" ) /* Column '+ column[0] +' */ \n'
+                        keyValues += ''.rjust(4)+'oCollection:setValue("'+ column[1] +'", "" ) /* Column '+ column[0] +' */ \n'
+                        KeyValuesCompare +=  ''.rjust(8)+'oCollection:setValue("'+ column[1] +'", "" ) /* Column '+ column[0] +' */ \n'
                     else:
-                        noKeyValues +=  '    oCollection:setValue("'+ column[1] +'", "" ) /* Column '+ column[0] +' */ \n'
-
+                        noKeyValues +=  ''.rjust(4)+'oCollection:setValue("'+ column[1] +'", "" ) /* Column '+ column[0] +' */ \n'
+                        
+                        compare +=   ''.rjust(12)+'oResult:assertTrue(oCollection:getValue("'+ column[1] +'"), "Valor comparado na coluna '+ column[0] +' de alias '+ column[1] +', nao sao iguais.")  /* Column '+ column[0] +' */ \n'
                 d = {
                         'className': name, 
                         'entity' : entity,
                         'alias' : alias,
                         'keyValues' : keyValues,
                         'noKeyValues' : noKeyValues,
+                        'prefix' : prefix,
+                        'compare' : compare,
+                        'KeyValuesCompare' : KeyValuesCompare,
+                        'i' : "    ",
                     }
 
                 fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'TestCase.template'))
                 temp = Template(fileIn.read())
                 result = temp.substitute(d)
 
-                f = open(os.path.join(settings.PATH_SRC_TEST_CASES, name + "TestCase.prw") , "w+")
+                f = open(os.path.join(settings.PATH_SRC_TEST_CASES, prefix+name + "TestCase.prw") , "w+")
                 f.write(result)
                 f.close()
 
@@ -168,19 +177,21 @@ class CodeGenerator:
         
         empresa = settings.PROTHEUS_ENVIORMENT['default']['EMPRESA']
         filial = settings.PROTHEUS_ENVIORMENT['default']['FILIAL']
+        prefix = settings.PROTHEUS_ENVIORMENT['default']['PREFIX']
 
         d = { 
                 'className': name, 
                 'entity' : entity,
                 'empresa' : empresa,
                 'filial' : filial,
+                'prefix' : prefix,
             }
 
         fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'TestSuite.template'))
         temp = Template(fileIn.read())
         result = temp.substitute(d)
 
-        f = open(os.path.join(settings.PATH_SRC_TEST_SUITE, name + "TestSuite.prw") , "w+")
+        f = open(os.path.join(settings.PATH_SRC_TEST_SUITE, prefix+name + "TestSuite.prw") , "w+")
         f.write(result)
         f.close()
 
@@ -190,17 +201,19 @@ class CodeGenerator:
 
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  entity + ".columns")
         exists = os.path.isfile(storagePathFile)
+        prefix = settings.PROTHEUS_ENVIORMENT['default']['PREFIX']
             
         d = { 
                 'className': name, 
                 'entity' : entity,
+                'prefix' : prefix,
             }
 
         fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'TestGroup.template'))
         temp = Template(fileIn.read())
         result = temp.substitute(d)
 
-        f = open(os.path.join(settings.PATH_SRC_TEST_GROUP, name + "TestGroup.prw") , "w+")
+        f = open(os.path.join(settings.PATH_SRC_TEST_GROUP, prefix+name + "TestGroup.prw") , "w+")
         f.write(result)
         f.close()
 
@@ -209,6 +222,7 @@ class CodeGenerator:
     def buildMapper(self,entity, name):
 
         mapper = ''
+        prefix = settings.PROTHEUS_ENVIORMENT['default']['PREFIX']
 
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  entity + ".columns")
         exists = os.path.isfile(storagePathFile)
@@ -223,6 +237,7 @@ class CodeGenerator:
                         'className': name, 
                         'entity' : entity,
                         'mapper' : mapper,
+                        'prefix' : prefix,
                     }
 
                 fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'Mapper.template'))
@@ -241,10 +256,12 @@ class CodeGenerator:
         
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  entity + ".columns")
         exists = os.path.isfile(storagePathFile)
+        prefix = settings.PROTHEUS_ENVIORMENT['default']['PREFIX']
 
         d = {
                 'className': name,                     
-                'entity' : entity,                    
+                'entity' : entity, 
+                'prefix' : prefix,
             }
 
         fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'RestRequest.template'))
@@ -256,6 +273,29 @@ class CodeGenerator:
         f.close()
 
         return
+
+    def buildCommand(self, entity, name):
+        
+        prefix = settings.PROTHEUS_ENVIORMENT['default']['PREFIX']
+        
+        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  entity + ".columns")
+        exists = os.path.isfile(storagePathFile)
+
+        d = {
+                'className': name,                     
+                'entity' : entity,                    
+                'prefix' : prefix,
+            }
+
+        fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'Command.template'))
+        temp = Template(fileIn.read())
+        result = temp.substitute(d)
+
+        f = open(os.path.join(settings.PATH_SRC_COMMAND, prefix+"Com"+ name +".prw") , "w+")
+        f.write(result)
+        f.close()
+
+        return        
 
     def copyLibs(self):
         

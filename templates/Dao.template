@@ -3,7 +3,7 @@
 #Define DBFIELD 1
 #Define JSONFIELD 2
 
-Class ${prefix}Dao${className} from Dao
+Class ${prefix}Dao${className} from ${prefix}Dao
 
     Method New() Constructor
 
@@ -48,7 +48,7 @@ Method commit() Class ${prefix}Dao${className}
     Local lFound := .F.
 	lInclui := !self:bscChaPrim()
 
-	If RecLock("${alias}",lInclui)
+	If ${alias}->(RecLock("${alias}",lInclui))
 		
         ${alias}->${alias}_FILIAL := xFilial("${alias}")
 ${commit}

@@ -16,7 +16,7 @@ Class ${prefix}Command
 EndClass
 
 Method New(oExecutor) Class ${prefix}Command
-    self:oExecutor    := oExecutor
+    self:oExecutor := oExecutor
 Return self
 
 Method execute() Class ${prefix}Command

@@ -1,9 +1,7 @@
 #include "TOTVS.CH"
 
-Class Col${className} from Collection
+Class ${prefix}Clt${className} from ${prefix}Collection
 	   
-    Method New() Constructor
-
     Method New() Constructor
     Method initEntity()
     Method insert()
