@@ -1,7 +1,7 @@
 #include "TOTVS.CH"
 #include 'FWMVCDEF.CH'
 
-/*/ JsonControl
+/*/ ${prefix}JsonControl
 Encapsula objeto da TEC JsonObject para controlar os filtros
 
 @type   class
@@ -9,7 +9,7 @@ Encapsula objeto da TEC JsonObject para controlar os filtros
 @since  20180523
 /*/
 
-Class JsonControl
+Class ${prefix}JsonControl
 
     Data hmFields
     Data hmExpand
@@ -31,18 +31,18 @@ Class JsonControl
     Method printProp(cProp)
     Method setProp(oJson,cProp,cValue)
     Method setPropObj(oJson,cObj,cProp,cValue)
-    Method oBjArray(oJson,cProp, oObj)
+    Method addObjtoProp(oJson,cProp, oObj)
 
 EndClass
 
-Method New() Class JsonControl
+Method New() Class ${prefix}JsonControl
     self:lFiltered     := .F.
     self:lExpanding    := .F.
     self:hmFields      := THashMap():New()
     self:hmExpand      := THashMap():New()
 Return self
 
-Method prepFields(cFields) Class JsonControl
+Method prepFields(cFields) Class ${prefix}JsonControl
     Local aFields     := {}
     Local nFields     := 1
     Local nLenFields  := 0
@@ -59,7 +59,7 @@ Method prepFields(cFields) Class JsonControl
     
 return
 
-Method prepExpand(cExpand) Class JsonControl
+Method prepExpand(cExpand) Class ${prefix}JsonControl
     Local nExpand    := 0
     Local nLenExpand := 0
     Local aExpand    := {}
@@ -87,7 +87,7 @@ Method prepExpand(cExpand) Class JsonControl
 
 return
 
-Method getExpandables(aExpandables) Class JsonControl
+Method getExpandables(aExpandables) Class ${prefix}JsonControl
     Local nExpand    := 1
     Local nLenExpand := Len(aExpandables)
 
@@ -102,10 +102,10 @@ Method getExpandables(aExpandables) Class JsonControl
 
 return aExpandables
 
-Method notFiltered() Class JsonControl
+Method notFiltered() Class ${prefix}JsonControl
 Return !self:lFiltered .Or. self:lExpanding
 
-Method expand(oJson,cProp,lList) Class JsonControl
+Method expand(oJson,cProp,lList) Class ${prefix}JsonControl
     Local lExpand := self:hmExpand:get(cProp)
     Default lList := .F.
          
@@ -115,10 +115,10 @@ Method expand(oJson,cProp,lList) Class JsonControl
 
 return lExpand
 
-Method fillExpandable(oJson,cProp,oValue) Class JsonControl
+Method fillExpandable(oJson,cProp,oValue) Class ${prefix}JsonControl
     
     if !empty(oValue)
-        // TODO - instanciar novo jSonControl pro expandable
+        // TODO - instanciar novo ${prefix}jSonControl pro expandable
         self:lExpanding := .T.
         self:setProp(oJson,cProp,oValue:serialize(self))
         self:lExpanding := .F.
@@ -127,7 +127,7 @@ Method fillExpandable(oJson,cProp,oValue) Class JsonControl
     endif
 return
 
-Method fillArray(oJson,cProp,oValue) Class JsonControl
+Method fillArray(oJson,cProp,oValue) Class ${prefix}JsonControl
     
     if !empty(oValue)
         aAdd(oJson[cProp],oValue:serialize(self))
@@ -137,7 +137,7 @@ Method fillArray(oJson,cProp,oValue) Class JsonControl
 return
 
 //Everton -- Criada para adicionar objetos ao array sem serialize
-Method oBjArray(oJson,cProp, oObj) Class JsonControl
+Method addObjtoProp(oJson,cProp, oObj) Class ${prefix}JsonControl
     
     if !empty(oObj:toJson())
         aAdd(oJson[cProp], oObj)
@@ -147,24 +147,24 @@ Method oBjArray(oJson,cProp, oObj) Class JsonControl
 
 return
 
-Method newArray(oJson,cProp) Class JsonControl
+Method newArray(oJson,cProp) Class ${prefix}JsonControl
     oJson[cProp] := {}
 return
 
-Method newObj(oJson,cProp) Class JsonControl
+Method newObj(oJson,cProp) Class ${prefix}JsonControl
     oJson[cProp] := JsonObject():New()
 return
 
-Method printProp(cProp) Class JsonControl
+Method printProp(cProp) Class ${prefix}JsonControl
 return !self:lFiltered .Or. (self:lFiltered .And. self:hmFields:get(cProp))
 
-Method setProp(oJson,cProp,cValue) Class JsonControl
+Method setProp(oJson,cProp,cValue) Class ${prefix}JsonControl
     if self:printProp(cProp) .Or. self:lExpanding
         oJson[cProp] := cValue
     endif
 return
 
-Method setPropObj(oJson,cObj,cProp,cValue) Class JsonControl
+Method setPropObj(oJson,cObj,cProp,cValue) Class ${prefix}JsonControl
     if self:printProp(cProp) .Or. self:lExpanding
         oJson[cObj][cProp] := cValue
     endif

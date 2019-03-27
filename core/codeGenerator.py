@@ -13,26 +13,28 @@ class CodeGenerator:
 
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  entity + ".columns")
         exists = os.path.isfile(storagePathFile)
+        prefix = settings.PROTHEUS_ENVIORMENT['default']['PREFIX']
 
         if exists:
             with open(storagePathFile) as datafile:
                 columnInfo = csv.reader(datafile, delimiter=';')
                 for column in columnInfo:
-                    serialize   += '    oJsonControl:setProp(oJson,"' + column[1] + '",self:get'+ column[1] +'()) /* Column '+ column[0] +' */ \n'
-                    fields      += '    self:oFields:push({"'+column[1]+'", self:get'+ column[1]+'()}) /* Column '+ column[0] +' */ \n'
+                    serialize   += '    oJsonControl:setProp(oJson,"' + column[1] + '",self:getValue("'+ column[1]+'")) /* Column '+ column[0] +' */ \n'
+                    fields      += '    self:oFields:push({"'+column[1]+'", self:getValue("'+column[1] +'")}) /* Column '+ column[0] +' */ \n'
                     
                 d = { 
                         'className': name, 
                         'serialize' : serialize,
                         'fields' : fields,
                         'entity' : entity,
+                        'prefix' : prefix,
                     }
 
                 fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'Entity.template'))   
                 temp = Template(fileIn.read())
                 result = temp.substitute(d)
 
-                f = open(os.path.join(settings.PATH_SRC_ENTITY, name + ".prw") , "w+")
+                f = open(os.path.join(settings.PATH_SRC_ENTITY, prefix+name + ".prw") , "w+")
                 f.write(result)
                 f.close()
 
@@ -56,7 +58,7 @@ class CodeGenerator:
                 temp = Template(fileIn.read())
                 result = temp.substitute(d)
 
-                f = open(os.path.join(settings.PATH_SRC_COLLECTION, "Col"+ name + ".prw") , "w+")
+                f = open(os.path.join(settings.PATH_SRC_COLLECTION, prefix+"Clt"+ name + ".prw") , "w+")
                 f.write(result)
                 f.close()                    
 
@@ -110,7 +112,7 @@ class CodeGenerator:
                 temp = Template(fileIn.read())
                 result = temp.substitute(d)
 
-                f = open(os.path.join(settings.PATH_SRC_DAO, "Dao"+ name + ".prw") , "w+")
+                f = open(os.path.join(settings.PATH_SRC_DAO, prefix+"Dao"+ name + ".prw") , "w+")
                 f.write(result)
                 f.close()
 
