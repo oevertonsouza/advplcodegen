@@ -2,15 +2,12 @@
 
 Class ${prefix}Mpr${className} from ${prefix}Mapper
 
-    Method New(oEntity) Constructor
-
-    Method mapFromJson()
-    Method mapFromDao()
+    Method New() Constructor
 
 EndClass
 
-Method New(oEntity) Class ${prefix}Mpr${className}
-    _Super:new(oEntity)
+Method New() Class ${prefix}Mpr${className}
+    _Super:new()
 
 ${mapper}
 Return self

@@ -8,17 +8,23 @@ Class ${prefix}Clt${className} from ${prefix}Collection
     Method update()
     Method delete()
     Method bscChaPrim()
+    Method setEntity(oEntity)    
 
 EndClass
 
 Method New() Class ${prefix}Clt${className}
     _Super:new()
-    self:oDao := ${prefix}Dao${className}():New()
     self:oMapper := ${prefix}Mpr${className}():New()
+    self:oDao := ${prefix}Dao${className}():New(self:oMapper:getFields())
 return self
 
 Method initEntity() Class ${prefix}Clt${className}
-return ${className}():New()
+return ${prefix}${className}():New()
+
+Method setEntity(oEntity) Class CenCltProducts
+    self:oMapper:setEntity(oEntity)
+    self:oDao:setHMap(oEntity:getHMap())
+return
 
 Method insert() Class ${prefix}Clt${className}
 Return _Super:insert()

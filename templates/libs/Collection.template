@@ -143,8 +143,12 @@ Method commit() Class ${prefix}Collection
     EndIf
 Return self:found()
 
-Method insert() Class ${prefix}Collection
-Return self:commit()
+Method insert() Class CenCollection
+    self:lFound := self:getDao():insert()
+    If !self:found()
+        self:setError("Não conseguiu incluir o registro. " + self:getDao():getError() )
+    EndIf
+Return self:found()
 
 Method update() Class ${prefix}Collection
 Return self:commit()

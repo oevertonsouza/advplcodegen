@@ -1,4 +1,4 @@
-#include "TOTVS.CH"
+#INCLUDE "TOTVS.CH"
 #INCLUDE 'FWMVCDEF.CH'
 
 #Define DBFIELD 1
@@ -60,7 +60,10 @@ Class ${prefix}Dao
 	Method delete()
 	Method getFields()
 	Method getFilters()
+	Method normalizeType(xPointer,xValue)
 	Method toString(xValue)
+	Method toDate(xValue)
+	Method toInt(xValue)
 	Method hasNext(nRecno)
 	Method setError(cMsg)
 	Method getError()
@@ -78,6 +81,7 @@ Method New(aFields) Class ${prefix}Dao
     self:cPageSize 	:= "0"
 	self:cFields 	:= ""
 	self:cfieldOrder:= ""
+	self:cError     := ""
 Return self
 
 Method destroy() Class ${prefix}Dao
@@ -232,18 +236,6 @@ Method verificaPos(nRecno) Class ${prefix}Dao
 
 Return
 
-Method getTypeOpe(lExiste, nType) Class ${prefix}Dao
-
-	Local nOperation := MODEL_OPERATION_INSERT
-
-    If lExiste .AND. nType == DELETE
-        nOperation := MODEL_OPERATION_DELETE
-	ElseIf lExiste
-        nOperation := MODEL_OPERATION_UPDATE
-    EndIf
-
-Return nOperation
-
 Method posReg(nRecno) Class ${prefix}Dao
 	Local nSkip := 0
 	If self:aliasSelected() 
@@ -321,11 +313,13 @@ Method buscar() Class ${prefix}Dao
     Local cQuery := ""
 	Local lFound := .F.
 
-    cQuery += " SELECT "    
+    cQuery += self:getRowControl()
+    cQuery += self:getFields()
     cQuery += self:getFields()
     cQuery += " FROM " + RetSqlName(self:cAlias) + " " + self:cAlias + " "
     cQuery += self:getFilters()
     cQuery := self:queryBuilder(cQuery)
+	cQuery += self:getWhereRow()	
 
     self:setQuery(cQuery)
     lFound := self:executaQuery()
@@ -382,6 +376,20 @@ Method getFilters() Class ${prefix}Dao
 
 Return cFilter
 
+Method normalizeType(xPointer,xValue) Class ${prefix}Dao
+
+    Local cValue := ""
+
+    if ValType( xPointer ) == "C"
+        cValue := self:toString(xValue)
+    ElseIf ValType( xPointer ) == "N"
+        cValue := self:toInt(xValue)
+    ElseIf ValType( xPointer ) == "D"
+        cValue := self:toDate(xValue)
+    EndIf
+
+Return cValue
+
 Method toString(xValue) Class ${prefix}Dao
 	Local cValue := ""
 
@@ -395,6 +403,35 @@ Method toString(xValue) Class ${prefix}Dao
 		cValue := DTOS(xValue)
 	EndIf
 
+Return cValue
+
+Method toDate(xValue) Class ${prefix}Dao
+	
+	Local cValue := ""
+
+	If xValue == Nil
+		cValue := STOD("")
+	ElseIf ValType( xValue ) == "D"
+		cValue := xValue
+	ElseIf ValType( xValue ) == "C"
+		cValue := STOD(xValue)
+	EndIf
+
+Return cValue
+
+Method toInt(xValue) Class ${prefix}Dao
+	
+	Local cValue := ""
+
+	If xValue == Nil
+		cValue := VAL("")
+	ElseIf ValType( xValue ) == "N"
+		cValue := xValue
+	ElseIf ValType( xValue ) == "C"
+		cValue := VAL(xValue)
+	EndIf
+
+Return
 Return cValue
 
 Method hasNext(nRecno) Class ${prefix}Dao

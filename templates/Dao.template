@@ -5,19 +5,20 @@
 
 Class ${prefix}Dao${className} from ${prefix}Dao
 
-    Method New() Constructor
+    Method New(aFields) Constructor
 
-    Method getFields()
     Method buscar()
-    Method getFilters()
+    Method insert()
     Method commit()
+    Method delete()    
     Method bscChaPrim()
     
 EndClass
 
-Method New() Class ${prefix}Dao${className}
-	_Super:New()
+Method New(aFields) Class ${prefix}Dao${className}
+	_Super:New(aFields)
     self:cAlias := "${alias}"
+    self:cfieldOrder := "${cfieldOrder}"
 Return self
 
 Method buscar() Class ${prefix}Dao${className}
@@ -28,12 +29,21 @@ Method buscar() Class ${prefix}Dao${className}
     EndIf
 Return lFound
 
+Method delete() Class ${prefix}Dao${className}
+    Local lFound := .F.
+	if self:bscChaPrim()
+        lFound := _Super:delete()    
+    EndIf
+Return lFound
+
 Method bscChaPrim() Class ${prefix}Dao${className}
 
     Local lFound := .F.
 	Local cQuery := ""
 
-	cQuery := " SELECT * FROM " + RetSqlName('${alias}') + " "
+    cQuery := " SELECT "
+    cQuery += _Super:getFields()
+    cQuery += " FROM " + RetSqlName('${alias}') + " "
 	cQuery += " WHERE 1=1 "
 	cQuery += " AND	${alias}_FILIAL = '" + xFilial("${alias}") + "' "
 
@@ -43,10 +53,16 @@ ${bscChaPrim}
 
 return lFound
 
-Method commit() Class ${prefix}Dao${className}
+Method insert() Class CenDaoProducts
+    Local lFound := !self:bscChaPrim()
+	If lFound
+        self:commit(.T.)
+    EndIf
+Return lFound
 
-    Local lFound := .F.
-	lInclui := !self:bscChaPrim()
+Method commit(lInclui) Class ${prefix}Dao${className}
+
+    Default lInclui := .F.
 
 	If ${alias}->(RecLock("${alias}",lInclui))
 		
