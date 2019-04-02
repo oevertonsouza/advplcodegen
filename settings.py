@@ -13,8 +13,8 @@ DATABASES = {
 #Protheus Info
 PROTHEUS_ENVIORMENT = {
     'default': {
-        'EMPRESA': 'EMPRESA',
-        'FILIAL': 'FILIAL',
+        'EMPRESA' : 'EMPRESA',
+        'FILIAL' : 'FILIAL',
         'SEGMENT' : 'SEGMENT',
         'PREFIX' : 'PREFIX',
     }
@@ -36,7 +36,7 @@ PATH_SRC_LIB = os.path.join(PATH_SRC, "lib")
 PATH_SRC_DOC = os.path.join(PATH_SRC, "doc")
 PATH_SRC_TEST = os.path.join(PATH_SRC, "test")
 PATH_SRC_MAPPER = os.path.join(PATH_SRC, "mapper")
-PATH_SRC_RESTREQUEST = os.path.join(PATH_SRC, "restRequest")
+PATH_SRC_REQUEST = os.path.join(PATH_SRC, "request")
 PATH_SRC_COMMAND = os.path.join(PATH_SRC, "command")
 
 #Inside Template

@@ -21,7 +21,7 @@ class ApiControl:
         os.mkdir(settings.PATH_SRC_DOC)
         os.mkdir(settings.PATH_SRC_API)
         os.mkdir(settings.PATH_SRC_MAPPER)
-        os.mkdir(settings.PATH_SRC_RESTREQUEST)
+        os.mkdir(settings.PATH_SRC_REQUEST)
         os.mkdir(settings.PATH_SRC_COMMAND)
         
         os.mkdir(settings.PATH_SRC_TEST)
@@ -127,6 +127,7 @@ class ApiControl:
                     cgen.buildMapper(row[0], row[1])
                     cgen.buildRequest(row[0], row[1])
                     cgen.buildCommand(row[0], row[1])
+                    cgen.buildApi(row[0], row[1])
         
         return False
 

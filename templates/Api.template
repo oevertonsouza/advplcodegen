@@ -1,0 +1,95 @@
+#INCLUDE "TOTVS.CH"
+#INCLUDE "RESTFUL.CH"
+
+#DEFINE SINGLE "01"
+#DEFINE ALL    "02"
+#DEFINE INSERT "03"
+#DEFINE DELETE "04"
+#DEFINE UPDATE "05"
+#DEFINE BUSCA  "07"
+
+WSRESTFUL ${segment} DESCRIPTION "Exemplo de serviço REST"
+    
+
+    // Atributos padrao utilizados em todas ou em mais de uma solicitacao
+    WSDATA apiVersion            as STRING  OPTIONAL
+    WSDATA page                  as STRING  OPTIONAL
+    WSDATA pageSize              as STRING  OPTIONAL
+    WSDATA tokenId               as STRING  OPTIONAL
+    WSDATA action                as STRING  OPTIONAL
+    WSDATA fields                as STRING  OPTIONAL
+    WSDATA expand                as STRING  OPTIONAL
+    WSDATA order                 as STRING  OPTIONAL
+    WSDATA version               as STRING  OPTIONAL
+${wsDataKeys}
+${wsDataNoKeys}
+
+    // Metodos do Produto
+    WSMETHOD GET ${prefix}${className}Collection DESCRIPTION "" ;
+    WSsyntax "{version}/${classNameLower}" ;
+    PATH "{version}/${classNameLower}" PRODUCES APPLICATION_JSON
+
+    WSMETHOD GET ${prefix}${className}Single DESCRIPTION "" ;
+    WSsyntax "{version}/${classNameLower}/{${keyPath}}" ;
+    PATH "{version}/${classNameLower}/{${keyPath}}" PRODUCES APPLICATION_JSON
+
+END WSRESTFUL
+
+WSMETHOD GET ${prefix}${className}Collection QUERYPARAM page, pageSize, fields, order,;
+${varskey}
+${varsNokey}
+    WSSERVICE ${segment}
+
+    Local oRequest := nil
+
+    Default self:page     := "1"
+    Default self:pageSize := "20"
+    Default self:fields   := ""
+    Default self:order    := ""
+
+${defaultVars}
+    
+    oRequest := ${prefix}Req${className}():New(self, "${className}-get_collection")
+    
+    oRequest:initRequest()
+    if oRequest:checkAuth()
+        oRequest:applyFilter(ALL)
+        oRequest:applyFields(self:fields)
+        oRequest:applyOrder(self:order)
+        oRequest:applyExpandables()
+        oRequest:applyPageSize()
+        oRequest:buscar(BUSCA)
+        oRequest:procGet(ALL)
+    endif
+    oRequest:endRequest()
+    oRequest:destroy()
+    oRequest := nil
+    DelClassIntf()
+
+Return .T.
+
+WSMETHOD GET ${prefix}${className}Single PATHPARAM;
+    ${keyPath};
+    QUERYPARAM;
+${keyVarsNoKeyPath}
+    fields;
+    WSSERVICE ${segment}
+    
+    Default self:fields := ""
+            
+    oRequest := ${prefix}Req${className}():New(self, "${className}-get_single")
+    
+    oRequest:initRequest()
+    if oRequest:checkAuth()
+        oRequest:applyFilter(SINGLE)
+        oRequest:applyFields(self:fields)
+        oRequest:applyPageSize()
+        oRequest:buscar(BUSCA)
+        oRequest:procGet(SINGLE) 
+    endif
+    oRequest:endRequest()
+    oRequest:destroy()
+    oRequest := nil
+    DelClassIntf()
+
+Return .T.

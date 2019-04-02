@@ -115,6 +115,108 @@ class CodeGenerator:
 
         return
 
+    def buildRequest(self, entity, name):
+        
+        alias = entity[:3]
+        
+        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  entity + ".columns")
+        exists = os.path.isfile(storagePathFile)
+        prefix = settings.PROTHEUS_ENVIORMENT['default']['PREFIX']
+        applyFilterAll = ''
+        applyFilterSingle = ''
+        prepFilter = ''
+
+
+        if exists:
+            with open(storagePathFile) as datafile:
+                columnInfo = csv.reader(datafile, delimiter=';')
+                for column in columnInfo:
+                    applyFilterAll += ''.rjust(12)+'self:oCollection:setValue("'+ column[1] +'",self:oRest:'+ column[1] +')\n'
+                    
+                    if column[4] == "1" :
+                        applyFilterSingle += ''.rjust(12)+'self:oCollection:setValue("'+ column[1] +'",self:oRest:'+ column[1] +')\n'
+                        prepFilter += ''.rjust(4)+'self:oRest:'+ column[1] +' := self:oCollection:getValue("'+ column[1] +'")\n'
+                      
+
+        d = {
+                'className': name,                     
+                'entity' : entity, 
+                'prefix' : prefix,
+                'applyFilterAll' : applyFilterAll,
+                'applyFilterSingle' : applyFilterSingle,
+                'prepFilter' : prepFilter,
+            }
+
+        fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'Request.template'))
+        temp = Template(fileIn.read())
+        result = temp.substitute(d)
+
+        f = open(os.path.join(settings.PATH_SRC_REQUEST, prefix+"Req"+ name +".prw") , "w+")
+        f.write(result)
+        f.close()
+
+        return
+
+    def buildApi(self, entity, name):
+        
+        alias = entity[:3]
+        
+        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  entity + ".columns")
+        exists = os.path.isfile(storagePathFile)
+        prefix = settings.PROTHEUS_ENVIORMENT['default']['PREFIX']
+        segment = settings.PROTHEUS_ENVIORMENT['default']['SEGMENT']
+        wsDataKeys = ''
+        wsDataNoKeys = ''
+        defaultVars = ''
+        varskey = []
+        varsNokey = []
+        keyVarsNoKeyPath = []
+        keyPath = ''
+        
+
+        if exists:
+            with open(storagePathFile) as datafile:
+                columnInfo = csv.reader(datafile, delimiter=';')
+                for column in columnInfo:
+                    defaultVars += ''.rjust(4)+'Default self:'+ column[1] +' := ""\n'                     
+                    if column[4] == "1" :
+                        wsDataNoKeys += ''.rjust(4)+'WSDATA '+ column[1] +'             as STRING  OPTIONAL\n'
+                        varskey.append(''.rjust(4)+column[1])
+                        keyVarsNoKeyPath.append(''.rjust(4)+column[1])
+                    else:
+                        wsDataNoKeys += ''.rjust(4)+'WSDATA '+ column[1] +'             as STRING  OPTIONAL\n'
+                        varsNokey.append(''.rjust(4)+column[1])
+                    
+                    if column[5] == "1" :
+                        keyPath = column[1]
+
+        keyVarsNoKeyPath.remove('    '+keyPath)
+
+        d = {
+                'className': name,                     
+                'classNameLower' : name.lower(),
+                'entity' : entity, 
+                'prefix' : prefix,
+                'segment' : segment,
+                'wsDataKeys' : wsDataKeys,
+                'wsDataNoKeys' : wsDataNoKeys,
+                'defaultVars' : defaultVars,
+                'varskey' : ',;\n'.join(varskey)+',;',
+                'varsNokey' : ',;\n'.join(varsNokey)+';',
+                'keyPath' : keyPath,
+                'keyVarsNoKeyPath' : ';\n'.join(keyVarsNoKeyPath)+',;',
+            }
+
+        fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'Api.template'))
+        temp = Template(fileIn.read())
+        result = temp.substitute(d)
+
+        f = open(os.path.join(settings.PATH_SRC_API, prefix+"Rest"+ segment +".prw") , "w+")
+        f.write(result)
+        f.close()
+
+        return                
+
     def buildTest(self,entity, name):
         self.buildTestGroup(entity, name)
         self.buildTestSuite(entity, name)
@@ -255,29 +357,7 @@ class CodeGenerator:
 
         return
     
-    def buildRequest(self, entity, name):
-        
-        alias = entity[:3]
-        
-        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  entity + ".columns")
-        exists = os.path.isfile(storagePathFile)
-        prefix = settings.PROTHEUS_ENVIORMENT['default']['PREFIX']
 
-        d = {
-                'className': name,                     
-                'entity' : entity, 
-                'prefix' : prefix,
-            }
-
-        fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'RestRequest.template'))
-        temp = Template(fileIn.read())
-        result = temp.substitute(d)
-
-        f = open(os.path.join(settings.PATH_SRC_RESTREQUEST, "Res"+ name +".prw") , "w+")
-        f.write(result)
-        f.close()
-
-        return
 
     def buildCommand(self, entity, name):
         

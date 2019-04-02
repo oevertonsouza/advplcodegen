@@ -315,7 +315,6 @@ Method buscar() Class ${prefix}Dao
 
     cQuery += self:getRowControl()
     cQuery += self:getFields()
-    cQuery += self:getFields()
     cQuery += " FROM " + RetSqlName(self:cAlias) + " " + self:cAlias + " "
     cQuery += self:getFilters()
     cQuery := self:queryBuilder(cQuery)

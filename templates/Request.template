@@ -1,0 +1,67 @@
+#INCLUDE "PROTHEUS.CH"
+#INCLUDE "TOTVS.CH"
+#INCLUDE "RESTFUL.CH"
+
+#DEFINE SINGLE "01"
+#DEFINE ALL    "02"
+#DEFINE INSERT "03"
+#DEFINE DELETE "04"
+#DEFINE UPDATE "05"
+#DEFINE BUSCA  "07"
+
+Class ${prefix}Req${className} from ${prefix}Request
+
+    Method New(oRest,cSvcName) Constructor
+    Method destroy()
+    Method applyFilter(nType)
+    Method applyOrder(cOrder)
+    Method buscar(nType)
+    Method prepFilter()
+
+EndClass
+
+Method destroy()  Class CenReqProducts
+Return _Super:destroy()
+
+Method New(oRest, cSvcName) Class ${prefix}Req${className}
+    _Super:New(oRest,cSvcName)
+    self:oCollection := ${prefix}Clt${className}():New()
+    self:cPropLote   := "${className}"
+Return self
+
+Method applyFilter(nType) Class ${prefix}Req${className}
+    
+    If self:lSuccess
+        If nType == ALL
+${applyFilterAll}
+        EndIf
+        If nType == SINGLE 
+${applyFilterSingle}
+        EndIf
+    EndIf
+Return self:lSuccess
+
+Method applyOrder(cOrder) Class ${prefix}Req${className}
+    If self:lSuccess
+        self:oCollection:applyOrder(cOrder)
+    EndIf
+Return self:lSuccess
+
+Method prepFilter(cJson) Class ${prefix}Req${className}
+
+    Default cJson := self:jRequest
+    self:oCollection:mapFromJson(cJson)
+${prepFilter}
+Return
+
+Method buscar(nType) Class ${prefix}Req${className}
+
+    Local lExiste := nil 
+
+    If self:lSuccess
+        lExiste := self:oCollection:buscar()
+    EndIf
+
+Return lExiste
+
+
