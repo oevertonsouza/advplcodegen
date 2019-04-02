@@ -167,24 +167,28 @@ class CodeGenerator:
         segment = settings.PROTHEUS_ENVIORMENT['default']['SEGMENT']
         wsDataKeys = ''
         wsDataNoKeys = ''
-        defaultVars = ''
+        defaultVarsNoKey = ''
+        defaultVarsKey = ''
         varskey = []
         varsNokey = []
         keyVarsNoKeyPath = []
         keyPath = ''
+        classNameAbreviate = ''
         
 
         if exists:
             with open(storagePathFile) as datafile:
                 columnInfo = csv.reader(datafile, delimiter=';')
                 for column in columnInfo:
-                    defaultVars += ''.rjust(4)+'Default self:'+ column[1] +' := ""\n'                     
+
                     if column[4] == "1" :
-                        wsDataNoKeys += ''.rjust(4)+'WSDATA '+ column[1] +'             as STRING  OPTIONAL\n'
+                        defaultVarsKey  += ''.rjust(4)+'Default self:'+ column[1] +' := ""\n'
+                        wsDataNoKeys += ''.rjust(4)+'WSDATA '+ column[1] +' as STRING  OPTIONAL\n'
                         varskey.append(''.rjust(4)+column[1])
                         keyVarsNoKeyPath.append(''.rjust(4)+column[1])
                     else:
-                        wsDataNoKeys += ''.rjust(4)+'WSDATA '+ column[1] +'             as STRING  OPTIONAL\n'
+                        defaultVarsNoKey  += ''.rjust(4)+'Default self:'+ column[1] +' := ""\n'
+                        wsDataNoKeys += ''.rjust(4)+'WSDATA '+ column[1] +' as STRING  OPTIONAL\n'
                         varsNokey.append(''.rjust(4)+column[1])
                     
                     if column[5] == "1" :
@@ -193,6 +197,7 @@ class CodeGenerator:
         keyVarsNoKeyPath.remove('    '+keyPath)
 
         d = {
+                'classNameAbreviate': name[:4],
                 'className': name,                     
                 'classNameLower' : name.lower(),
                 'entity' : entity, 
@@ -200,11 +205,12 @@ class CodeGenerator:
                 'segment' : segment,
                 'wsDataKeys' : wsDataKeys,
                 'wsDataNoKeys' : wsDataNoKeys,
-                'defaultVars' : defaultVars,
+                'defaultVarsKey' : defaultVarsKey,
+                'defaultVarsNoKey' : defaultVarsNoKey,
                 'varskey' : ',;\n'.join(varskey)+',;',
                 'varsNokey' : ',;\n'.join(varsNokey)+';',
                 'keyPath' : keyPath,
-                'keyVarsNoKeyPath' : ';\n'.join(keyVarsNoKeyPath)+',;',
+                'keyVarsNoKeyPath' : ';\n'.join(keyVarsNoKeyPath)+';',
             }
 
         fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'Api.template'))
@@ -357,8 +363,6 @@ class CodeGenerator:
 
         return
     
-
-
     def buildCommand(self, entity, name):
         
         prefix = settings.PROTHEUS_ENVIORMENT['default']['PREFIX']
@@ -376,7 +380,30 @@ class CodeGenerator:
         temp = Template(fileIn.read())
         result = temp.substitute(d)
 
-        f = open(os.path.join(settings.PATH_SRC_COMMAND, prefix+"Com"+ name +".prw") , "w+")
+        f = open(os.path.join(settings.PATH_SRC_COMMAND, prefix+"Cmd"+ name +".prw") , "w+")
+        f.write(result)
+        f.close()
+
+        return
+
+    def buildValidate(self, entity, name):
+        
+        prefix = settings.PROTHEUS_ENVIORMENT['default']['PREFIX']
+        
+        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  entity + ".columns")
+        exists = os.path.isfile(storagePathFile)
+
+        d = {
+                'className': name,
+                'entity' : entity,                    
+                'prefix' : prefix,
+            }
+
+        fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'Validator.template'))
+        temp = Template(fileIn.read())
+        result = temp.substitute(d)
+
+        f = open(os.path.join(settings.PATH_SRC_VALIDATE, prefix+"Vld"+ name +".prw") , "w+")
         f.write(result)
         f.close()
 

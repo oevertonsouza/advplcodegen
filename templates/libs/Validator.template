@@ -1,0 +1,20 @@
+#include "TOTVS.CH"
+
+/*/{Protheus.doc} 
+    Classe abstrata de um ${prefix}Validator
+    @type  Class
+    @author lima.everton
+    @since 20190402
+/*/
+Class ${prefix}Validator
+
+    Method New() Constructor
+    Method validate()
+
+EndClass
+
+Method New() Class ${prefix}Validator
+Return self
+
+Method validate() Class ${prefix}Validator
+Return .T.

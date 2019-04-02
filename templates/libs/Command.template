@@ -1,12 +1,12 @@
 #INCLUDE "TOTVS.CH"
 
-/*/{Protheus.doc} ${prefix}Cmd${className}
+/*/{Protheus.doc} ${prefix}Command
     Classe abstrata para execução de comandos
     @type  Class
     @author everton.mateus
     @since 20190320
 /*/
-Class ${prefix}Cmd${className}
+Class ${prefix}Command
 	
     Data oExecutor
     
@@ -15,9 +15,9 @@ Class ${prefix}Cmd${className}
     
 EndClass
 
-Method New(oExecutor) Class ${prefix}Cmd${className}
-    self:oExecutor := oExecutor
+Method New(oExecutor) Class ${prefix}Command
+    self:oExecutor    := oExecutor
 Return self
 
-Method execute() Class ${prefix}Cmd${className}
+Method execute() Class ${prefix}Command
 Return nil

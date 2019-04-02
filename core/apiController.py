@@ -23,13 +23,13 @@ class ApiControl:
         os.mkdir(settings.PATH_SRC_MAPPER)
         os.mkdir(settings.PATH_SRC_REQUEST)
         os.mkdir(settings.PATH_SRC_COMMAND)
+        os.mkdir(settings.PATH_SRC_VALIDATE)
         
         os.mkdir(settings.PATH_SRC_TEST)
         os.mkdir(settings.PATH_SRC_TEST_CASES)
         os.mkdir(settings.PATH_SRC_TEST_GROUP)
         os.mkdir(settings.PATH_SRC_TEST_SUITE)
         
-
         cgen = codeGenerator.CodeGenerator()
         cgen.copyLibs()
 
@@ -128,7 +128,7 @@ class ApiControl:
                     cgen.buildRequest(row[0], row[1])
                     cgen.buildCommand(row[0], row[1])
                     cgen.buildApi(row[0], row[1])
-        
+                    cgen.buildValidate(row[0], row[1])
         return False
 
     def setColumnAlias(self, entity, columnName, aliasName):

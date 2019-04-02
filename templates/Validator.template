@@ -1,0 +1,16 @@
+#INCLUDE "PROTHEUS.CH"
+#INCLUDE "TOTVS.CH"
+
+Class ${prefix}Vld${className} from ${prefix}Validator
+
+    Method New() Constructor
+    Method validar(o${prefix}${className})
+
+EndClass
+
+Method New(oRest) Class ${prefix}Vld${className}
+    _Super:New(oRest)
+Return self
+
+Method validar(o${prefix}${className}) Class ${prefix}Vld${className}
+Return .T.

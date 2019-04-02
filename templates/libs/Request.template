@@ -62,6 +62,7 @@ Method New(oRest, cSvcName) Class ${prefix}Request
     self:oRespBody    := JsonObject():New()
     self:jRequest     := JsonObject():New()
     self:oRespControl := ${prefix}JsonControl():New()
+    self:oValidador   := ${prefix}Validator():New()
     self:nFault       := 0
     self:cFaultDesc   := ''
     self:cResponse    := ''
@@ -85,10 +86,8 @@ Method destroy() Class ${prefix}Request
     FreeObj(self:jRequest)
     self:jRequest := nil
     
-    //if !empty(self:oValidador)
-    //    FreeObj(self:oValidador)
-    //    self:oValidador := nil
-    //endif
+    FreeObj(self:oValidador)
+    self:oValidador := nil
     
 Return
 
@@ -113,6 +112,9 @@ Aplica o tamanho da pagina para paginas do tipo colecao
 @since   20180523
 /*/
 Method applyPageSize() Class ${prefix}Request
+
+    Default self:oRest:page := "1"
+    Default self:oRest:pageSize := "20"
     
     self:oCollection:applyPageSize(self:oRest:page,self:oRest:pageSize)
     self:oRespBody["hasNext"] := .F.
@@ -389,7 +391,7 @@ Return self:lSuccess
 Method procPut(oCmd) Class ${prefix}Request
     Local cJson     := ''
     Local oEntity   := nil
-    Default oCmd := CenCmdPutClt():New(self:oCollection)
+    Default oCmd := ${prefix}Command():New(self:oCollection)
     
     If self:lSuccess
         self:prepFilter()

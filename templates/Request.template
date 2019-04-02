@@ -59,7 +59,11 @@ Method buscar(nType) Class ${prefix}Req${className}
     Local lExiste := nil 
 
     If self:lSuccess
-        lExiste := self:oCollection:buscar()
+        If nType != BUSCA
+            lExiste := self:oCollection:bscChaPrim()
+        Else
+            lExiste := self:oCollection:buscar()
+        EndIf
     EndIf
 
 Return lExiste

@@ -38,6 +38,7 @@ PATH_SRC_TEST = os.path.join(PATH_SRC, "test")
 PATH_SRC_MAPPER = os.path.join(PATH_SRC, "mapper")
 PATH_SRC_REQUEST = os.path.join(PATH_SRC, "request")
 PATH_SRC_COMMAND = os.path.join(PATH_SRC, "command")
+PATH_SRC_VALIDATE = os.path.join(PATH_SRC, "validate")
 
 #Inside Template
 PATH_TEMPLATE_LIBS = os.path.join(PATH_TEMPLATE, "libs")

@@ -12,30 +12,33 @@ WSRESTFUL ${segment} DESCRIPTION "Exemplo de serviço REST"
     
 
     // Atributos padrao utilizados em todas ou em mais de uma solicitacao
-    WSDATA apiVersion            as STRING  OPTIONAL
-    WSDATA page                  as STRING  OPTIONAL
-    WSDATA pageSize              as STRING  OPTIONAL
-    WSDATA tokenId               as STRING  OPTIONAL
-    WSDATA action                as STRING  OPTIONAL
-    WSDATA fields                as STRING  OPTIONAL
-    WSDATA expand                as STRING  OPTIONAL
-    WSDATA order                 as STRING  OPTIONAL
-    WSDATA version               as STRING  OPTIONAL
+    WSDATA apiVersion as STRING  OPTIONAL
+    WSDATA page as STRING  OPTIONAL
+    WSDATA pageSize as STRING  OPTIONAL
+    WSDATA tokenId as STRING  OPTIONAL
+    WSDATA action as STRING  OPTIONAL
+    WSDATA fields as STRING  OPTIONAL
+    WSDATA expand as STRING  OPTIONAL
+    WSDATA order as STRING  OPTIONAL
+    WSDATA version as STRING  OPTIONAL
 ${wsDataKeys}
 ${wsDataNoKeys}
-
     // Metodos do Produto
-    WSMETHOD GET ${prefix}${className}Collection DESCRIPTION "" ;
+    WSMETHOD GET ${classNameAbreviate}Collection DESCRIPTION "" ;
     WSsyntax "{version}/${classNameLower}" ;
     PATH "{version}/${classNameLower}" PRODUCES APPLICATION_JSON
 
-    WSMETHOD GET ${prefix}${className}Single DESCRIPTION "" ;
+    WSMETHOD GET ${classNameAbreviate}Single DESCRIPTION "" ;
     WSsyntax "{version}/${classNameLower}/{${keyPath}}" ;
     PATH "{version}/${classNameLower}/{${keyPath}}" PRODUCES APPLICATION_JSON
 
+    WSMETHOD PUT ${classNameAbreviate}Update DESCRIPTION "" ;
+    WSsyntax "{version}/products/{${keyPath}}" ;
+    PATH "{version}/products/{${keyPath}}" PRODUCES APPLICATION_JSON
+
 END WSRESTFUL
 
-WSMETHOD GET ${prefix}${className}Collection QUERYPARAM page, pageSize, fields, order,;
+WSMETHOD GET ${classNameAbreviate}Collection QUERYPARAM page, pageSize, fields, order,;
 ${varskey}
 ${varsNokey}
     WSSERVICE ${segment}
@@ -47,9 +50,9 @@ ${varsNokey}
     Default self:fields   := ""
     Default self:order    := ""
 
-${defaultVars}
-    
-    oRequest := ${prefix}Req${className}():New(self, "${className}-get_collection")
+${defaultVarsKey}
+${defaultVarsNoKey}
+    oRequest := ${prefix}Req${className}():New(self, "${classNameLower}-get_collection")
     
     oRequest:initRequest()
     if oRequest:checkAuth()
@@ -68,16 +71,16 @@ ${defaultVars}
 
 Return .T.
 
-WSMETHOD GET ${prefix}${className}Single PATHPARAM;
+WSMETHOD GET ${classNameAbreviate}Single PATHPARAM;
     ${keyPath};
     QUERYPARAM;
+    fields,;    
 ${keyVarsNoKeyPath}
-    fields;
     WSSERVICE ${segment}
     
-    Default self:fields := ""
-            
-    oRequest := ${prefix}Req${className}():New(self, "${className}-get_single")
+    Default self:fields   := ""
+           
+    oRequest := ${prefix}Req${className}():New(self, "${classNameLower}-get_single")
     
     oRequest:initRequest()
     if oRequest:checkAuth()
@@ -90,6 +93,30 @@ ${keyVarsNoKeyPath}
     oRequest:endRequest()
     oRequest:destroy()
     oRequest := nil
+    DelClassIntf()
+
+Return .T.
+
+WSMETHOD PUT ${classNameAbreviate}Update PATHPARAM;
+    ${keyPath};
+    QUERYPARAM;
+${keyVarsNoKeyPath}
+    WSSERVICE ${segment}
+
+    Local oRequest := nil
+
+${defaultVarsKey}
+    oRequest := ${prefix}Req${className}():New(self, "${classNameLower}-put_update")
+
+    oRequest:initRequest()
+    if oRequest:checkAuth()
+        oRequest:checkBody()
+        oRequest:applyPageSize()
+        oRequest:procPut()
+    endif
+
+    oRequest:endRequest()
+    oRequest:destroy()
     DelClassIntf()
 
 Return .T.
