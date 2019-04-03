@@ -3,13 +3,9 @@
 
 #DEFINE SINGLE "01"
 #DEFINE ALL    "02"
-#DEFINE INSERT "03"
-#DEFINE DELETE "04"
-#DEFINE UPDATE "05"
 #DEFINE BUSCA  "07"
 
 WSRESTFUL ${segment} DESCRIPTION "Exemplo de serviço REST"
-    
 
     // Atributos padrao utilizados em todas ou em mais de uma solicitacao
     WSDATA apiVersion as STRING  OPTIONAL
@@ -39,6 +35,10 @@ ${wsDataNoKeys}
     WSMETHOD POST ${classNameAbreviate}Insert DESCRIPTION "" ;
     WSsyntax "{version}/${classNameLower}" ;
     PATH "{version}/${classNameLower}" PRODUCES APPLICATION_JSON
+
+    WSMETHOD DELETE ${classNameAbreviate}Delete DESCRIPTION "" ;
+    WSsyntax "{version}/products/{${keyPath}}" ;
+    PATH "{version}/products/{${keyPath}}" PRODUCES APPLICATION_JSON
 
 END WSRESTFUL
 
@@ -146,3 +146,28 @@ ${defaultVarsNoKey}
     DelClassIntf()
 
 Return .T.
+
+WSMETHOD DELETE ${classNameAbreviate}Delete PATHPARAM;
+    ${keyPath};
+    QUERYPARAM;
+${keyVarsNoKeyPath}
+    WSSERVICE ${segment}
+
+    Local oRequest := nil
+
+    oRequest := ${prefix}Req${className}():New(self, "${classNameLower}-delete")
+    
+    oRequest:initRequest()
+    if oRequest:checkAuth()
+        oRequest:applyFilter(SINGLE)
+        oRequest:applyPageSize()        
+        oRequest:buscar(SINGLE)
+        oRequest:procDelete()
+    endif
+
+    oRequest:endRequest()
+    oRequest:destroy()
+    DelClassIntf()
+
+Return .T.
+

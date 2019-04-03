@@ -425,5 +425,16 @@ Method procPut(oCmd) Class ${prefix}Request
  
 Return self:lSuccess
 
+Method procDelete() Class RestRequest
+
+    If self:lSuccess
+        If (self:oCollection:delete())
+            self:nStatus := 204
+            self:cResponse := ""
+        EndIf
+    EndIf
+
+Return self:lSuccess
+
 Method buildBody(oEntity) Class ${prefix}Request
 Return oEntity:serialize(self:oRespControl)
