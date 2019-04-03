@@ -33,8 +33,12 @@ ${wsDataNoKeys}
     PATH "{version}/${classNameLower}/{${keyPath}}" PRODUCES APPLICATION_JSON
 
     WSMETHOD PUT ${classNameAbreviate}Update DESCRIPTION "" ;
-    WSsyntax "{version}/products/{${keyPath}}" ;
-    PATH "{version}/products/{${keyPath}}" PRODUCES APPLICATION_JSON
+    WSsyntax "{version}/${classNameLower}/{${keyPath}}" ;
+    PATH "{version}/${classNameLower}/{${keyPath}}" PRODUCES APPLICATION_JSON
+
+    WSMETHOD POST ${classNameAbreviate}Insert DESCRIPTION "" ;
+    WSsyntax "{version}/${classNameLower}" ;
+    PATH "{version}/${classNameLower}" PRODUCES APPLICATION_JSON
 
 END WSRESTFUL
 
@@ -115,6 +119,28 @@ ${defaultVarsKey}
         oRequest:procPut()
     endif
 
+    oRequest:endRequest()
+    oRequest:destroy()
+    DelClassIntf()
+
+Return .T.
+
+WSMETHOD POST ${classNameAbreviate}Insert WSSERVICE ${segment}
+
+    Local oRequest := nil
+   
+${defaultVarsKey}
+${defaultVarsNoKey}
+    oRequest := ${prefix}Req${className}():New(self, "${classNameLower}-post_insert")
+
+    oRequest:initRequest()
+    
+    if oRequest:checkAuth()
+        oRequest:checkBody()
+        oRequest:applyFields(self:fields)
+        oRequest:applyPageSize()
+        oRequest:procPost()
+    endif
     oRequest:endRequest()
     oRequest:destroy()
     DelClassIntf()

@@ -260,6 +260,7 @@ Method procDelete() Class ${prefix}Request
 Return self:lSuccess
 
 Method procPost(cJson,oCmd) Class ${prefix}Request
+    
     Local cJsonResp     := ""
     Local oEntity   := nil
     Default cJson := ""
@@ -267,10 +268,9 @@ Method procPost(cJson,oCmd) Class ${prefix}Request
     
     if self:lSuccess
         self:prepFilter(cJson)
-        self:applyFilter(SINGLE)
         self:buscar(INSERT)
         If self:lSuccess
-            If self:oValidador:validar(self:oCollection) //Validate
+            If self:oValidador:validate(self:oCollection) //Validate
                 If oCmd:execute()
                     self:nStatus := 201
                     If self:buscar(BUSCA)

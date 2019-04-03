@@ -50,8 +50,9 @@ Return self:lSuccess
 Method prepFilter(cJson) Class ${prefix}Req${className}
 
     Default cJson := self:jRequest
+${prepFilter}    
     self:oCollection:mapFromJson(cJson)
-${prepFilter}
+
 Return
 
 Method buscar(nType) Class ${prefix}Req${className}
