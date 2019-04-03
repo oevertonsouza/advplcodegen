@@ -70,7 +70,8 @@ class CodeGenerator:
         alias  = entity[:3]
         order  = ''
         table  = ''
-        commit = ''
+        commitKey = ''
+        commitNoKey = ''
         bscChaPrim = ''
         loadOrder = ''
         cfieldOrder = []
@@ -86,19 +87,23 @@ class CodeGenerator:
                 for column in columnInfo:
                     loadOrder += ''.rjust(4)+'self:oHashOrder:set("'+ column[0] +'", "'+ column[1] +'")\n'
                     
-                    commit += ''.rjust(8)+alias+'->'+column[0]+' := _Super:normalizeType('+ alias +'->'+ column[0] +',self:getValue("'+ column[1] +'")) /* Column '+ column[0] +' */\n'
+                    
                     
                     if column[4] == "1" :
                         cfieldOrder.append(column[0])
+                        commitKey += ''.rjust(12)+alias+'->'+column[0]+' := _Super:normalizeType('+ alias +'->'+ column[0] +',self:getValue("'+ column[1] +'")) /* Column '+ column[0] +' */\n'
                         bscChaPrim += ''.rjust(4)+'cQuery += " AND ' +column[0]+ ' = ? "\n'
                         bscChaPrim += ''.rjust(4)+'aAdd(self:aMapBuilder, self:toString(self:getValue("'+column[1]+'")))\n'
+                    else:
+                        commitNoKey += ''.rjust(8)+alias+'->'+column[0]+' := _Super:normalizeType('+ alias +'->'+ column[0] +',self:getValue("'+ column[1] +'")) /* Column '+ column[0] +' */\n'
                         
                 d = { 
                         'className': name,
                         'alias': alias,
                         'entity' : entity,
                         'order' : order,
-                        'commit': commit,
+                        'commitKey' : commitKey,
+                        'commitNoKey' : commitNoKey,
                         'loadOrder' : loadOrder,
                         'cfieldOrder' : ','.join(cfieldOrder),
                         'bscChaPrim' : bscChaPrim,
@@ -135,8 +140,7 @@ class CodeGenerator:
                     
                     if column[4] == "1" :
                         applyFilterSingle += ''.rjust(12)+'self:oCollection:setValue("'+ column[1] +'",self:oRest:'+ column[1] +')\n'
-                        prepFilter += ''.rjust(4)+'self:oRest:'+ column[1] +' := self:oCollection:getValue("'+ column[1] +'")\n'
-                      
+                        prepFilter += ''.rjust(4)+'self:oCollection:setValue("'+ column[1] +'", self:oRest:'+ column[1] +')\n'
 
         d = {
                 'className': name,                     

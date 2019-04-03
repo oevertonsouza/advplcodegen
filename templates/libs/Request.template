@@ -391,17 +391,17 @@ Return self:lSuccess
 Method procPut(oCmd) Class ${prefix}Request
     Local cJson     := ''
     Local oEntity   := nil
-    Default oCmd := ${prefix}Command():New(self:oCollection)
+    Default oCmd := ${prefix}CmdPutClt():New(self:oCollection)
     
     If self:lSuccess
         self:prepFilter()
         self:applyFilter(SINGLE)
-        self:buscar(BUSCA)
+        self:buscar(SINGLE)
         If self:lSuccess
-            If self:oValidador:validar(self:oCollection) //Validate
+            If self:oValidador:validate(self:oCollection) //Validate
                 If oCmd:execute()
                     self:nStatus := 200
-                    If self:buscar(BUSCA)
+                    If self:buscar(SINGLE)
                         oEntity := self:oCollection:getNext()
                         self:oRespBody := oEntity:serialize(self:oRespControl)
                         cJson := self:oRespBody:toJson()

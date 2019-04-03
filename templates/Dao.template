@@ -67,7 +67,12 @@ Method commit(lInclui) Class ${prefix}Dao${className}
 	If ${alias}->(RecLock("${alias}",lInclui))
 		
         ${alias}->${alias}_FILIAL := xFilial("${alias}")
-${commit}
+        If lInclui
+        
+${commitKey}
+        EndIf
+
+${commitNoKey}
         ${alias}->(MsUnlock())
         lFound := .T.
     EndIf

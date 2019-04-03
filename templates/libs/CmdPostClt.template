@@ -1,12 +1,12 @@
 #INCLUDE "TOTVS.CH"
 
-/*/{Protheus.doc} ${prefix}Command
-    Classe abstrata para execução de comandos
+/*/{Protheus.doc} ${prefix}CmdPostClt
+
     @type  Class
     @author everton.mateus
     @since 20190320
 /*/
-Class ${prefix}Command
+Class ${prefix}CmdPostClt From ${prefix}Command
 	
     Data oExecutor
     
@@ -15,6 +15,9 @@ Class ${prefix}Command
     
 EndClass
 
-Method New(oExecutor) Class ${prefix}Command
+Method New(oExecutor) Class ${prefix}CmdPostClt
     self:oExecutor    := oExecutor
 Return self
+
+Method execute() Class ${prefix}CmdPostClt
+Return self:oExecutor:insert()
