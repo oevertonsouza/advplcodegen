@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: cp1252 -*-
 import sys, os, settings, csv, shutil
 from core import managedb, commandController, apiController
 from string import Template
@@ -366,6 +366,151 @@ class CodeGenerator:
                 f.close()
 
         return
+
+    def buildDocApiSchema(self,entity, name):
+
+        alias  = entity[:3]
+        mapper = ''
+        product = settings.PROTHEUS_ENVIORMENT['default']['PRODUCT']
+        prefix = settings.PROTHEUS_ENVIORMENT['default']['PREFIX']
+        productDescription = settings.PROTHEUS_ENVIORMENT['default']['PRDUCT_DESCRIPTION']
+        contact = settings.PROTHEUS_ENVIORMENT['default']['CONTACT']
+        segment = settings.PROTHEUS_ENVIORMENT['default']['SEGMENT']
+        classNameLower = ''
+    
+        properties = ''
+
+        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  entity + ".columns")
+        exists = os.path.isfile(storagePathFile)
+
+        if exists:
+            with open(storagePathFile) as datafile:
+                columnInfo = csv.reader(datafile, delimiter=';')
+                for column in columnInfo:
+                    properties += ''.rjust(16)+(
+                        '"'+column[1]+'": {\n'
+				        '                    "description": "Descrição do campo",\n'
+                        '                    "type": "string",\n'
+                        '                    "x-totvs": [\n'
+                        '		                {\n'
+                        '                           "product": "'+ product +'",\n'
+                        '                           "field": "'+ alias +'.'+column[0]+'",\n'
+                        '                           "required": false,\n'
+                        '                           "type": "string",\n'
+                        '                           "length": "'+column[3]+'",\n'
+                        '                           "note": "Descrição do campo",\n'
+                        '                           "available": true,\n'
+                        '                           "canUpdate": true\n'                            
+                        '                        }\n'
+                        '                   ]\n'
+                        '                },\n'
+                    )
+                
+                d = { 
+                        'className': name, 
+                        'entity' : entity,
+                        'product' : product,
+                        'productDescription' : productDescription,
+                        'contact' : contact,
+                        'segment' : segment,
+                        'properties' : properties[:-2],
+                        'classNameLower' : name.lower(),
+                    }
+
+                fileIn = open(os.path.join(settings.PATH_TEMPLATE_DOCS, 'docApiSchema.template'))
+                temp = Template(fileIn.read())
+                result = temp.substitute(d)
+
+                f = open(os.path.join(settings.PATH_SRC_DOC, name+"_1_100.json") , "w+")
+                f.write(result)
+                f.close()
+
+        return
+
+    def buildDocApi(self,entity, name):
+
+        alias  = entity[:3]
+        mapper = ''
+        product = settings.PROTHEUS_ENVIORMENT['default']['PRODUCT']
+        prefix = settings.PROTHEUS_ENVIORMENT['default']['PREFIX']
+        productDescription = settings.PROTHEUS_ENVIORMENT['default']['PRDUCT_DESCRIPTION']
+        contact = settings.PROTHEUS_ENVIORMENT['default']['CONTACT']
+        segment = settings.PROTHEUS_ENVIORMENT['default']['SEGMENT']
+        classNameLower = ''
+        pathParam = ''
+        queryParam = ''
+        parameters = ''
+        keyParameters = ''
+        keyPath = ''
+
+        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  entity + ".columns")
+        exists = os.path.isfile(storagePathFile)
+
+        if exists:
+            with open(storagePathFile) as datafile:
+                columnInfo = csv.reader(datafile, delimiter=';')
+                for column in columnInfo:
+                    parameters += '                    {\n'
+                    parameters += '                        "$ref": "#/components/parameters/'+column[1]+'Param"\n'
+                    parameters += '                    },\n'    
+                    
+                    if column[4] == "1" :
+                        keyParameters += '                    {\n'
+                        keyParameters += '                        "$ref": "#/components/parameters/'+column[1]+'Param"\n'
+                        keyParameters += '                    },\n'
+
+                    if column[5] == "1":
+                        keyPath = column[1]
+                        pathParam = (
+			                            '           "'+column[1]+'Param": {\n'
+			                        	'               "name": "'+column[1]+'",\n'
+			                        	'               "in": "path",\n'
+			                        	'               "description": "Numero da guia",\n'
+			                        	'               "required": true,\n'
+			                        	'               "schema": {\n'
+    			                        '		            "type": "string",\n'
+			                        	'	                "format": "string"\n'
+			                        	'               }\n'
+			                            '           },\n'
+                        )
+                    else :
+                        queryParam += (
+			                            '           "'+column[1]+'Param": {\n'
+			                        	'               "name": "'+column[1]+'",\n'
+			                        	'               "in": "query",\n'
+			                        	'               "description": "Numero da guia",\n'
+			                        	'               "required": true,\n'
+			                        	'               "schema": {\n'
+    			                        '		            "type": "string",\n'
+			                        	'	                "format": "string"\n'
+			                        	'               }\n'
+			                            '           },\n'
+                        )
+
+                d = { 
+                        'className': name, 
+                        'entity' : entity,
+                        'product' : product,
+                        'productDescription' : productDescription,
+                        'contact' : contact,
+                        'segment' : segment,
+                        'pathParam' : pathParam,
+                        'parameters' : parameters[:-2],
+                        'queryParam' : queryParam[:-3]+"}",
+                        'classNameLower' : name.lower(),
+                        'keyParameters' : keyParameters[:-2],
+                        'keyPath' : keyPath,
+                    }
+
+                fileIn = open(os.path.join(settings.PATH_TEMPLATE_DOCS, 'docApi.template'))
+                temp = Template(fileIn.read())
+                result = temp.substitute(d)
+
+                f = open(os.path.join(settings.PATH_SRC_DOC, name+"_v1_100.json") , "w+")
+                f.write(result)
+                f.close()
+
+        return    
     
     def buildCommand(self, entity, name):
         
@@ -411,7 +556,7 @@ class CodeGenerator:
         f.write(result)
         f.close()
 
-        return        
+        return
 
     def copyLibs(self):
         

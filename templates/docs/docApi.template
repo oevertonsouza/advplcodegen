@@ -1,0 +1,218 @@
+{
+	"openapi": "3.0.1",
+	"servers": [
+		{
+			"description": "Descrição da API",
+			"url": "http://{serverUrl}:{serverHttpPort}/api/${segment}/v1",
+			"variables": {
+				"serverUrl": {
+					"default": "localhost"
+				},
+				"serverHttpPort": {
+					"default": "4202"
+				}
+			}
+		}
+	],
+	"info": {
+		"description": "Descrição da API",
+		"version": "1.100",
+		"title": "${className}",
+		"contact": {
+			"name": "T-Talk",
+			"url": "http://api.totvs.com.br",
+			"email": "${contact}"
+		},
+		"x-totvs": {
+			"messageDocumentation": {
+				"name": "${className}",
+				"description": "Descricao da Funcionalidade.",
+				"segment": "${segment}"
+			},
+			"productInformation": [
+				{
+					"product": "${product}",
+					"contact": "${contact}",
+					"description": "Operacoes referente a entidade ${entity}."
+				}
+			]
+		}
+	},
+	"paths": {
+		"/${classNameLower}": {
+			"get": {
+				"tags": [
+					"${className}"
+				],
+				"operationId": "getAuthorizationList",
+				"summary": "Dados dos atendimentos realizados.",
+				"x-totvs": {
+					"productInformation": [
+						{
+							"product": "${product}",
+							"available": true,
+							"note": "Este verbo está disponível com todos os parametros"
+						}
+					]
+				},
+				"description": "Retorna uma mensagem do tipo colecao com os dados da entidade ${entity}",
+				"parameters": [
+					{
+						"$$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/apis/types/totvsApiTypesBase.json#/parameters/Page"
+					},
+					{
+						"$$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/apis/types/totvsApiTypesBase.json#/parameters/PageSize"
+					},
+					{
+						"$$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/apis/types/totvsApiTypesBase.json#/parameters/Order"
+					},
+					{
+						"$$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/apis/types/totvsApiTypesBase.json#/parameters/Expand"
+					},
+					{
+						"$$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/apis/types/totvsApiTypesBase.json#/parameters/Fields"
+					},
+					{
+						"$$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/apis/types/totvsApiTypesBase.json#/parameters/Authorization"
+					},
+${parameters}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/schemas/${className}_1_100.json#/definitions/Paged${className}"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/apis/types/totvsApiTypesBase.json#/definitions/ErrorModel"
+								}
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"tags": [
+					"${classNameLower}"
+				],
+				"operationId": "postAuthorization",
+				"summary": "Dados dos atendimentos realizados.",
+				"description": "Insere o dado referente ao serviço ${className}. Ao realizar uma requisicão, o endpoint irá responder com codigo 202 indicando que a requisicao foi adicionada.",
+				"x-totvs": {
+					"productInformation": [
+						{
+							"product": "${product}",
+							"available": true,
+							"note": "Este verbo está disponível."
+						}
+					]
+				},
+				"parameters": [
+					{
+						"$$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/apis/types/totvsApiTypesBase.json#/parameters/Authorization"
+					},
+${keyParameters}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/schemas/${className}_1_100.json#/definitions/${className}Body"
+							}
+						}
+					},
+					"description": "Informacoes da entidade ${entity}.",
+					"required": true
+				},
+				"responses": {
+					"202": {
+						"description": "Accepted",
+						"headers": {
+							"location": {
+								"description": "URL onde o recurso estará disponível",
+								"schema": {
+									"type": "string"
+								}
+							}
+						},
+						"content": {
+							"application/json": {
+								"schema": {
+									"$$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/schemas/${className}_1_100.json#/definitions/TokenProcessResponse"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/${classNameLower}/{${keyPath}}": {
+			"get": {
+				"tags": [
+					"${className}"
+				],
+				"operationId": "getAuthorization",
+				"summary": "Dados de um atendimento realizado.",
+				"description": "Retorna uma mensagem com a guia de atendimento informada no parametro idOnHealthInsurer",
+				"x-totvs": {
+					"productInformation": [
+						{
+							"product": "${product}",
+							"available": true,
+							"note": "Este verbo está disponível com os parâmetros Authorization."
+						}
+					]
+				},
+				"parameters": [
+					{
+						"$$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/apis/types/totvsApiTypesBase.json#/parameters/Authorization"
+					},
+					{
+						"$$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/apis/types/totvsApiTypesBase.json#/parameters/Expand"
+					},
+					{
+						"$$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/apis/types/totvsApiTypesBase.json#/parameters/Fields"
+					},
+${keyParameters}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/schemas/${className}_1_100.json#/definitions/${className}"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/apis/types/totvsApiTypesBase.json#/definitions/ErrorModel"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"parameters": {
+${pathParam}
+${queryParam}
+		}
+	}
+}

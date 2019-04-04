@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import sys, os, settings, csv
 from core import managedb, commandController, apiController, codeGenerator, storage
 from pathlib import Path
@@ -129,6 +129,8 @@ class ApiControl:
                     cgen.buildCommand(row[0], row[1])
                     cgen.buildApi(row[0], row[1])
                     cgen.buildValidate(row[0], row[1])
+                    cgen.buildDocApiSchema(row[0], row[1])
+                    cgen.buildDocApi(row[0], row[1])
         return False
 
     def setColumnAlias(self, entity, columnName, aliasName):

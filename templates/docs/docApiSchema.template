@@ -1,0 +1,54 @@
+{
+	"$$schema": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/schemas/${className}_1_100.json#",
+	"info": {
+		"description": "Contrato de Mensagem Padronizada manipulação da entidade ${entity} do produto ${product}.",
+		"version": "1.100",
+		"title": "${className}",
+		"contact": {
+			"name": "T-Talk",
+			"url": "http://api.totvs.com.br",
+			"email": "comiteintegracao@totvs.com.br"
+		},
+		"x-totvs": {
+			"messageDocumentation": {
+				"name": "${className}",
+				"description": "Guias de atendimento",
+				"segment": "${segment}"
+			},
+			"productInformation": [
+				{
+					"product": "${product}",
+					"contact": "${contact}",
+					"description": "${productDescription}"
+				}
+			]
+		}
+	},
+	"definitions": {
+		"Paged${className}": {
+			"type": "object",
+			"allOf": [
+				{
+					"$$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/apis/types/totvsApiTypesBase.json#/definitions/Paging"
+				},
+				{
+					"type": "object",
+					"properties": {
+						"items": {
+							"type": "array",
+							"items": {
+								"$$ref": "#/definitions/${className}Body"
+							}
+						}
+					}
+				}
+			]
+		},
+		"${className}Body": {
+			"type": "object",
+			"properties": {
+${properties}
+			}
+		}
+	}
+}

@@ -1,3 +1,4 @@
+# -*- coding: cp1252 -*-
 import os
 
 #DataBase Info
@@ -15,8 +16,12 @@ PROTHEUS_ENVIORMENT = {
     'default': {
         'EMPRESA' : 'EMPRESA',
         'FILIAL' : 'FILIAL',
-        'SEGMENT' : 'SEGMENT',
         'PREFIX' : 'PREFIX',
+        'SEGMENT' : 'SEGMENT  
+        'PRODUCT' : 'PRODUCT',
+        'PRDUCT_DESCRIPTION' : 'PRDUCT_DESCRIPTION',
+        'CONTACT' : 'CONTACT',
+
     }
 }
 
@@ -42,6 +47,7 @@ PATH_SRC_VALIDATE = os.path.join(PATH_SRC, "validate")
 
 #Inside Template
 PATH_TEMPLATE_LIBS = os.path.join(PATH_TEMPLATE, "libs")
+PATH_TEMPLATE_DOCS = os.path.join(PATH_TEMPLATE, "docs")
 
 #Inside Test
 PATH_SRC_TEST_CASES = os.path.join(PATH_SRC_TEST, "cases")

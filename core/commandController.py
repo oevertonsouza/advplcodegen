@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import sys, os, settings
 from core import managedb, apiController, codeGenerator
 

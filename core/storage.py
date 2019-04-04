@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import sys, os, settings, csv
 from core import managedb, commandController, apiController, codeGenerator
 from pathlib import Path
