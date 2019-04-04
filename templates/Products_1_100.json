@@ -1,0 +1,233 @@
+{
+	"$schema": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/schemas/Products_1_100.json#",
+	"info": {
+		"description": "Contrato de Mensagem Padronizada manipulação da entidade B3JT10 do produto Central de Obrigações.",
+		"version": "1.100",
+		"title": "Products",
+		"contact": {
+			"name": "T-Talk",
+			"url": "http://api.totvs.com.br",
+			"email": "comiteintegracao@totvs.com.br"
+		},
+		"x-totvs": {
+			"messageDocumentation": {
+				"name": "Products",
+				"description": "Guias de atendimento",
+				"segment": "HealthCare"
+			},
+			"productInformation": [
+				{
+					"product": "Central de Obrigações",
+					"contact": "centraldeobrigacoes@totvs.com.br",
+					"description": "Central de Obrigações"
+				}
+			]
+		}
+	},
+	"definitions": {
+		"PagedProducts": {
+			"type": "object",
+			"allOf": [
+				{
+					"$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/apis/types/totvsApiTypesBase.json#/definitions/Paging"
+				},
+				{
+					"type": "object",
+					"properties": {
+						"items": {
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/Products"
+							}
+						}
+					}
+				}
+			]
+		},
+		"ProductsBody": {
+			"type": "object",
+			"properties": {
+                "b3jcodigo": {
+                    "description": "Descrição do campo",
+                    "type": "varchar",
+                    "x-totvs": [
+		                {
+                           "product": "Central de Obrigações",
+                           "field": "B3J.B3J_CODIGO",
+                           "required": false,
+                           "type": "varchar",
+                           "length": "7",
+                           "note": "Descrição do campo",
+                           "available": true,
+                           "canUpdate": true
+                       }
+                   ]
+               },
+                "b3jcodope": {
+                    "description": "Descrição do campo",
+                    "type": "varchar",
+                    "x-totvs": [
+		                {
+                           "product": "Central de Obrigações",
+                           "field": "B3J.B3J_CODOPE",
+                           "required": false,
+                           "type": "varchar",
+                           "length": "6",
+                           "note": "Descrição do campo",
+                           "available": true,
+                           "canUpdate": true
+                       }
+                   ]
+               },
+                "b3jdescri": {
+                    "description": "Descrição do campo",
+                    "type": "varchar",
+                    "x-totvs": [
+		                {
+                           "product": "Central de Obrigações",
+                           "field": "B3J.B3J_DESCRI",
+                           "required": false,
+                           "type": "varchar",
+                           "length": "30",
+                           "note": "Descrição do campo",
+                           "available": true,
+                           "canUpdate": true
+                       }
+                   ]
+               },
+                "b3jdtinvl": {
+                    "description": "Descrição do campo",
+                    "type": "varchar",
+                    "x-totvs": [
+		                {
+                           "product": "Central de Obrigações",
+                           "field": "B3J.B3J_DTINVL",
+                           "required": false,
+                           "type": "varchar",
+                           "length": "8",
+                           "note": "Descrição do campo",
+                           "available": true,
+                           "canUpdate": true
+                       }
+                   ]
+               },
+                "b3jdttevl": {
+                    "description": "Descrição do campo",
+                    "type": "varchar",
+                    "x-totvs": [
+		                {
+                           "product": "Central de Obrigações",
+                           "field": "B3J.B3J_DTTEVL",
+                           "required": false,
+                           "type": "varchar",
+                           "length": "8",
+                           "note": "Descrição do campo",
+                           "available": true,
+                           "canUpdate": true
+                       }
+                   ]
+               },
+                "b3jforcon": {
+                    "description": "Descrição do campo",
+                    "type": "varchar",
+                    "x-totvs": [
+		                {
+                           "product": "Central de Obrigações",
+                           "field": "B3J.B3J_FORCON",
+                           "required": false,
+                           "type": "varchar",
+                           "length": "1",
+                           "note": "Descrição do campo",
+                           "available": true,
+                           "canUpdate": true
+                       }
+                   ]
+               },
+                "b3jhrinvl": {
+                    "description": "Descrição do campo",
+                    "type": "varchar",
+                    "x-totvs": [
+		                {
+                           "product": "Central de Obrigações",
+                           "field": "B3J.B3J_HRINVL",
+                           "required": false,
+                           "type": "varchar",
+                           "length": "8",
+                           "note": "Descrição do campo",
+                           "available": true,
+                           "canUpdate": true
+                       }
+                   ]
+               },
+                "b3jhrtevl": {
+                    "description": "Descrição do campo",
+                    "type": "varchar",
+                    "x-totvs": [
+		                {
+                           "product": "Central de Obrigações",
+                           "field": "B3J.B3J_HRTEVL",
+                           "required": false,
+                           "type": "varchar",
+                           "length": "8",
+                           "note": "Descrição do campo",
+                           "available": true,
+                           "canUpdate": true
+                       }
+                   ]
+               },
+                "b3jsegmen": {
+                    "description": "Descrição do campo",
+                    "type": "varchar",
+                    "x-totvs": [
+		                {
+                           "product": "Central de Obrigações",
+                           "field": "B3J.B3J_SEGMEN",
+                           "required": false,
+                           "type": "varchar",
+                           "length": "1",
+                           "note": "Descrição do campo",
+                           "available": true,
+                           "canUpdate": true
+                       }
+                   ]
+               },
+                "b3jstatus": {
+                    "description": "Descrição do campo",
+                    "type": "varchar",
+                    "x-totvs": [
+		                {
+                           "product": "Central de Obrigações",
+                           "field": "B3J.B3J_STATUS",
+                           "required": false,
+                           "type": "varchar",
+                           "length": "1",
+                           "note": "Descrição do campo",
+                           "available": true,
+                           "canUpdate": true
+                       }
+                   ]
+               },
+                "b3jabrang": {
+                    "description": "Descrição do campo",
+                    "type": "varchar",
+                    "x-totvs": [
+		                {
+                           "product": "Central de Obrigações",
+                           "field": "B3J.B3J_ABRANG",
+                           "required": false,
+                           "type": "varchar",
+                           "length": "2",
+                           "note": "Descrição do campo",
+                           "available": true,
+                           "canUpdate": true
+                       }
+                   ]
+               },
+
+				"products": {
+					"$ref": "#/definitions/ProductsBody"
+				}
+			}
+		}
+	}
+}
