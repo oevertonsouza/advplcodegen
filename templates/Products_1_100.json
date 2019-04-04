@@ -222,11 +222,7 @@
                            "canUpdate": true
                         }
                    ]
-                },
-
-				"products": {
-					"$ref": "#/definitions/ProductsBody"
-				}
+                }
 			}
 		}
 	}
