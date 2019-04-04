@@ -37,7 +37,7 @@
 						"items": {
 							"type": "array",
 							"items": {
-								"$ref": "#/definitions/Products"
+								"$ref": "#/definitions/ProductsBody"
 							}
 						}
 					}
@@ -60,9 +60,9 @@
                            "note": "Descrição do campo",
                            "available": true,
                            "canUpdate": true
-                       }
+                        }
                    ]
-               },
+                },
                 "b3jcodope": {
                     "description": "Descrição do campo",
                     "type": "varchar",
@@ -76,9 +76,9 @@
                            "note": "Descrição do campo",
                            "available": true,
                            "canUpdate": true
-                       }
+                        }
                    ]
-               },
+                },
                 "b3jdescri": {
                     "description": "Descrição do campo",
                     "type": "varchar",
@@ -92,9 +92,9 @@
                            "note": "Descrição do campo",
                            "available": true,
                            "canUpdate": true
-                       }
+                        }
                    ]
-               },
+                },
                 "b3jdtinvl": {
                     "description": "Descrição do campo",
                     "type": "varchar",
@@ -108,9 +108,9 @@
                            "note": "Descrição do campo",
                            "available": true,
                            "canUpdate": true
-                       }
+                        }
                    ]
-               },
+                },
                 "b3jdttevl": {
                     "description": "Descrição do campo",
                     "type": "varchar",
@@ -124,9 +124,9 @@
                            "note": "Descrição do campo",
                            "available": true,
                            "canUpdate": true
-                       }
+                        }
                    ]
-               },
+                },
                 "b3jforcon": {
                     "description": "Descrição do campo",
                     "type": "varchar",
@@ -140,9 +140,9 @@
                            "note": "Descrição do campo",
                            "available": true,
                            "canUpdate": true
-                       }
+                        }
                    ]
-               },
+                },
                 "b3jhrinvl": {
                     "description": "Descrição do campo",
                     "type": "varchar",
@@ -156,9 +156,9 @@
                            "note": "Descrição do campo",
                            "available": true,
                            "canUpdate": true
-                       }
+                        }
                    ]
-               },
+                },
                 "b3jhrtevl": {
                     "description": "Descrição do campo",
                     "type": "varchar",
@@ -172,9 +172,9 @@
                            "note": "Descrição do campo",
                            "available": true,
                            "canUpdate": true
-                       }
+                        }
                    ]
-               },
+                },
                 "b3jsegmen": {
                     "description": "Descrição do campo",
                     "type": "varchar",
@@ -188,9 +188,9 @@
                            "note": "Descrição do campo",
                            "available": true,
                            "canUpdate": true
-                       }
+                        }
                    ]
-               },
+                },
                 "b3jstatus": {
                     "description": "Descrição do campo",
                     "type": "varchar",
@@ -204,9 +204,9 @@
                            "note": "Descrição do campo",
                            "available": true,
                            "canUpdate": true
-                       }
+                        }
                    ]
-               },
+                },
                 "b3jabrang": {
                     "description": "Descrição do campo",
                     "type": "varchar",
@@ -220,9 +220,9 @@
                            "note": "Descrição do campo",
                            "available": true,
                            "canUpdate": true
-                       }
+                        }
                    ]
-               },
+                },
 
 				"products": {
 					"$ref": "#/definitions/ProductsBody"
