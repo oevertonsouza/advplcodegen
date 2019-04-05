@@ -19,14 +19,20 @@ Python 3 instalado, base de dados e ambiente protheus configurados.
 * 1 - Faça o clone do projeto.
 * 2 - No arquivo settings.py preencha os dados de acesso ao banco de dados do seu ambiente Protheus.
 
+NAME = Nome do banco de dados do seu ambiente.</br>
+USER = Usuário do bando de dados</br>
+PASSWORD = Senha do seu banco de dados</br>
+HOST = Hostname ou IP do seu banco de dados.</br>
+
+Exemplo.
 ```python
 
 DATABASES = {
     'default': {
-        'NAME': 'NAME',
-        'USER': 'USER',
-        'PASSWORD': 'PASSWORD',
-        'HOST': 'HOST',
+        'NAME': 'ProtheusDb',
+        'USER': 'sa',
+        'PASSWORD': 'admin123',
+        'HOST': 'localhost',
     }
 }
 
@@ -38,17 +44,29 @@ FILIAL = Filial do seu ambiente</br>
 SEGMENT = Seguimento em que vc atua</br>
 PREFIX = Prefixo com 3 caracteres, será o prefixo das suas classe e nome de fontes para distinguir dos fontes já existentes.</br>
 
+-Especificos para gerção de APIS e documentação no padrão OpenAapi em Json.
+SEGMENT = Seguimento qual o produto esta alocado.
+PRODUCT = Nome do produto.
+PRDUCT_DESCRIPTION = Descrição do produto.
+CONTACT = Email de Contato do produto.
+
 Exemplo:
 
 ```python
 PROTHEUS_ENVIORMENT = {
     'default': {
-        'EMPRESA': 'T1',
-        'FILIAL': 'M SP 01',
-        'SEGMENT' : 'HealthCare',
+        'EMPRESA' : 'T1',
+        'FILIAL' : 'M SP 01',
         'PREFIX' : 'Cen',
+        'SEGMENT' : 'HealthCare',        
+        'PRODUCT' : 'Central de Obrigações',
+        'PRDUCT_DESCRIPTION' : 'Central de Obrigações, para controle de legislações de operadoras de convênio de saúde.',
+        'CONTACT' : 'centraldeobrigacoes@totvs.com.br',
+
     }
 }
 ```
+
+# Comandos
 
 -- Em construção
