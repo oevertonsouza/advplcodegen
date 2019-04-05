@@ -47,7 +47,7 @@ class ApiControl:
             print('Alias '+ name + ' already added! Execute command #advplapi.py listapi to check api added.')
             return
 
-        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  "storage.entity")
+        storagePathFile = os.path.join(settings.PATH_FILESTORAGE,  "storage.entity")
         dataStorage = entity+';'+ name +'\n'
         exists = os.path.isfile(storagePathFile) 
 

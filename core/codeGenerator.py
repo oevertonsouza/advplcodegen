@@ -377,8 +377,8 @@ class CodeGenerator:
         contact = settings.PROTHEUS_ENVIORMENT['default']['CONTACT']
         segment = settings.PROTHEUS_ENVIORMENT['default']['SEGMENT']
         classNameLower = ''
-    
-        properties = ''
+        propertiesKey = ''
+        propertiesNoKey = ''
 
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  entity + ".columns")
         exists = os.path.isfile(storagePathFile)
@@ -387,24 +387,44 @@ class CodeGenerator:
             with open(storagePathFile) as datafile:
                 columnInfo = csv.reader(datafile, delimiter=';')
                 for column in columnInfo:
-                    properties += ''.rjust(16)+(
-                        '"'+column[1]+'": {\n'
-				        '                    "description": "Descrição do campo",\n'
-                        '                    "type": "string",\n'
-                        '                    "x-totvs": [\n'
-                        '		                {\n'
-                        '                           "product": "'+ product +'",\n'
-                        '                           "field": "'+ alias +'.'+column[0]+'",\n'
-                        '                           "required": false,\n'
-                        '                           "type": "string",\n'
-                        '                           "length": "'+column[3]+'",\n'
-                        '                           "note": "Descrição do campo",\n'
-                        '                           "available": true,\n'
-                        '                           "canUpdate": true\n'                            
-                        '                        }\n'
-                        '                   ]\n'
-                        '                },\n'
-                    )
+                    if column[4] == "1":
+                        propertiesKey += ''.rjust(16)+(
+                            '"'+column[1]+'": {\n'
+				            '                    "description": "Descrição do campo",\n'
+                            '                    "type": "string",\n'
+                            '                    "x-totvs": [\n'
+                            '		                {\n'
+                            '                           "product": "'+ product +'",\n'
+                            '                           "field": "'+ alias +'.'+column[0]+'",\n'
+                            '                           "required": false,\n'
+                            '                           "type": "string",\n'
+                            '                           "length": "'+column[3]+'",\n'
+                            '                           "note": "Descrição do campo",\n'
+                            '                           "available": true,\n'
+                            '                           "canUpdate": false\n'                            
+                            '                        }\n'
+                            '                   ]\n'
+                            '                },\n'
+                        )
+                    else:
+                        propertiesNoKey += ''.rjust(16)+(
+                            '"'+column[1]+'": {\n'
+				            '                    "description": "Descrição do campo",\n'
+                            '                    "type": "string",\n'
+                            '                    "x-totvs": [\n'
+                            '		                {\n'
+                            '                           "product": "'+ product +'",\n'
+                            '                           "field": "'+ alias +'.'+column[0]+'",\n'
+                            '                           "required": false,\n'
+                            '                           "type": "string",\n'
+                            '                           "length": "'+column[3]+'",\n'
+                            '                           "note": "Descrição do campo",\n'
+                            '                           "available": true,\n'
+                            '                           "canUpdate": true\n'                            
+                            '                        }\n'
+                            '                   ]\n'
+                            '                },\n'
+                        )
                 
                 d = { 
                         'className': name, 
@@ -413,7 +433,8 @@ class CodeGenerator:
                         'productDescription' : productDescription,
                         'contact' : contact,
                         'segment' : segment,
-                        'properties' : properties[:-2],
+                        'propertiesKey' : propertiesKey[:-1],
+                        'propertiesNoKey' : propertiesNoKey[:-2],
                         'classNameLower' : name.lower(),
                     }
 
@@ -442,6 +463,7 @@ class CodeGenerator:
         parameters = ''
         keyParameters = ''
         keyPath = ''
+        abreviate = name[:4]
 
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  entity + ".columns")
         exists = os.path.isfile(storagePathFile)
@@ -465,7 +487,7 @@ class CodeGenerator:
 			                            '           "'+column[1]+'Param": {\n'
 			                        	'               "name": "'+column[1]+'",\n'
 			                        	'               "in": "path",\n'
-			                        	'               "description": "Numero da guia",\n'
+			                        	'               "description": "Descricao do Campo",\n'
 			                        	'               "required": true,\n'
 			                        	'               "schema": {\n'
     			                        '		            "type": "string",\n'
@@ -474,18 +496,32 @@ class CodeGenerator:
 			                            '           },\n'
                         )
                     else :
-                        queryParam += (
-			                            '           "'+column[1]+'Param": {\n'
-			                        	'               "name": "'+column[1]+'",\n'
-			                        	'               "in": "query",\n'
-			                        	'               "description": "Numero da guia",\n'
-			                        	'               "required": true,\n'
-			                        	'               "schema": {\n'
-    			                        '		            "type": "string",\n'
-			                        	'	                "format": "string"\n'
-			                        	'               }\n'
-			                            '           },\n'
-                        )
+                        if column[4] == "1":
+                            queryParam += (
+			                                '           "'+column[1]+'Param": {\n'
+			                            	'               "name": "'+column[1]+'",\n'
+			                            	'               "in": "query",\n'
+			                            	'               "description": "Descricao do Campo",\n'
+			                            	'               "required": true,\n'
+			                            	'               "schema": {\n'
+    			                            '		            "type": "string",\n'
+			                            	'	                "format": "string"\n'
+			                            	'               }\n'
+			                                '           },\n'
+                            )
+                        else: 
+                            queryParam += (
+			                                '           "'+column[1]+'Param": {\n'
+			                                '               "name": "'+column[1]+'",\n'
+			                                '               "in": "query",\n'
+			                                '               "description": "Descricao do Campo",\n'
+			                                '               "required": false,\n'
+			                                '               "schema": {\n'
+    			                            '		            "type": "string",\n'
+			                                '	                "format": "string"\n'
+			                                '               }\n'
+			                                '           },\n'
+                            )
 
                 d = { 
                         'className': name, 
@@ -500,6 +536,7 @@ class CodeGenerator:
                         'classNameLower' : name.lower(),
                         'keyParameters' : keyParameters[:-2],
                         'keyPath' : keyPath,
+                        'abreviate' : abreviate,
                     }
 
                 fileIn = open(os.path.join(settings.PATH_TEMPLATE_DOCS, 'docApi.template'))
