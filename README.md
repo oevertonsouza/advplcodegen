@@ -84,7 +84,7 @@ $ advplcodegen.py startproject
 <br>
 Após a execução desse comando os diretório do projeto assim como suas libs deverão serem criadas em SRC, algo como o exemplo abaixo.
 <br>
-![alt text](https://github.com/oevertonsouza/advplcodegen/blob/apis/docImg/src.png)
+![alt text](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/apis/docImg/src.png)
 
 
 
