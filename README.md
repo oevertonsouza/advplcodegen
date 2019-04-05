@@ -42,7 +42,7 @@ DATABASES = {
 
 EMPRESA = Empresa prefixo das tabelas no seu dicionário</br>
 FILIAL = Filial do seu ambiente</br>
-SEGMENT = Seguimento em que vc atua</br>
+SEGMENT = Seguimento em que atua.</br>
 PREFIX = Prefixo com 3 caracteres, será o prefixo das suas classe e nome de fontes para distinguir dos fontes já existentes.</br>
 
 -Especificos para gerção de APIS e documentação no padrão OpenAapi em Json.
@@ -70,7 +70,6 @@ PROTHEUS_ENVIORMENT = {
 # Comandos
 
 Para execução dos comandos acesse a arvore do projeto onde se encontra o fonte advplcodegen.py, todos os comandos partirão desse fonte.</br>
-</br>
 <b>Comano testconnect</b></br>
 Para testar a conexão com o banco.
 </br>
@@ -79,7 +78,6 @@ Para testar a conexão com o banco.
 $ advplcodegen.py testconnect
 ```
 
-</br>
 <b>Comando startproject</b><br>
 Para iniciar um projeto.
 </br>
@@ -88,35 +86,44 @@ Para iniciar um projeto.
 $ advplcodegen.py startproject
 ```
 
-</br>
 Nota:<br>
 Após a execução desse comando os diretório do projeto assim como suas libs deverão serem criadas em SRC, algo como o exemplo abaixo.
+</br>
 </br>
 
 ![SRC arvore do projeto](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/apis/docImg/src.png)
 
-</br>
 <b>Comando addentity</b><br>
 Para adicionar uma entidade ao projeto, passando o nome da entidade e sua descrição em ingles no singular.
 </br>
 
 ```console
-$ advplcodegen.py addentity <entidade> <nome da entidade em inglês>
+$ advplcodegen.py addentity <entidade> <nome da entidade em inglês> <nome da coluna chave da tabela>
 ```
 
 Exemplo:
 
 ```console
-$ advplcodegen.py addentity B3JT10 Product
+$ advplcodegen.py addentity B3JT10 Product B3K_CODIGO
 ```
 
-</br>
 Nota:<br>
-Após a execução desse comando os arquivos de storage deverão serem criado, algo como o exemplo abaixo.
+No exemplo acima o parametro passado B3K_CODIGO, será a coluna usada no Parametro do Path da sua API, nos verbos de get e delete, os demais dados do indice primario da tabela, serão usado como Parametros da query, para os mesmos verbos.<br>
+Neste mesmo exemplo usamos a tabela B3JT10, o indice primario dessa tabela é composta pelas colunas B3K_CODIGO e B3K_CODOPE,<br>
+portanto uma requisição get de um unico registro funcionará da seguinte maneira.<br>
+<br>
+http://localhost/api/healthcare/v1/product/[b3kcodigo]?b3kcodiope=[b3kcodiope]<br>
+<br>
+Exemplo com o preenchimento dos dados.<br>
+<br>
+http://localhost/api/healthcare/v1/product/5561003?b3kcodiope=417505<br>
+<br>
+Repare que healthcare na URL foi preenchido de acordo com o Segumento preenchido no arquivo settings.py, assim como "/product", que foi passado como parametro no comando addentity.<br>
+<br>
+Após a execução desse comando os arquivos de storage deverão serem criados, esses arquivos contem os dados necessários para criação dos fontes e documentações. Os arquivos terão um aspecto semelhante aos exemplos abaixo.
 </br>
 
-
-
+![Arquivos Storage](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/apis/docImg/filestorage.png)
 
 
 
