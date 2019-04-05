@@ -4,7 +4,7 @@ Framework de geração de códigos ADVPL orientado a objetos.
 # Sobre o projeto
 O propósito desse projeto é utilizar classes abstratas que possuam métodos que abrangem o máximo de funções necessárias prédispostas para qualquer projeto ADVPL, tais como, CRUD, paginação de busca, ordenação de resultados, retorno de colunas especificas de um resultado para API's, mapper de objeto para Json e geração de endpoints.
 
-# Compatibilidade
+# Compatibilidade / Ambientes homologados
 
 * Python 3x 
 * 1 Sqlserver 2012 
@@ -12,7 +12,7 @@ O propósito desse projeto é utilizar classes abstratas que possuam métodos qu
 
 # Pré-requisitos
 
-Python 3 instalado, base de dados e ambiente protheus configurados.
+Python 3 instalado, base de dados e ambiente de desenvolvimento (ADVPL) protheus configurados.
 
 # Configuração de Ambiente
 
@@ -70,17 +70,19 @@ PROTHEUS_ENVIORMENT = {
 
 Para execução dos comandos acesse a arvore do projeto onde se encontra o fonte advplcodegen.py, todos os comandos partirão desse fonte.<br>
 <br>
-Commando para iniciar um projeto.
+Para testar a conexão com o banco.
 <br>
 ```console
-$ advplcodegen testconnect
+$ advplcodegen.py testconnect
 ```
 <br>
-Commando para iniciar um projeto.
+Para iniciar um projeto.
 <br>
 ```console
-$ advplcodegen startproject
+$ advplcodegen.py startproject
 ```
+Após a execução desse comando os diretório do projeto assim como suas libs deverão serem criadas em SRC, algo como o exemplo abaixo.
+![alt text](https://raw.githubusercontent.com/username/projectname/branch/path/to/img.png)
 
 
 
