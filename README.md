@@ -69,7 +69,7 @@ PROTHEUS_ENVIORMENT = {
 
 # Comandos
 
-Para execução dos comandos acesse a arvore do projeto onde se encontra o fonte advplcodegen.py, todos os comandos partirão desse fonte.</br>
+Para execução dos comandos acesse a arvore do projeto onde se encontra o fonte advplcodegen.py, todos os comandos partirão desse fonte.</br></br>
 <b>Comano testconnect</b></br>
 Para testar a conexão com o banco.
 </br>
@@ -125,17 +125,49 @@ http://localhost/api/healthcare/v1/product/5561003?b3kcodiope=417505<br>
 Repare que healthcare na URL foi preenchido de acordo com o Seguimento preenchido no arquivo settings.py, assim como "/product", que foi passado como parametro no comando addentity.<br>
 <br>
 Após a execução desse comando os arquivos de storage deverão serem criados, esses arquivos contem os dados necessários para criação dos fontes e documentações.<br>
-Os arquivos terão um aspecto semelhante aos exemplos abaixo.
+Os arquivos terão um aspecto semelhante aos exemplos abaixo, note que no arquivo .storage o nome do arquivo é é o nome da propria entidade.
 </br>
 
 ![Arquivos Storage](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/apis/docImg/filestorage.png)
 
-Arquivo .entity
+Arquivo .entity</br>
 
-Segue a seguinte estutura
-|Nome da Entidade|Descrição em inglês da entidade|Coluna chave|
+Segue a seguinte estutura.</br>
+|Nome da Entidade|Descrição em inglês da entidade|Coluna chave|<br>
 
-![Arquivos Storage](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/apis/docImg/filestorage.png)
+![Arquivos Storage](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/apis/docImg/entityfile.png)
+
+Nota:<br>
+Nesse exemplo temos duas tabelas adicionadas B3JT10 e B3KT10.<br>
+<br>
+
+Arquivo [entidade].storage</br>
+
+Segue a seguinte estutura.</br>
+|Nome da coluna|descrição da coluna|tipo da coluna|lenght da coluna|se a coluna faz parte do indice primario|coluna chave|
+
+![Arquivos Storage](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/apis/docImg/columnsfile.png)
+
+Nota:<br>
+Nesse arquivo você poderá alterar a segunda coluna para a descrição do campo da sua tabela em ingles conforme o comitê de API's, o como no exemplo abaixo.<br>
+<br>
+
+![Arquivos Storage](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/apis/docImg/colunsfileinglishchange.png)
+
+<br>
+Caso isso não seja feito sua API tera o seguinte resultado.
+<br>
+
+![Arquivos Storage](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/apis/docImg/apicampossemalterar.png)
+
+</br>
+<b>Comano build</b></br>
+Comando para gerar os fontes para sua API's.
+</br>
+
+```console
+$ advplcodegen.py build
+```
 
 
 
