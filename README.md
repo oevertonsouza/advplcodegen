@@ -95,10 +95,10 @@ Após a execução desse comando os diretório do projeto assim como suas libs d
 
 <b>Comando addentity</b><br>
 Para adicionar uma entidade ao projeto.<br>
-Parametros:<br>
-Entidade: Nome da entidade qual os fontes e API, serão destinados.<br>
-Nome da entidade em Ingles: Nome da tabela no banco de dados em Ingles, deve ser em ingles devido ao comite de API.<br>
-Coluna chave: Deverá ser referenciado uma e apenas uma coluna como chave, essa coluna será usada como parametro do Path da sua API.<br>
+<b>Parametros:<b><br>
+<b>Entidade:<b> Nome da entidade qual os fontes e API, serão destinados.<br>
+<b>Nome da entidade em Ingles:<b> Nome da tabela no banco de dados em Ingles, deve ser em ingles devido ao comite de API.<br>
+<b>Coluna chave:</b> Deverá ser referenciado uma e apenas uma coluna como chave, essa coluna será usada como parametro do Path da sua API.<br>
 </br>
 
 ```console
@@ -168,6 +168,25 @@ Comando para gerar os fontes para sua API's.
 ```console
 $ advplcodegen.py build
 ```
+
+<br>
+Após a execução desse comando será criando na arvore do seu projeto os fontes necessários para a sua API com os seguintes verbos, GET, POST, PUT e DELETE. conforme o exemplo abaixo.<br>
+<br>
+
+![Arquivos Gerados](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/apis/docImg/fontesgerados.png)
+
+<br>
+Compile seus fontes e teste sua API usando Postman ou qualquer outro software de requisições HTTP rest.
+<br>
+
+Nota:<br>
+No metodo GET poderá ser executado como uma busca unica passando o valor da coluna chave escolida no comando addentity no Parametro do Path  e as demais colunas do indice primario nos parametros query.<br>
+<br>
+Caso tenha alguma duvida sobre a estrutura gerada haverá umaa documentação da API em dois arquivos para cada API gerada, no diretório DOC do seu projeto no padrão OpenAPI conforme o comite de API's, um arquivo com a strutura body e um arquivo com a estrutura da API.<br>
+Caso a sua API 
+<br>
+
+
 
 
 
