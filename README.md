@@ -71,7 +71,11 @@ PROTHEUS_ENVIORMENT = {
 Para execução dos comandos acesse a arvore do projeto onde se encontra o fonte advplcodegen.py, todos os comandos partirão desse fonte.<br>
 <br>
 Commando para iniciar um projeto.
-$ advplcodegen startproject
+
+```console
+    $ advplcodegen startproject
+'''
+
 
 
 
