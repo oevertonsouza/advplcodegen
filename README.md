@@ -146,19 +146,19 @@ Arquivo [entidade].storage</br>
 Segue a seguinte estutura.</br>
 |Nome da coluna|descrição da coluna|tipo da coluna|lenght da coluna|se a coluna faz parte do indice primario|coluna chave|
 
-![Arquivos Storage](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/apis/docImg/columnsfile.png)
+![Storage de colunas](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/apis/docImg/columnsfile.png)
 
 Nota:<br>
 Nesse arquivo você poderá alterar a segunda coluna para a descrição do campo da sua tabela em ingles conforme o comitê de API's, o como no exemplo abaixo.<br>
 <br>
 
-![Arquivos Storage](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/apis/docImg/colunsfileinglishchange.png)
+![Arquivo alterado](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/apis/docImg/colunsfileinglishchange.png)
 
 <br>
-Caso isso não seja feito sua API tera o seguinte resultado.
+Caso isso não seja feito sua API retornara os campos conforme sua propria descrição no banco de dados, semelhante ao exemplo abaixo.
 <br>
 
-![Arquivos Storage](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/apis/docImg/apicampossemalterar.png)
+![Resultado da API sem alteração dos campos](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/apis/docImg/apicampossemalterar.png)
 
 </br>
 <b>Comano build</b></br>
