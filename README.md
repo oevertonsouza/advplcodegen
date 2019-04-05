@@ -25,6 +25,7 @@ PASSWORD = Senha do seu banco de dados</br>
 HOST = Hostname ou IP do seu banco de dados.</br>
 
 Exemplo.
+
 ```python
 
 DATABASES = {
@@ -68,24 +69,47 @@ PROTHEUS_ENVIORMENT = {
 
 # Comandos
 
-Para execução dos comandos acesse a arvore do projeto onde se encontra o fonte advplcodegen.py, todos os comandos partirão desse fonte.<br>
-<br>
+Para execução dos comandos acesse a arvore do projeto onde se encontra o fonte advplcodegen.py, todos os comandos partirão desse fonte.</br>
+</br>
+<b>Comano testconnect</b></br>
 Para testar a conexão com o banco.
-<br>
+</br>
+
 ```console
 $ advplcodegen.py testconnect
 ```
-<br>
+
+</br>
+<b>Comando startproject</b><br>
 Para iniciar um projeto.
-<br>
+</br>
+
 ```console
 $ advplcodegen.py startproject
 ```
-<br>
-Após a execução desse comando os diretório do projeto assim como suas libs deverão serem criadas em SRC, algo como o exemplo abaixo.
-<br>
-[link to Google!](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/apis/docImg/src.png)
 
+</br>
+Nota:<br>
+Após a execução desse comando os diretório do projeto assim como suas libs deverão serem criadas em SRC, algo como o exemplo abaixo.
+</br>
+
+![SRC arvore do projeto](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/apis/docImg/src.png)
+
+</br>
+Comando
+</br>
+
+```console
+$ advplcodegen.py addentity <entidade> <nome da entidade em inglês>
+```
+
+Exemplo:
+
+```console
+$ advplcodegen.py addentity B3KT10 Beneficiaries
+```
+
+</br>
 
 
 
