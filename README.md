@@ -67,7 +67,7 @@ PROTHEUS_ENVIORMENT = {
 }
 ```
 
-# Comandos
+# Comandos e criação do projeto ADVPL.
 
 Para execução dos comandos acesse a arvore do projeto onde se encontra o fonte advplcodegen.py, todos os comandos partirão desse fonte.</br></br>
 <b>Comano testconnect</b></br>
@@ -178,6 +178,7 @@ Após a execução desse comando será criando na arvore do seu projeto os fonte
 <br>
 Compile seus fontes e teste sua API usando Postman ou qualquer outro software de requisições HTTP rest.
 <br>
+<br>
 
 Nota:<br>
 No metodo GET poderá ser executado como uma busca unica passando o valor da coluna chave escolhida no comando addentity no Parametro do Path, e as demais colunas do indice primario passados nos parametros query.<br>
@@ -190,5 +191,4 @@ Caso a sua API não esteja funcionando ou com comportamento inadequado, haverá 
 <br>
  Colabore com esse projeto, caso tenha algum problema no uso ou sugestão comente. 
 <br>
-
 
