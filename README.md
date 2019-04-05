@@ -180,7 +180,9 @@ Compile seus fontes e teste sua API usando Postman ou qualquer outro software de
 <br>
 
 Nota:<br>
-No metodo GET poderá ser executado como uma busca unica passando o valor da coluna chave escolida no comando addentity no Parametro do Path  e as demais colunas do indice primario nos parametros query.<br>
+No metodo GET poderá ser executado como uma busca unica passando o valor da coluna chave escolhida no comando addentity no Parametro do Path, e as demais colunas do indice primario passados nos parametros query.<br>
+Todos os funcionamentos requeridos no comite de API's estarão dispostos, como retornar somente os campos solicitados, ordenar a busca, paginação do resultado de coleção e tratamento de erro.
+<br>
 <br>
 Caso tenha alguma duvida sobre a estrutura gerada haverá uma documentação da API em dois arquivos para cada API gerada, no diretório DOC do seu projeto no padrão OpenAPI, um arquivo com a strutura body e um arquivo com a estrutura da API, conforme o comite de API's.<br>
 Caso a sua API não esteja funcionando ou com comportamento inadequado, haverá 5 casos de teste do CRUD do seu projeto em ADVPR no diretorio test do seu projeto.
