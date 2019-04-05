@@ -189,6 +189,6 @@ Caso tenha alguma duvida sobre a estrutura gerada haverá uma documentação da 
 Caso a sua API não esteja funcionando ou com comportamento inadequado, haverá 5 casos de teste do CRUD do seu projeto em ADVPR no diretorio test do seu projeto.
 <br>
 <br>
- Colabore com esse projeto, caso tenha algum problema no uso ou sugestão comente. 
+ Colabore com esse projeto, caso tenha algum problema no uso ou sugestão, #issue.
 <br>
 
