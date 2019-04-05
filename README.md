@@ -95,8 +95,8 @@ Após a execução desse comando os diretório do projeto assim como suas libs d
 
 <b>Comando addentity</b><br>
 Para adicionar uma entidade ao projeto.<br>
-<b>Parametros:<b><br>
-<b>Entidade:<b> Nome da entidade qual os fontes e API, serão destinados.<br>
+<b>Parametros:</b><br>
+<b>Entidade:</b> Nome da entidade qual os fontes e API, serão destinados.<br>
 <b>Nome da entidade em Ingles:<b> Nome da tabela no banco de dados em Ingles, deve ser em ingles devido ao comite de API.<br>
 <b>Coluna chave:</b> Deverá ser referenciado uma e apenas uma coluna como chave, essa coluna será usada como parametro do Path da sua API.<br>
 </br>
@@ -182,11 +182,11 @@ Compile seus fontes e teste sua API usando Postman ou qualquer outro software de
 Nota:<br>
 No metodo GET poderá ser executado como uma busca unica passando o valor da coluna chave escolida no comando addentity no Parametro do Path  e as demais colunas do indice primario nos parametros query.<br>
 <br>
-Caso tenha alguma duvida sobre a estrutura gerada haverá umaa documentação da API em dois arquivos para cada API gerada, no diretório DOC do seu projeto no padrão OpenAPI conforme o comite de API's, um arquivo com a strutura body e um arquivo com a estrutura da API.<br>
-Caso a sua API 
+Caso tenha alguma duvida sobre a estrutura gerada haverá uma documentação da API em dois arquivos para cada API gerada, no diretório DOC do seu projeto no padrão OpenAPI, um arquivo com a strutura body e um arquivo com a estrutura da API, conforme o comite de API's.<br>
+Caso a sua API não esteja funcionando ou com comportamento inadequado, haverá 5 casos de teste do CRUD do seu projeto em ADVPR no diretorio test do seu projeto.
 <br>
-
-
-
+<br>
+ Colabore com esse projeto, caso tenha algum problema no uso ou sugestão comente. 
+<br>
 
 
