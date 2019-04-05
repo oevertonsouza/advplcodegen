@@ -97,7 +97,7 @@ Após a execução desse comando os diretório do projeto assim como suas libs d
 Para adicionar uma entidade ao projeto.<br>
 <b>Parametros:</b><br>
 <b>Entidade:</b> Nome da entidade qual os fontes e API, serão destinados.<br>
-<b>Nome da entidade em Ingles:<b> Nome da tabela no banco de dados em Ingles, deve ser em ingles devido ao comite de API.<br>
+<b>Nome da entidade em Ingles:</b> Nome da tabela no banco de dados em Ingles, deve ser em ingles devido ao comite de API.<br>
 <b>Coluna chave:</b> Deverá ser referenciado uma e apenas uma coluna como chave, essa coluna será usada como parametro do Path da sua API.<br>
 </br>
 
