@@ -20,7 +20,7 @@ class ComandsController:
                 api.startProject()
                 return
             if run[1] == 'addentity':
-                api.addEntity(run[2], run[3])
+                api.addEntity(run[2], run[3], run[4])
                 return
             if run[1] == 'list':
                 api.list()

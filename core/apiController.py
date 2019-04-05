@@ -35,7 +35,7 @@ class ApiControl:
 
         return 
 
-    def addEntity(self, entity, name):
+    def addEntity(self, entity, name, keyParam):
 
         stg = storage.Storage()
 
@@ -48,7 +48,7 @@ class ApiControl:
             return
 
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE,  "storage.entity")
-        dataStorage = entity+';'+ name +'\n'
+        dataStorage = entity+';'+ name +';'+keyParam+'\n'
         exists = os.path.isfile(storagePathFile) 
 
         if exists:
@@ -60,7 +60,7 @@ class ApiControl:
             f.write(dataStorage)
             f.close()
 
-        stg.genColumnStorage(entity)
+        stg.genColumnStorage(entity, keyParam)
 
         return
 
