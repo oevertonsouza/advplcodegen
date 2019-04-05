@@ -81,6 +81,7 @@ Para iniciar um projeto.
 ```console
 $ advplcodegen.py startproject
 ```
+<br>
 Após a execução desse comando os diretório do projeto assim como suas libs deverão serem criadas em SRC, algo como o exemplo abaixo.
 ![alt text](https://raw.githubusercontent.com/username/projectname/branch/path/to/img.png)
 
