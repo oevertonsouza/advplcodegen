@@ -96,7 +96,8 @@ Após a execução desse comando os diretório do projeto assim como suas libs d
 ![SRC arvore do projeto](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/apis/docImg/src.png)
 
 </br>
-Comando
+<b>Comando addentity</b><br>
+Para adicionar uma entidade ao projeto, passando o nome da entidade e sua descrição em ingles no singular.
 </br>
 
 ```console
@@ -106,10 +107,17 @@ $ advplcodegen.py addentity <entidade> <nome da entidade em inglês>
 Exemplo:
 
 ```console
-$ advplcodegen.py addentity B3KT10 Beneficiaries
+$ advplcodegen.py addentity B3JT10 Product
 ```
 
 </br>
+Nota:<br>
+Após a execução desse comando os arquivos de storage deverão serem criado, algo como o exemplo abaixo.
+</br>
+
+
+
+
 
 
 
