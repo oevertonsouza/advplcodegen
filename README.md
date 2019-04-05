@@ -94,11 +94,15 @@ Após a execução desse comando os diretório do projeto assim como suas libs d
 ![SRC arvore do projeto](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/apis/docImg/src.png)
 
 <b>Comando addentity</b><br>
-Para adicionar uma entidade ao projeto, passando o nome da entidade e sua descrição em ingles no singular.
+Para adicionar uma entidade ao projeto.<br>
+Parametros:<br>
+Entidade: Nome da entidade qual os fontes e API, serão destinados.<br>
+Nome da entidade em Ingles: Nome da tabela no banco de dados em Ingles, deve ser em ingles devido ao comite de API.<br>
+Coluna chave: Deverá ser referenciado uma e apenas uma coluna como chave, essa coluna será usada como parametro do Path da sua API.<br>
 </br>
 
 ```console
-$ advplcodegen.py addentity <entidade> <nome da entidade em inglês> <nome da coluna chave da tabela>
+$ advplcodegen.py addentity <entidade> <nome da entidade em inglês> <coluna chave>
 ```
 
 Exemplo:
@@ -118,14 +122,20 @@ Exemplo com o preenchimento dos dados.<br>
 <br>
 http://localhost/api/healthcare/v1/product/5561003?b3kcodiope=417505<br>
 <br>
-Repare que healthcare na URL foi preenchido de acordo com o Segumento preenchido no arquivo settings.py, assim como "/product", que foi passado como parametro no comando addentity.<br>
+Repare que healthcare na URL foi preenchido de acordo com o Seguimento preenchido no arquivo settings.py, assim como "/product", que foi passado como parametro no comando addentity.<br>
 <br>
-Após a execução desse comando os arquivos de storage deverão serem criados, esses arquivos contem os dados necessários para criação dos fontes e documentações. Os arquivos terão um aspecto semelhante aos exemplos abaixo.
+Após a execução desse comando os arquivos de storage deverão serem criados, esses arquivos contem os dados necessários para criação dos fontes e documentações.<br>
+Os arquivos terão um aspecto semelhante aos exemplos abaixo.
 </br>
 
 ![Arquivos Storage](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/apis/docImg/filestorage.png)
 
+Arquivo .entity
 
+Segue a seguinte estutura
+|Nome da Entidade|Descrição em inglês da entidade|Coluna chave|
+
+![Arquivos Storage](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/apis/docImg/filestorage.png)
 
 
 
