@@ -5,9 +5,25 @@ from pathlib import Path
 
 class ApiControl:
 
-    def __init__(
-                self
-            ):
+    def __init__(self, cgen=None, entity=None, name=None, keyColumn=None):
+        self.entity = entity
+        self.name = name
+        self.keyColumn = keyColumn
+        self.cgen = codeGenerator.CodeGenerator()
+        return
+
+    def setEntity(self, entity):
+        self.entity = entity
+        self.cgen.setEntity(entity)
+        return
+
+    def setName(self, name):
+        self.name = name
+        self.cgen.setName(name)
+        return
+
+    def setKeyColumn(self, keyColumn):
+        self.keyColumn = keyColumn
         return
 
     #Criate project folders 
@@ -30,25 +46,24 @@ class ApiControl:
         os.mkdir(settings.PATH_SRC_TEST_GROUP)
         os.mkdir(settings.PATH_SRC_TEST_SUITE)
         
-        cgen = codeGenerator.CodeGenerator()
-        cgen.copyLibs()
+        self.cgen.copyLibs()
 
         return 
 
-    def addEntity(self, entity, name, keyParam):
-
+    def addEntity(self):
+        print("Teste")
         stg = storage.Storage()
 
-        if self.entityExist(entity, name):
-            print('Entity '+ entity + ' already added! Execute command #advplapi.py listapi ')
+        if self.entityExist():
+            print('Entity '+ self.entity + ' already added! Execute command #advplapi.py listapi ')
             return
         
-        if self.nameExist(entity, name):
-            print('Alias '+ name + ' already added! Execute command #advplapi.py listapi to check api added.')
+        if self.nameExist():
+            print('Alias '+ self.name + ' already added! Execute command #advplapi.py listapi to check api added.')
             return
 
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE,  "storage.entity")
-        dataStorage = entity+';'+ name +';'+keyParam+'\n'
+        dataStorage = self.entity+';'+ self.name +';'+self.keyColumn+'\n'
         exists = os.path.isfile(storagePathFile) 
 
         if exists:
@@ -60,7 +75,7 @@ class ApiControl:
             f.write(dataStorage)
             f.close()
 
-        stg.genColumnStorage(entity, keyParam)
+        stg.genColumnStorage(self.entity, self.keyColumn)
 
         return
 
@@ -80,7 +95,7 @@ class ApiControl:
             print("Not found api, add newapp!")
         return
 
-    def entityExist(self, entity, name):
+    def entityExist(self):
 
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  "storage.txt")
         exists = os.path.isfile(storagePathFile) 
@@ -95,7 +110,7 @@ class ApiControl:
             return False
         return False
 
-    def nameExist(self, entity, name):
+    def nameExist(self):
 
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  "storage.entity")
         exists = os.path.isfile(storagePathFile) 
@@ -104,7 +119,7 @@ class ApiControl:
             with open(storagePathFile) as datafile:
                 data = csv.reader(datafile, delimiter=';')
                 for row in data:
-                    if row[1] == name:
+                    if row[1] == self.name:
                         return True
         else:
             return False
@@ -112,7 +127,6 @@ class ApiControl:
 
     def build(self):
 
-        cgen = codeGenerator.CodeGenerator()
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  "storage.entity")
         exists = os.path.isfile(storagePathFile) 
 
@@ -120,17 +134,17 @@ class ApiControl:
             with open(storagePathFile) as datafile:
                 data = csv.reader(datafile, delimiter=';')
                 for row in data:
-                    cgen.buildEntity(row[0], row[1])
-                    cgen.buildDao(row[0], row[1])
-                    cgen.buildCollection(row[0], row[1])
-                    cgen.buildTest(row[0], row[1])
-                    cgen.buildMapper(row[0], row[1])
-                    cgen.buildRequest(row[0], row[1])
-                    cgen.buildCommand(row[0], row[1])
-                    cgen.buildApi(row[0], row[1])
-                    cgen.buildValidate(row[0], row[1])
-                    cgen.buildDocApiSchema(row[0], row[1])
-                    cgen.buildDocApi(row[0], row[1])
+                    self.cgen.buildEntity(row[0], row[1])
+                    self.cgen.buildDao(row[0], row[1])
+                    self.cgen.buildCollection(row[0], row[1])
+                    self.cgen.buildTest(row[0], row[1])
+                    self.cgen.buildMapper(row[0], row[1])
+                    self.cgen.buildRequest(row[0], row[1])
+                    self.cgen.buildCommand(row[0], row[1])
+                    self.cgen.buildApi(row[0], row[1])
+                    self.cgen.buildValidate(row[0], row[1])
+                    self.cgen.buildDocApiSchema(row[0], row[1])
+                    self.cgen.buildDocApi(row[0], row[1])
         return False
 
     def setColumnAlias(self, entity, columnName, aliasName):

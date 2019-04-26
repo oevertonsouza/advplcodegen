@@ -4,13 +4,32 @@ from core import managedb, commandController, apiController
 from string import Template
 
 
-class CodeGenerator:
+class CodeGenerator():
+
+    def __init__ (self, entity=None, name=None, alias=None, prefix=None, product=None, productDescription=None, contact=None, segment=None):
+        self.entity = entity, 
+        self.name = name
+        self.alias = alias
+        self.product = settings.PROTHEUS_ENVIORMENT['default']['PRODUCT']
+        self.prefix  = settings.PROTHEUS_ENVIORMENT['default']['PREFIX']
+        self.productDescription = settings.PROTHEUS_ENVIORMENT['default']['PRDUCT_DESCRIPTION']
+        self.contact = settings.PROTHEUS_ENVIORMENT['default']['CONTACT']
+        self.segment = settings.PROTHEUS_ENVIORMENT['default']['SEGMENT']
+        return
+
+    def setEntity(self, entity):
+        self.entity = entity
+        self.alias = entity[:3]
+        return
+
+    def setName(self, name):
+        self.name = name
+        return
 
     def buildEntity(self, entity, name):
 
         serialize = ''
         fields    = ''
-
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  entity + ".columns")
         exists = os.path.isfile(storagePathFile)
         prefix = settings.PROTHEUS_ENVIORMENT['default']['PREFIX']
@@ -68,7 +87,6 @@ class CodeGenerator:
     def buildDao(self,entity, name):
 
         alias  = entity[:3]
-        order  = ''
         table  = ''
         commitKey = ''
         commitNoKey = ''
@@ -101,7 +119,6 @@ class CodeGenerator:
                         'className': name,
                         'alias': alias,
                         'entity' : entity,
-                        'order' : order,
                         'commitKey' : commitKey,
                         'commitNoKey' : commitNoKey,
                         'loadOrder' : loadOrder,
@@ -371,9 +388,6 @@ class CodeGenerator:
 
         alias  = entity[:3]
         mapper = ''
-        product = settings.PROTHEUS_ENVIORMENT['default']['PRODUCT']
-        prefix = settings.PROTHEUS_ENVIORMENT['default']['PREFIX']
-        productDescription = settings.PROTHEUS_ENVIORMENT['default']['PRDUCT_DESCRIPTION']
         contact = settings.PROTHEUS_ENVIORMENT['default']['CONTACT']
         segment = settings.PROTHEUS_ENVIORMENT['default']['SEGMENT']
         classNameLower = ''
@@ -394,7 +408,7 @@ class CodeGenerator:
                             '                    "type": "string",\n'
                             '                    "x-totvs": [\n'
                             '		                {\n'
-                            '                           "product": "'+ product +'",\n'
+                            '                           "product": "'+ self.product +'",\n'
                             '                           "field": "'+ alias +'.'+column[0]+'",\n'
                             '                           "required": false,\n'
                             '                           "type": "string",\n'
@@ -413,7 +427,7 @@ class CodeGenerator:
                             '                    "type": "string",\n'
                             '                    "x-totvs": [\n'
                             '		                {\n'
-                            '                           "product": "'+ product +'",\n'
+                            '                           "product": "'+ self.product +'",\n'
                             '                           "field": "'+ alias +'.'+column[0]+'",\n'
                             '                           "required": false,\n'
                             '                           "type": "string",\n'
@@ -429,8 +443,8 @@ class CodeGenerator:
                 d = { 
                         'className': name, 
                         'entity' : entity,
-                        'product' : product,
-                        'productDescription' : productDescription,
+                        'product' : self.product,
+                        'productDescription' : self.productDescription,
                         'contact' : contact,
                         'segment' : segment,
                         'propertiesKey' : propertiesKey[:-1],
@@ -454,7 +468,6 @@ class CodeGenerator:
         mapper = ''
         product = settings.PROTHEUS_ENVIORMENT['default']['PRODUCT']
         prefix = settings.PROTHEUS_ENVIORMENT['default']['PREFIX']
-        productDescription = settings.PROTHEUS_ENVIORMENT['default']['PRDUCT_DESCRIPTION']
         contact = settings.PROTHEUS_ENVIORMENT['default']['CONTACT']
         segment = settings.PROTHEUS_ENVIORMENT['default']['SEGMENT']
         classNameLower = ''
@@ -527,7 +540,7 @@ class CodeGenerator:
                         'className': name, 
                         'entity' : entity,
                         'product' : product,
-                        'productDescription' : productDescription,
+                        'productDescription' : self.productDescription,
                         'contact' : contact,
                         'segment' : segment,
                         'pathParam' : pathParam,
