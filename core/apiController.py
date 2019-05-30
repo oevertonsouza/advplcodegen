@@ -51,7 +51,6 @@ class ApiControl:
         return 
 
     def addEntity(self):
-        print("Teste")
         stg = storage.Storage()
 
         if self.entityExist():
@@ -134,17 +133,19 @@ class ApiControl:
             with open(storagePathFile) as datafile:
                 data = csv.reader(datafile, delimiter=';')
                 for row in data:
-                    self.cgen.buildEntity(row[0], row[1])
-                    self.cgen.buildDao(row[0], row[1])
-                    self.cgen.buildCollection(row[0], row[1])
-                    self.cgen.buildTest(row[0], row[1])
-                    self.cgen.buildMapper(row[0], row[1])
-                    self.cgen.buildRequest(row[0], row[1])
-                    self.cgen.buildCommand(row[0], row[1])
-                    self.cgen.buildApi(row[0], row[1])
-                    self.cgen.buildValidate(row[0], row[1])
-                    self.cgen.buildDocApiSchema(row[0], row[1])
-                    self.cgen.buildDocApi(row[0], row[1])
+                    self.setEntity(row[0])
+                    self.setName(row[1])
+                    self.cgen.buildEntity()
+                    self.cgen.buildDao()
+                    self.cgen.buildCollection()
+                    self.cgen.buildTest()
+                    self.cgen.buildMapper()
+                    self.cgen.buildRequest()
+                    self.cgen.buildCommand()
+                    self.cgen.buildApi()
+                    self.cgen.buildValidate()
+                    self.cgen.buildDocApiSchema()
+                    self.cgen.buildDocApi()
         return False
 
     def setColumnAlias(self, entity, columnName, aliasName):

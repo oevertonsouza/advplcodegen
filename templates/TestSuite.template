@@ -18,7 +18,7 @@ Return
 METHOD SetUpSuite() CLASS ${prefix}${className}TestSuite
 Local oHelper := FWTestHelper():New()
 
-oHelper:UTOpenFilial("${empresa}","${filial}")
+oHelper:UTOpenFilial("${company}","${filial}")
 oHelper:Activate()
 
 Return oHelper

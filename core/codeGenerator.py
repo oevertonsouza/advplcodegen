@@ -6,15 +6,18 @@ from string import Template
 
 class CodeGenerator():
 
-    def __init__ (self, entity=None, name=None, alias=None, prefix=None, product=None, productDescription=None, contact=None, segment=None):
+    prefix  = settings.PROTHEUS_ENVIORMENT['default']['PREFIX']
+    product = settings.PROTHEUS_ENVIORMENT['default']['PRODUCT']
+    productDescription = settings.PROTHEUS_ENVIORMENT['default']['PRDUCT_DESCRIPTION']
+    contact = settings.PROTHEUS_ENVIORMENT['default']['CONTACT']
+    segment = settings.PROTHEUS_ENVIORMENT['default']['SEGMENT']
+    company = settings.PROTHEUS_ENVIORMENT['default']['COMPANY']
+    filial = settings.PROTHEUS_ENVIORMENT['default']['FILIAL']
+
+    def __init__ (self, entity=None, name=None, alias=None):
         self.entity = entity, 
-        self.name = name
-        self.alias = alias
-        self.product = settings.PROTHEUS_ENVIORMENT['default']['PRODUCT']
-        self.prefix  = settings.PROTHEUS_ENVIORMENT['default']['PREFIX']
-        self.productDescription = settings.PROTHEUS_ENVIORMENT['default']['PRDUCT_DESCRIPTION']
-        self.contact = settings.PROTHEUS_ENVIORMENT['default']['CONTACT']
-        self.segment = settings.PROTHEUS_ENVIORMENT['default']['SEGMENT']
+        self.name = name,
+        self.alias = alias,
         return
 
     def setEntity(self, entity):
@@ -26,13 +29,13 @@ class CodeGenerator():
         self.name = name
         return
 
-    def buildEntity(self, entity, name):
+    def buildEntity(self):
 
         serialize = ''
         fields    = ''
-        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  entity + ".columns")
+
+        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  self.entity + ".columns")
         exists = os.path.isfile(storagePathFile)
-        prefix = settings.PROTHEUS_ENVIORMENT['default']['PREFIX']
 
         if exists:
             with open(storagePathFile) as datafile:
@@ -42,60 +45,56 @@ class CodeGenerator():
                     fields      += '    self:oFields:push({"'+column[1]+'", self:getValue("'+column[1] +'")}) /* Column '+ column[0] +' */ \n'
                     
                 d = { 
-                        'className': name, 
+                        'className': self.name, 
                         'serialize' : serialize,
                         'fields' : fields,
-                        'entity' : entity,
-                        'prefix' : prefix,
+                        'entity' : self.entity,
+                        'prefix' : self.prefix,
                     }
 
                 fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'Entity.template'))   
                 temp = Template(fileIn.read())
                 result = temp.substitute(d)
 
-                f = open(os.path.join(settings.PATH_SRC_ENTITY, prefix+name + ".prw") , "w+")
+                f = open(os.path.join(settings.PATH_SRC_ENTITY, self.prefix+self.name + ".prw") , "w+")
                 f.write(result)
                 f.close()
 
                 return
 
-    def buildCollection(self,entity, name):
+    def buildCollection(self):
 
-        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  entity + ".columns")
-        prefix = settings.PROTHEUS_ENVIORMENT['default']['PREFIX']
-
+        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  self.entity + ".columns")
         exists = os.path.isfile(storagePathFile)
 
         if exists:
                 d = { 
-                        'className': name, 
-                        'entity' : entity,
-                        'prefix' : prefix,
+                        'className': self.name, 
+                        'entity' : self.entity,
+                        'prefix' : self.prefix,
                     }
 
                 fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'Collection.template'))
                 temp = Template(fileIn.read())
                 result = temp.substitute(d)
 
-                f = open(os.path.join(settings.PATH_SRC_COLLECTION, prefix+"Clt"+ name + ".prw") , "w+")
+                f = open(os.path.join(settings.PATH_SRC_COLLECTION, self.prefix+"Clt"+ self.name + ".prw") , "w+")
                 f.write(result)
                 f.close()                    
 
         return
 
     
-    def buildDao(self,entity, name):
+    def buildDao(self):
 
-        alias  = entity[:3]
         table  = ''
         commitKey = ''
         commitNoKey = ''
         bscChaPrim = ''
         loadOrder = ''
         cfieldOrder = []
-        prefix = settings.PROTHEUS_ENVIORMENT['default']['PREFIX']
 
-        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  entity + ".columns")
+        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  self.entity + ".columns")
         exists = os.path.isfile(storagePathFile)
 
         if exists:
@@ -105,49 +104,43 @@ class CodeGenerator():
                 for column in columnInfo:
                     loadOrder += ''.rjust(4)+'self:oHashOrder:set("'+ column[0] +'", "'+ column[1] +'")\n'
                     
-                    
-                    
                     if column[4] == "1" :
                         cfieldOrder.append(column[0])
-                        commitKey += ''.rjust(12)+alias+'->'+column[0]+' := _Super:normalizeType('+ alias +'->'+ column[0] +',self:getValue("'+ column[1] +'")) /* Column '+ column[0] +' */\n'
+                        commitKey += ''.rjust(12)+self.alias+'->'+column[0]+' := _Super:normalizeType('+ self.alias +'->'+ column[0] +',self:getValue("'+ column[1] +'")) /* Column '+ column[0] +' */\n'
                         bscChaPrim += ''.rjust(4)+'cQuery += " AND ' +column[0]+ ' = ? "\n'
                         bscChaPrim += ''.rjust(4)+'aAdd(self:aMapBuilder, self:toString(self:getValue("'+column[1]+'")))\n'
                     else:
-                        commitNoKey += ''.rjust(8)+alias+'->'+column[0]+' := _Super:normalizeType('+ alias +'->'+ column[0] +',self:getValue("'+ column[1] +'")) /* Column '+ column[0] +' */\n'
+                        commitNoKey += ''.rjust(8)+self.alias+'->'+column[0]+' := _Super:normalizeType('+ self.alias +'->'+ column[0] +',self:getValue("'+ column[1] +'")) /* Column '+ column[0] +' */\n'
                         
                 d = { 
-                        'className': name,
-                        'alias': alias,
-                        'entity' : entity,
+                        'className': self.name,
+                        'alias': self.alias,
+                        'entity' : self.entity,
                         'commitKey' : commitKey,
                         'commitNoKey' : commitNoKey,
                         'loadOrder' : loadOrder,
                         'cfieldOrder' : ','.join(cfieldOrder),
                         'bscChaPrim' : bscChaPrim,
-                        'prefix' : prefix,
+                        'prefix' : self.prefix,
                     }
 
                 fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'Dao.template'))
                 temp = Template(fileIn.read())
                 result = temp.substitute(d)
 
-                f = open(os.path.join(settings.PATH_SRC_DAO, prefix+"Dao"+ name + ".prw") , "w+")
+                f = open(os.path.join(settings.PATH_SRC_DAO, self.prefix+"Dao"+ self.name + ".prw") , "w+")
                 f.write(result)
                 f.close()
 
         return
 
-    def buildRequest(self, entity, name):
+    def buildRequest(self):
         
-        alias = entity[:3]
-        
-        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  entity + ".columns")
+        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  self.entity+".columns")
         exists = os.path.isfile(storagePathFile)
-        prefix = settings.PROTHEUS_ENVIORMENT['default']['PREFIX']
         applyFilterAll = ''
         applyFilterSingle = ''
         prepFilter = ''
-
 
         if exists:
             with open(storagePathFile) as datafile:
@@ -160,9 +153,9 @@ class CodeGenerator():
                         prepFilter += ''.rjust(4)+'self:oCollection:setValue("'+ column[1] +'", self:oRest:'+ column[1] +')\n'
 
         d = {
-                'className': name,                     
-                'entity' : entity, 
-                'prefix' : prefix,
+                'className': self.name,                     
+                'entity' : self.entity,
+                'prefix' : self.prefix,
                 'applyFilterAll' : applyFilterAll,
                 'applyFilterSingle' : applyFilterSingle,
                 'prepFilter' : prepFilter,
@@ -172,20 +165,16 @@ class CodeGenerator():
         temp = Template(fileIn.read())
         result = temp.substitute(d)
 
-        f = open(os.path.join(settings.PATH_SRC_REQUEST, prefix+"Req"+ name +".prw") , "w+")
+        f = open(os.path.join(settings.PATH_SRC_REQUEST, self.prefix+"Req"+ self.name +".prw") , "w+")
         f.write(result)
         f.close()
 
         return
 
-    def buildApi(self, entity, name):
+    def buildApi(self):
         
-        alias = entity[:3]
-        
-        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  entity + ".columns")
+        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  self.entity + ".columns")
         exists = os.path.isfile(storagePathFile)
-        prefix = settings.PROTHEUS_ENVIORMENT['default']['PREFIX']
-        segment = settings.PROTHEUS_ENVIORMENT['default']['SEGMENT']
         wsDataKeys = ''
         wsDataNoKeys = ''
         defaultVarsNoKey = ''
@@ -218,12 +207,12 @@ class CodeGenerator():
         keyVarsNoKeyPath.remove('    '+keyPath)
 
         d = {
-                'classNameAbreviate': name[:4],
-                'className': name,                     
-                'classNameLower' : name.lower(),
-                'entity' : entity, 
-                'prefix' : prefix,
-                'segment' : segment,
+                'classNameAbreviate': self.name[:4],
+                'className': self.name,
+                'classNameLower' : self.name.lower(),
+                'entity' : self.entity,
+                'prefix' : self.prefix,
+                'segment' : self.segment,
                 'wsDataKeys' : wsDataKeys,
                 'wsDataNoKeys' : wsDataNoKeys,
                 'defaultVarsKey' : defaultVarsKey,
@@ -238,31 +227,29 @@ class CodeGenerator():
         temp = Template(fileIn.read())
         result = temp.substitute(d)
 
-        f = open(os.path.join(settings.PATH_SRC_API, prefix+"Rest"+ segment +".prw") , "w+")
+        f = open(os.path.join(settings.PATH_SRC_API, self.prefix+"Rest"+ self.segment +".prw") , "w+")
         f.write(result)
         f.close()
 
         return                
 
-    def buildTest(self,entity, name):
-        self.buildTestGroup(entity, name)
-        self.buildTestSuite(entity, name)
-        self.buildTestCase(entity, name)
+    def buildTest(self):
+        self.buildTestGroup()
+        self.buildTestSuite()
+        self.buildTestCase()
         return
     
-    def buildTestCase(self,entity, name):
+    def buildTestCase(self):
 
         keyValues = ''
         noKeyValues = ''
-        alias = entity[:3]
-        prefix = settings.PROTHEUS_ENVIORMENT['default']['PREFIX']
         compare = ''
         changeValues = ''
         keyVariables = ''
         noKeyVariables = ''
         cleanVarCollection = ''
         
-        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  entity + ".columns")
+        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  self.entity + ".columns")
         exists = os.path.isfile(storagePathFile)
 
         if exists:
@@ -276,17 +263,17 @@ class CodeGenerator():
                     else:
                         noKeyVariables += ''.rjust(4)+'Local '+ column[1] +' := Nil\n'
                         noKeyValues +=  ''.rjust(4)+'oCollection:setValue("'+ column[1] +'", '+column[1]+' ) /* Column '+ column[0] +' */ \n'
-                        changeValues += ''.rjust(8)+'o'+prefix+name+':setValue("'+ column[1] +'", '+ column[1] +')  /* Column '+ column[0] +' */ \n'
+                        changeValues += ''.rjust(8)+'o'+self.prefix+self.name+':setValue("'+ column[1] +'", '+ column[1] +')  /* Column '+ column[0] +' */ \n'
                         compare += ''.rjust(8)+'oResult:assertTrue(oCenProducts:getValue("'+ column[1] +'") == '+ column[1] +', "Valor comparado na coluna '+ column[0] +' de alias '+ column[1] +', nao sao iguais.")  /* Column '+ column[0] +' */ \n'
                         cleanVarCollection += ''.rjust(4)+column[1]+' := ""\n'
 
                 d = {
-                        'className': name, 
-                        'entity' : entity,
-                        'alias' : alias,
+                        'className': self.name, 
+                        'entity' : self.entity,
+                        'alias' : self.alias,
                         'keyValues' : keyValues,
                         'noKeyValues' : noKeyValues,
-                        'prefix' : prefix,
+                        'prefix' : self.prefix,
                         'compare' : compare,
                         'changeValues' : changeValues,
                         'keyVariables' : keyVariables,
@@ -298,67 +285,60 @@ class CodeGenerator():
                 temp = Template(fileIn.read())
                 result = temp.substitute(d)
 
-                f = open(os.path.join(settings.PATH_SRC_TEST_CASES, prefix+name + "TestCase.prw") , "w+")
+                f = open(os.path.join(settings.PATH_SRC_TEST_CASES, self.prefix+self.name + "TestCase.prw") , "w+")
                 f.write(result)
                 f.close()
 
         return
 
-    def buildTestSuite(self,entity, name):
+    def buildTestSuite(self):
 
-        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  entity + ".columns")
+        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  self.entity + ".columns")
         exists = os.path.isfile(storagePathFile)
-        
-        empresa = settings.PROTHEUS_ENVIORMENT['default']['EMPRESA']
-        filial = settings.PROTHEUS_ENVIORMENT['default']['FILIAL']
-        prefix = settings.PROTHEUS_ENVIORMENT['default']['PREFIX']
 
         d = { 
-                'className': name, 
-                'entity' : entity,
-                'empresa' : empresa,
-                'filial' : filial,
-                'prefix' : prefix,
+                'className': self.name, 
+                'entity' : self.entity,
+                'company' : self.company,
+                'filial' : self.filial,
+                'prefix' : self.prefix,
             }
 
         fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'TestSuite.template'))
         temp = Template(fileIn.read())
         result = temp.substitute(d)
 
-        f = open(os.path.join(settings.PATH_SRC_TEST_SUITE, prefix+name + "TestSuite.prw") , "w+")
+        f = open(os.path.join(settings.PATH_SRC_TEST_SUITE, self.prefix+self.name + "TestSuite.prw") , "w+")
         f.write(result)
         f.close()
 
         return        
 
-    def buildTestGroup(self,entity, name):
+    def buildTestGroup(self):
 
-        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  entity + ".columns")
+        storagePathFile = os.path.join(settings.PATH_FILESTORAGE , self.entity + ".columns")
         exists = os.path.isfile(storagePathFile)
-        prefix = settings.PROTHEUS_ENVIORMENT['default']['PREFIX']
             
         d = { 
-                'className': name, 
-                'entity' : entity,
-                'prefix' : prefix,
+                'className': self.name, 
+                'entity' : self.entity,
+                'prefix' : self.prefix,
             }
 
         fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'TestGroup.template'))
         temp = Template(fileIn.read())
         result = temp.substitute(d)
 
-        f = open(os.path.join(settings.PATH_SRC_TEST_GROUP, prefix+name + "TestGroup.prw") , "w+")
+        f = open(os.path.join(settings.PATH_SRC_TEST_GROUP, self.prefix+self.name + "TestGroup.prw") , "w+")
         f.write(result)
         f.close()
 
         return
 
-    def buildMapper(self,entity, name):
+    def buildMapper(self):
 
         mapper = ''
-        prefix = settings.PROTHEUS_ENVIORMENT['default']['PREFIX']
-
-        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  entity + ".columns")
+        storagePathFile = os.path.join(settings.PATH_FILESTORAGE, self.entity + ".columns")
         exists = os.path.isfile(storagePathFile)
 
         if exists:
@@ -368,33 +348,30 @@ class CodeGenerator():
                     mapper += '    aAdd(self:aFields,{"'+ column[0] +'" ,"'+ column[1] +'"})\n'
                 
                 d = { 
-                        'className': name, 
-                        'entity' : entity,
+                        'className': self.name, 
+                        'entity' : self.entity,
                         'mapper' : mapper,
-                        'prefix' : prefix,
+                        'prefix' : self.prefix,
                     }
 
                 fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'Mapper.template'))
                 temp = Template(fileIn.read())
                 result = temp.substitute(d)
 
-                f = open(os.path.join(settings.PATH_SRC_MAPPER, prefix+"Mpr"+ name + ".prw") , "w+")
+                f = open(os.path.join(settings.PATH_SRC_MAPPER, self.prefix+"Mpr"+ self.name + ".prw") , "w+")
                 f.write(result)
                 f.close()
 
         return
 
-    def buildDocApiSchema(self,entity, name):
+    def buildDocApiSchema(self):
 
-        alias  = entity[:3]
         mapper = ''
-        contact = settings.PROTHEUS_ENVIORMENT['default']['CONTACT']
-        segment = settings.PROTHEUS_ENVIORMENT['default']['SEGMENT']
         classNameLower = ''
         propertiesKey = ''
         propertiesNoKey = ''
 
-        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  entity + ".columns")
+        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  self.entity + ".columns")
         exists = os.path.isfile(storagePathFile)
 
         if exists:
@@ -409,7 +386,7 @@ class CodeGenerator():
                             '                    "x-totvs": [\n'
                             '		                {\n'
                             '                           "product": "'+ self.product +'",\n'
-                            '                           "field": "'+ alias +'.'+column[0]+'",\n'
+                            '                           "field": "'+ self.alias +'.'+column[0]+'",\n'
                             '                           "required": false,\n'
                             '                           "type": "string",\n'
                             '                           "length": "'+column[3]+'",\n'
@@ -428,7 +405,7 @@ class CodeGenerator():
                             '                    "x-totvs": [\n'
                             '		                {\n'
                             '                           "product": "'+ self.product +'",\n'
-                            '                           "field": "'+ alias +'.'+column[0]+'",\n'
+                            '                           "field": "'+ self.alias +'.'+column[0]+'",\n'
                             '                           "required": false,\n'
                             '                           "type": "string",\n'
                             '                           "length": "'+column[3]+'",\n'
@@ -441,44 +418,39 @@ class CodeGenerator():
                         )
                 
                 d = { 
-                        'className': name, 
-                        'entity' : entity,
+                        'className': self.name, 
+                        'entity' : self.entity,
                         'product' : self.product,
                         'productDescription' : self.productDescription,
-                        'contact' : contact,
-                        'segment' : segment,
+                        'contact' : self.contact,
+                        'segment' : self.segment,
                         'propertiesKey' : propertiesKey[:-1],
                         'propertiesNoKey' : propertiesNoKey[:-2],
-                        'classNameLower' : name.lower(),
+                        'classNameLower' : self.name.lower(),
                     }
 
                 fileIn = open(os.path.join(settings.PATH_TEMPLATE_DOCS, 'docApiSchema.template'))
                 temp = Template(fileIn.read())
                 result = temp.substitute(d)
 
-                f = open(os.path.join(settings.PATH_SRC_DOC, name+"_1_100.json") , "w+")
+                f = open(os.path.join(settings.PATH_SRC_DOC, self.name+"_1_100.json") , "w+")
                 f.write(result)
                 f.close()
 
         return
 
-    def buildDocApi(self,entity, name):
+    def buildDocApi(self):
 
-        alias  = entity[:3]
         mapper = ''
-        product = settings.PROTHEUS_ENVIORMENT['default']['PRODUCT']
-        prefix = settings.PROTHEUS_ENVIORMENT['default']['PREFIX']
-        contact = settings.PROTHEUS_ENVIORMENT['default']['CONTACT']
-        segment = settings.PROTHEUS_ENVIORMENT['default']['SEGMENT']
         classNameLower = ''
         pathParam = ''
         queryParam = ''
         parameters = ''
         keyParameters = ''
         keyPath = ''
-        abreviate = name[:4]
+        abreviate = self.name[:4]
 
-        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  entity + ".columns")
+        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  self.entity + ".columns")
         exists = os.path.isfile(storagePathFile)
 
         if exists:
@@ -537,16 +509,16 @@ class CodeGenerator():
                             )
 
                 d = { 
-                        'className': name, 
-                        'entity' : entity,
-                        'product' : product,
+                        'className': self.name, 
+                        'entity' : self.entity,
+                        'product' : self.product,
                         'productDescription' : self.productDescription,
-                        'contact' : contact,
-                        'segment' : segment,
+                        'contact' : self.contact,
+                        'segment' : self.segment,
                         'pathParam' : pathParam,
                         'parameters' : parameters[:-2],
                         'queryParam' : queryParam[:-3]+"}",
-                        'classNameLower' : name.lower(),
+                        'classNameLower' : self.name.lower(),
                         'keyParameters' : keyParameters[:-2],
                         'keyPath' : keyPath,
                         'abreviate' : abreviate,
@@ -556,53 +528,49 @@ class CodeGenerator():
                 temp = Template(fileIn.read())
                 result = temp.substitute(d)
 
-                f = open(os.path.join(settings.PATH_SRC_DOC, name+"_v1_100.json") , "w+")
+                f = open(os.path.join(settings.PATH_SRC_DOC, self.name+"_v1_100.json") , "w+")
                 f.write(result)
                 f.close()
 
         return    
     
-    def buildCommand(self, entity, name):
+    def buildCommand(self):
         
-        prefix = settings.PROTHEUS_ENVIORMENT['default']['PREFIX']
-        
-        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  entity + ".columns")
+        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  self.entity + ".columns")
         exists = os.path.isfile(storagePathFile)
 
         d = {
-                'className': name,                     
-                'entity' : entity,                    
-                'prefix' : prefix,
+                'className': self.name,                     
+                'entity' : self.entity,
+                'prefix' : self.prefix,
             }
 
         fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'Command.template'))
         temp = Template(fileIn.read())
         result = temp.substitute(d)
 
-        f = open(os.path.join(settings.PATH_SRC_COMMAND, prefix+"Cmd"+ name +".prw") , "w+")
+        f = open(os.path.join(settings.PATH_SRC_COMMAND, self.prefix+"Cmd"+ self.name +".prw") , "w+")
         f.write(result)
         f.close()
 
         return
 
-    def buildValidate(self, entity, name):
+    def buildValidate(self):
         
-        prefix = settings.PROTHEUS_ENVIORMENT['default']['PREFIX']
-        
-        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  entity + ".columns")
+        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  self.entity + ".columns")
         exists = os.path.isfile(storagePathFile)
 
         d = {
-                'className': name,
-                'entity' : entity,                    
-                'prefix' : prefix,
+                'className': self.name,
+                'entity' : self.entity,                    
+                'prefix' : self.prefix,
             }
 
         fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'Validator.template'))
         temp = Template(fileIn.read())
         result = temp.substitute(d)
 
-        f = open(os.path.join(settings.PATH_SRC_VALIDATE, prefix+"Vld"+ name +".prw") , "w+")
+        f = open(os.path.join(settings.PATH_SRC_VALIDATE, self.prefix+"Vld"+ self.name +".prw") , "w+")
         f.write(result)
         f.close()
 
@@ -610,16 +578,15 @@ class CodeGenerator():
 
     def copyLibs(self):
         
-        prefix = settings.PROTHEUS_ENVIORMENT['default']['PREFIX']
         dest = settings.PATH_SRC_LIB
         src_files = os.listdir(settings.PATH_TEMPLATE_LIBS)
         for file_name in src_files:
             fileIn = open(os.path.join(settings.PATH_TEMPLATE_LIBS, file_name))
             temp = Template(fileIn.read())
-            result = temp.substitute({'prefix': prefix})
+            result = temp.substitute({'prefix': self.prefix})
             fileIn.close()
             file = file_name.split('.')
-            f = open(os.path.join(settings.PATH_SRC_LIB, prefix+file[0]+'.prw' ) , "w+")
+            f = open(os.path.join(settings.PATH_SRC_LIB, self.prefix+file[0]+'.prw' ) , "w+")
             f.write(result)
             f.close()
             
