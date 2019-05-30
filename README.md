@@ -87,7 +87,7 @@ $ advplcodegen.py startproject
 ```
 
 Nota:<br>
-Após a execução desse comando os diretório do projeto assim como suas libs deverão serem criadas em SRC, algo como o exemplo abaixo.
+Após a execução desse comando os diretório do projeto assim como suas libs deverão ser criadas em SRC, algo como o exemplo abaixo.
 </br>
 </br>
 
@@ -124,7 +124,7 @@ http://localhost/api/healthcare/v1/product/5561003?b3kcodiope=417505<br>
 <br>
 Repare que healthcare na URL foi preenchido de acordo com o Seguimento preenchido no arquivo settings.py, assim como "/product", que foi passado como parametro no comando addentity.<br>
 <br>
-Após a execução desse comando os arquivos de storage deverão serem criados, esses arquivos contem os dados necessários para criação dos fontes e documentações.<br>
+Após a execução desse comando os arquivos de storage deverão ser criados, esses arquivos contem os dados necessários para criação dos fontes e documentações.<br>
 Os arquivos terão um aspecto semelhante aos exemplos abaixo, note que no arquivo .storage o nome do arquivo é é o nome da propria entidade.
 </br>
 
