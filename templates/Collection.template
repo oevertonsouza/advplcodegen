@@ -21,7 +21,7 @@ return self
 Method initEntity() Class ${prefix}Clt${className}
 return ${prefix}${className}():New()
 
-Method setEntity(oEntity) Class CenCltProducts
+Method setEntity(oEntity) Class ${prefix}Clt${className}
     self:oMapper:setEntity(oEntity)
     self:oDao:setHMap(oEntity:getHMap())
 return

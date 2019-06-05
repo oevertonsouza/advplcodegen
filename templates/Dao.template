@@ -53,7 +53,7 @@ ${bscChaPrim}
 
 return lFound
 
-Method insert() Class CenDaoProducts
+Method insert() Class ${prefix}Dao${className}
     Local lFound := !self:bscChaPrim()
 	If lFound
         self:commit(.T.)

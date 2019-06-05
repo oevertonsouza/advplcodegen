@@ -70,7 +70,7 @@ PROTHEUS_ENVIORMENT = {
 # Comandos e criação do projeto ADVPL.
 
 Para execução dos comandos acesse a arvore do projeto onde se encontra o fonte advplcodegen.py, todos os comandos partirão desse fonte.</br></br>
-<b>Comano testconnect</b></br>
+<b>Comando testconnect</b></br>
 Para testar a conexão com o banco.
 </br>
 
@@ -108,19 +108,19 @@ $ advplcodegen.py addentity <entidade> <nome da entidade em inglês> <coluna cha
 Exemplo:
 
 ```console
-$ advplcodegen.py addentity B3JT10 Product B3K_CODIGO
+$ advplcodegen.py addentity B3JT10 Product B3J_CODIGO
 ```
 
 Nota:<br>
-No exemplo acima o parametro passado B3K_CODIGO, será a coluna usada no Parametro do Path da sua API, nos verbos de get e delete, os demais dados do indice primario da tabela, serão usado como Parametros da query, para os mesmos verbos.<br>
-Neste mesmo exemplo usamos a tabela B3JT10, o indice primario dessa tabela é composta pelas colunas B3K_CODIGO e B3K_CODOPE,<br>
+No exemplo acima o parametro passado B3J_CODIGO, será a coluna usada no Parametro do Path da sua API, nos verbos de get e delete, os demais dados do indice primario da tabela, serão usados como Parametros da query, para os mesmos verbos.<br>
+Neste mesmo exemplo usamos a tabela B3JT10, o indice primario dessa tabela é composta pelas colunas B3J_CODIGO e B3J_CODOPE,<br>
 portanto uma requisição get de um unico registro funcionará da seguinte maneira.<br>
 <br>
-http://localhost/api/healthcare/v1/product/[b3kcodigo]?b3kcodiope=[b3kcodiope]<br>
+http://localhost/api/healthcare/v1/product/[b3jcodigo]?b3jcodope=[b3Jcodope]<br>
 <br>
 Exemplo com o preenchimento dos dados.<br>
 <br>
-http://localhost/api/healthcare/v1/product/5561003?b3kcodiope=417505<br>
+http://localhost/api/healthcare/v1/product/5561003?b3Jcodope=123456<br>
 <br>
 Repare que healthcare na URL foi preenchido de acordo com o Seguimento preenchido no arquivo settings.py, assim como "/product", que foi passado como parametro no comando addentity.<br>
 <br>
@@ -138,13 +138,13 @@ Segue a seguinte estutura.</br>
 ![Arquivos Storage](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/apis/docImg/entityfile.png)
 
 Nota:<br>
-Nesse exemplo temos duas tabelas adicionadas B3JT10 e B3KT10.<br>
+Nesse exemplo temos duas tabelas adicionadas B3JT10 e B3JT10.<br>
 <br>
 
 Arquivo [entidade].storage</br>
 
 Segue a seguinte estutura.</br>
-|Nome da coluna|descrição da coluna|tipo da coluna|lenght da coluna|se a coluna faz parte do indice primario|coluna chave|
+|Nome da coluna|descrição da coluna|tipo da coluna|tamanho da coluna|se a coluna faz parte do indice primario|coluna chave|
 
 ![Storage de colunas](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/apis/docImg/columnsfile.png)
 

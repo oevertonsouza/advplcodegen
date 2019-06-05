@@ -20,7 +20,7 @@ Class ${prefix}Req${className} from ${prefix}Request
 
 EndClass
 
-Method destroy()  Class CenReqProducts
+Method destroy()  Class ${prefix}Req${className}
 Return _Super:destroy()
 
 Method New(oRest, cSvcName) Class ${prefix}Req${className}

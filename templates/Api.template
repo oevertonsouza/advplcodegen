@@ -37,8 +37,8 @@ ${wsDataNoKeys}
     PATH "{version}/${classNameLower}" PRODUCES APPLICATION_JSON
 
     WSMETHOD DELETE ${classNameAbreviate}Delete DESCRIPTION "" ;
-    WSsyntax "{version}/products/{${keyPath}}" ;
-    PATH "{version}/products/{${keyPath}}" PRODUCES APPLICATION_JSON
+    WSsyntax "{version}/${classNameLower}/{${keyPath}}" ;
+    PATH "{version}/${classNameLower}/{${keyPath}}" PRODUCES APPLICATION_JSON
 
 END WSRESTFUL
 
