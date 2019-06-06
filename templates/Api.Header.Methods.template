@@ -1,0 +1,21 @@
+
+    // Metodos da entidade
+    WSMETHOD GET ${classNameAbreviate}Collection DESCRIPTION "" ;
+    WSsyntax "{version}/${classNameLower}" ;
+    PATH "{version}/${classNameLower}" PRODUCES APPLICATION_JSON
+
+    WSMETHOD GET ${classNameAbreviate}Single DESCRIPTION "" ;
+    WSsyntax "{version}/${classNameLower}/{${keyPath}}" ;
+    PATH "{version}/${classNameLower}/{${keyPath}}" PRODUCES APPLICATION_JSON
+
+    WSMETHOD PUT ${classNameAbreviate}Update DESCRIPTION "" ;
+    WSsyntax "{version}/${classNameLower}/{${keyPath}}" ;
+    PATH "{version}/${classNameLower}/{${keyPath}}" PRODUCES APPLICATION_JSON
+
+    WSMETHOD POST ${classNameAbreviate}Insert DESCRIPTION "" ;
+    WSsyntax "{version}/${classNameLower}" ;
+    PATH "{version}/${classNameLower}" PRODUCES APPLICATION_JSON
+
+    WSMETHOD DELETE ${classNameAbreviate}Delete DESCRIPTION "" ;
+    WSsyntax "{version}/${classNameLower}/{${keyPath}}" ;
+    PATH "{version}/${classNameLower}/{${keyPath}}" PRODUCES APPLICATION_JSON

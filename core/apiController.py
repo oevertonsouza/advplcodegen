@@ -29,22 +29,23 @@ class ApiControl:
     #Criate project folders 
     def startProject(self):
         
-        os.mkdir(settings.PATH_SRC)
-        os.mkdir(settings.PATH_SRC_DAO)
-        os.mkdir(settings.PATH_SRC_ENTITY)
-        os.mkdir(settings.PATH_SRC_LIB)
-        os.mkdir(settings.PATH_SRC_COLLECTION)
-        os.mkdir(settings.PATH_SRC_DOC)
-        os.mkdir(settings.PATH_SRC_API)
-        os.mkdir(settings.PATH_SRC_MAPPER)
-        os.mkdir(settings.PATH_SRC_REQUEST)
-        os.mkdir(settings.PATH_SRC_COMMAND)
-        os.mkdir(settings.PATH_SRC_VALIDATE)
-        
-        os.mkdir(settings.PATH_SRC_TEST)
-        os.mkdir(settings.PATH_SRC_TEST_CASES)
-        os.mkdir(settings.PATH_SRC_TEST_GROUP)
-        os.mkdir(settings.PATH_SRC_TEST_SUITE)
+        if not os.path.isdir(settings.PATH_TEMP): os.mkdir(settings.PATH_TEMP)
+        if not os.path.isdir(settings.PATH_FILESTORAGE): os.mkdir(settings.PATH_FILESTORAGE)
+        if not os.path.isdir(settings.PATH_SRC): os.mkdir(settings.PATH_SRC)
+        if not os.path.isdir(settings.PATH_SRC_DAO): os.mkdir(settings.PATH_SRC_DAO)
+        if not os.path.isdir(settings.PATH_SRC_ENTITY): os.mkdir(settings.PATH_SRC_ENTITY)
+        if not os.path.isdir(settings.PATH_SRC_LIB): os.mkdir(settings.PATH_SRC_LIB)
+        if not os.path.isdir(settings.PATH_SRC_COLLECTION): os.mkdir(settings.PATH_SRC_COLLECTION)
+        if not os.path.isdir(settings.PATH_SRC_DOC): os.mkdir(settings.PATH_SRC_DOC)
+        if not os.path.isdir(settings.PATH_SRC_API): os.mkdir(settings.PATH_SRC_API)
+        if not os.path.isdir(settings.PATH_SRC_MAPPER): os.mkdir(settings.PATH_SRC_MAPPER)
+        if not os.path.isdir(settings.PATH_SRC_REQUEST): os.mkdir(settings.PATH_SRC_REQUEST)
+        if not os.path.isdir(settings.PATH_SRC_COMMAND): os.mkdir(settings.PATH_SRC_COMMAND)
+        if not os.path.isdir(settings.PATH_SRC_VALIDATE): os.mkdir(settings.PATH_SRC_VALIDATE)
+        if not os.path.isdir(settings.PATH_SRC_TEST): os.mkdir(settings.PATH_SRC_TEST)
+        if not os.path.isdir(settings.PATH_SRC_TEST_CASES): os.mkdir(settings.PATH_SRC_TEST_CASES)
+        if not os.path.isdir(settings.PATH_SRC_TEST_GROUP): os.mkdir(settings.PATH_SRC_TEST_GROUP)
+        if not os.path.isdir(settings.PATH_SRC_TEST_SUITE): os.mkdir(settings.PATH_SRC_TEST_SUITE)
         
         self.cgen.copyLibs()
 
@@ -118,8 +119,8 @@ class ApiControl:
             with open(storagePathFile) as datafile:
                 data = csv.reader(datafile, delimiter=';')
                 for row in data:
-                    if row[1] == self.name:
-                        return True
+                    if len(row) > 0:
+                        return row[1] == self.name
         else:
             return False
         return False
@@ -142,16 +143,15 @@ class ApiControl:
                     self.cgen.buildMapper()
                     self.cgen.buildRequest()
                     self.cgen.buildCommand()
-                    self.cgen.buildApi()
                     self.cgen.buildValidate()
                     self.cgen.buildDocApiSchema()
                     self.cgen.buildDocApi()
+                    self.cgen.buildApi()
+                self.cgen.finishApi()
         return False
 
     def setColumnAlias(self, entity, columnName, aliasName):
-        
-        temp = ''
-        existsColuns = False                
+                      
         path = os.path.join(settings.PATH_FILESTORAGE , entity + ".columns")
         my_file = Path(path)
         if my_file.is_file():

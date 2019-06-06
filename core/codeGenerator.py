@@ -87,7 +87,6 @@ class CodeGenerator():
     
     def buildDao(self):
 
-        table  = ''
         commitKey = ''
         commitNoKey = ''
         bscChaPrim = ''
@@ -183,8 +182,6 @@ class CodeGenerator():
         varsNokey = []
         keyVarsNoKeyPath = []
         keyPath = ''
-        classNameAbreviate = ''
-        
 
         if exists:
             with open(storagePathFile) as datafile:
@@ -220,18 +217,63 @@ class CodeGenerator():
                 'varskey' : ',;\n'.join(varskey)+',;',
                 'varsNokey' : ',;\n'.join(varsNokey)+';',
                 'keyPath' : keyPath,
-                'keyVarsNoKeyPath' : ';\n'.join(keyVarsNoKeyPath)+';',
+                'keyVarsNoKeyPath' : ',;\n'.join(keyVarsNoKeyPath)+';',
             }
 
-        fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'Api.template'))
+        #header
+        fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'Api.Header.template'))
         temp = Template(fileIn.read())
         result = temp.substitute(d)
-
-        f = open(os.path.join(settings.PATH_SRC_API, self.prefix+"Rest"+ self.segment +".prw") , "w+")
+        f = open(os.path.join(settings.PATH_TEMP, "Api.Header.tmp") , "w+")
+        f.write(result)
+        f.close()
+        #header.wsdata
+        fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'Api.Header.WsData.template'))
+        temp = Template(fileIn.read())
+        result = temp.substitute(d)
+        f = open(os.path.join(settings.PATH_TEMP, "Api.Header.WsData."+ self.entity +".tmp") , "w+")
+        f.write(result)
+        f.close()
+        #header.methods
+        fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'Api.Header.Methods.template'))
+        temp = Template(fileIn.read())
+        result = temp.substitute(d)
+        f = open(os.path.join(settings.PATH_TEMP, "Api.Header.Methods."+ self.entity +".tmp") , "w+")
+        f.write(result)
+        f.close()
+        #footer
+        #body
+        fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'Api.Body.template'))
+        temp = Template(fileIn.read())
+        result = temp.substitute(d)
+        f = open(os.path.join(settings.PATH_TEMP, "Api.Body."+ self.entity +".tmp") , "w+")
         f.write(result)
         f.close()
 
         return                
+
+    def finishApi(self):
+        header = open(os.path.join(settings.PATH_TEMP, 'Api.Header.tmp')).read()
+        footer = open(os.path.join(settings.PATH_TEMPLATE, 'Api.Footer.template')).read()
+        wsData = ''
+        methods = ''
+        body = ''
+        for files in os.walk(settings.PATH_TEMP):
+            for file in files[2]:
+                storagePathFile = os.path.join(settings.PATH_TEMP,file )
+                exists = os.path.isfile(storagePathFile) 
+                if exists:
+                    with open(storagePathFile) as datafile:
+                        if 'Api.Header.Methods' in file:
+                            methods += datafile.read()
+                        elif 'Api.Header.WsData' in file:
+                            wsData += datafile.read()
+                        elif 'Api.Body' in file:
+                            body += datafile.read()
+        result = header+wsData+methods+footer+body
+        f = open(os.path.join(settings.PATH_SRC_API, self.prefix+"Rest"+ self.segment +".prw") , "w+")
+        f.write(result)
+        f.close()
 
     def buildTest(self):
         self.buildTestGroup()
@@ -294,45 +336,42 @@ class CodeGenerator():
     def buildTestSuite(self):
 
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  self.entity + ".columns")
-        exists = os.path.isfile(storagePathFile)
+        if os.path.isfile(storagePathFile):
+            d = { 
+                    'className': self.name, 
+                    'entity' : self.entity,
+                    'company' : self.company,
+                    'filial' : self.filial,
+                    'prefix' : self.prefix,
+                }
 
-        d = { 
-                'className': self.name, 
-                'entity' : self.entity,
-                'company' : self.company,
-                'filial' : self.filial,
-                'prefix' : self.prefix,
-            }
+            fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'TestSuite.template'))
+            temp = Template(fileIn.read())
+            result = temp.substitute(d)
 
-        fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'TestSuite.template'))
-        temp = Template(fileIn.read())
-        result = temp.substitute(d)
-
-        f = open(os.path.join(settings.PATH_SRC_TEST_SUITE, self.prefix+self.name + "TestSuite.prw") , "w+")
-        f.write(result)
-        f.close()
+            f = open(os.path.join(settings.PATH_SRC_TEST_SUITE, self.prefix+self.name + "TestSuite.prw") , "w+")
+            f.write(result)
+            f.close()
 
         return        
 
     def buildTestGroup(self):
 
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE , self.entity + ".columns")
-        exists = os.path.isfile(storagePathFile)
-            
-        d = { 
-                'className': self.name, 
-                'entity' : self.entity,
-                'prefix' : self.prefix,
-            }
+        if os.path.isfile(storagePathFile):
+            d = { 
+                    'className': self.name, 
+                    'entity' : self.entity,
+                    'prefix' : self.prefix,
+                }
 
-        fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'TestGroup.template'))
-        temp = Template(fileIn.read())
-        result = temp.substitute(d)
+            fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'TestGroup.template'))
+            temp = Template(fileIn.read())
+            result = temp.substitute(d)
 
-        f = open(os.path.join(settings.PATH_SRC_TEST_GROUP, self.prefix+self.name + "TestGroup.prw") , "w+")
-        f.write(result)
-        f.close()
-
+            f = open(os.path.join(settings.PATH_SRC_TEST_GROUP, self.prefix+self.name + "TestGroup.prw") , "w+")
+            f.write(result)
+            f.close()
         return
 
     def buildMapper(self):
@@ -366,8 +405,6 @@ class CodeGenerator():
 
     def buildDocApiSchema(self):
 
-        mapper = ''
-        classNameLower = ''
         propertiesKey = ''
         propertiesNoKey = ''
 
@@ -441,8 +478,6 @@ class CodeGenerator():
 
     def buildDocApi(self):
 
-        mapper = ''
-        classNameLower = ''
         pathParam = ''
         queryParam = ''
         parameters = ''
@@ -537,48 +572,47 @@ class CodeGenerator():
     def buildCommand(self):
         
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  self.entity + ".columns")
-        exists = os.path.isfile(storagePathFile)
+        if os.path.isfile(storagePathFile):
 
-        d = {
-                'className': self.name,                     
-                'entity' : self.entity,
-                'prefix' : self.prefix,
-            }
+            d = {
+                    'className': self.name,                     
+                    'entity' : self.entity,
+                    'prefix' : self.prefix,
+                }
 
-        fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'Command.template'))
-        temp = Template(fileIn.read())
-        result = temp.substitute(d)
+            fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'Command.template'))
+            temp = Template(fileIn.read())
+            result = temp.substitute(d)
 
-        f = open(os.path.join(settings.PATH_SRC_COMMAND, self.prefix+"Cmd"+ self.name +".prw") , "w+")
-        f.write(result)
-        f.close()
+            f = open(os.path.join(settings.PATH_SRC_COMMAND, self.prefix+"Cmd"+ self.name +".prw") , "w+")
+            f.write(result)
+            f.close()
 
         return
 
     def buildValidate(self):
         
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  self.entity + ".columns")
-        exists = os.path.isfile(storagePathFile)
+        if os.path.isfile(storagePathFile):
 
-        d = {
-                'className': self.name,
-                'entity' : self.entity,                    
-                'prefix' : self.prefix,
-            }
+            d = {
+                    'className': self.name,
+                    'entity' : self.entity,                    
+                    'prefix' : self.prefix,
+                }
 
-        fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'Validator.template'))
-        temp = Template(fileIn.read())
-        result = temp.substitute(d)
+            fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'Validator.template'))
+            temp = Template(fileIn.read())
+            result = temp.substitute(d)
 
-        f = open(os.path.join(settings.PATH_SRC_VALIDATE, self.prefix+"Vld"+ self.name +".prw") , "w+")
-        f.write(result)
-        f.close()
+            f = open(os.path.join(settings.PATH_SRC_VALIDATE, self.prefix+"Vld"+ self.name +".prw") , "w+")
+            f.write(result)
+            f.close()
 
         return
 
     def copyLibs(self):
         
-        dest = settings.PATH_SRC_LIB
         src_files = os.listdir(settings.PATH_TEMPLATE_LIBS)
         for file_name in src_files:
             fileIn = open(os.path.join(settings.PATH_TEMPLATE_LIBS, file_name))

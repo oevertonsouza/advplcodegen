@@ -1,53 +1,10 @@
-#INCLUDE "TOTVS.CH"
-#INCLUDE "RESTFUL.CH"
-
-#DEFINE SINGLE "01"
-#DEFINE ALL    "02"
-#DEFINE BUSCA  "07"
-
-WSRESTFUL ${segment} DESCRIPTION "Exemplo de serviço REST"
-
-    // Atributos padrao utilizados em todas ou em mais de uma solicitacao
-    WSDATA apiVersion as STRING  OPTIONAL
-    WSDATA page as STRING  OPTIONAL
-    WSDATA pageSize as STRING  OPTIONAL
-    WSDATA tokenId as STRING  OPTIONAL
-    WSDATA action as STRING  OPTIONAL
-    WSDATA fields as STRING  OPTIONAL
-    WSDATA expand as STRING  OPTIONAL
-    WSDATA order as STRING  OPTIONAL
-    WSDATA version as STRING  OPTIONAL
-${wsDataKeys}
-${wsDataNoKeys}
-    // Metodos do Produto
-    WSMETHOD GET ${classNameAbreviate}Collection DESCRIPTION "" ;
-    WSsyntax "{version}/${classNameLower}" ;
-    PATH "{version}/${classNameLower}" PRODUCES APPLICATION_JSON
-
-    WSMETHOD GET ${classNameAbreviate}Single DESCRIPTION "" ;
-    WSsyntax "{version}/${classNameLower}/{${keyPath}}" ;
-    PATH "{version}/${classNameLower}/{${keyPath}}" PRODUCES APPLICATION_JSON
-
-    WSMETHOD PUT ${classNameAbreviate}Update DESCRIPTION "" ;
-    WSsyntax "{version}/${classNameLower}/{${keyPath}}" ;
-    PATH "{version}/${classNameLower}/{${keyPath}}" PRODUCES APPLICATION_JSON
-
-    WSMETHOD POST ${classNameAbreviate}Insert DESCRIPTION "" ;
-    WSsyntax "{version}/${classNameLower}" ;
-    PATH "{version}/${classNameLower}" PRODUCES APPLICATION_JSON
-
-    WSMETHOD DELETE ${classNameAbreviate}Delete DESCRIPTION "" ;
-    WSsyntax "{version}/${classNameLower}/{${keyPath}}" ;
-    PATH "{version}/${classNameLower}/{${keyPath}}" PRODUCES APPLICATION_JSON
-
-END WSRESTFUL
 
 WSMETHOD GET ${classNameAbreviate}Collection QUERYPARAM page, pageSize, fields, order,;
 ${varskey}
 ${varsNokey}
     WSSERVICE ${segment}
 
-    Local oRequest := nil
+    Local oRequest := ${prefix}Req${className}():New(self, "${classNameLower}-get_collection")
 
     Default self:page     := "1"
     Default self:pageSize := "20"
@@ -56,7 +13,6 @@ ${varsNokey}
 
 ${defaultVarsKey}
 ${defaultVarsNoKey}
-    oRequest := ${prefix}Req${className}():New(self, "${classNameLower}-get_collection")
     
     oRequest:initRequest()
     if oRequest:checkAuth()
@@ -82,9 +38,9 @@ WSMETHOD GET ${classNameAbreviate}Single PATHPARAM;
 ${keyVarsNoKeyPath}
     WSSERVICE ${segment}
     
+    Local oRequest := ${prefix}Req${className}():New(self, "${classNameLower}-get_single")
+
     Default self:fields   := ""
-           
-    oRequest := ${prefix}Req${className}():New(self, "${classNameLower}-get_single")
     
     oRequest:initRequest()
     if oRequest:checkAuth()
@@ -107,10 +63,9 @@ WSMETHOD PUT ${classNameAbreviate}Update PATHPARAM;
 ${keyVarsNoKeyPath}
     WSSERVICE ${segment}
 
-    Local oRequest := nil
+    Local oRequest := ${prefix}Req${className}():New(self, "${classNameLower}-put_update")
 
 ${defaultVarsKey}
-    oRequest := ${prefix}Req${className}():New(self, "${classNameLower}-put_update")
 
     oRequest:initRequest()
     if oRequest:checkAuth()
@@ -127,11 +82,10 @@ Return .T.
 
 WSMETHOD POST ${classNameAbreviate}Insert WSSERVICE ${segment}
 
-    Local oRequest := nil
+    Local oRequest := ${prefix}Req${className}():New(self, "${classNameLower}-post_insert")
    
 ${defaultVarsKey}
 ${defaultVarsNoKey}
-    oRequest := ${prefix}Req${className}():New(self, "${classNameLower}-post_insert")
 
     oRequest:initRequest()
     
@@ -153,9 +107,7 @@ WSMETHOD DELETE ${classNameAbreviate}Delete PATHPARAM;
 ${keyVarsNoKeyPath}
     WSSERVICE ${segment}
 
-    Local oRequest := nil
-
-    oRequest := ${prefix}Req${className}():New(self, "${classNameLower}-delete")
+    Local oRequest := ${prefix}Req${className}():New(self, "${classNameLower}-delete")
     
     oRequest:initRequest()
     if oRequest:checkAuth()
