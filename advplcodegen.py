@@ -9,5 +9,3 @@ def runCommand(run):
 
 run = sys.argv
 runCommand(run)
-
-

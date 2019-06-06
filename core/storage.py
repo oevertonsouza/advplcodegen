@@ -12,11 +12,12 @@ class Storage:
 
     #Gera as colunas no arquivo .storage, para usar no build
     def genColumnStorage(self, entity, keyParam):
-        
+        columnList = []
         f = open(os.path.join(settings.PATH_FILESTORAGE , entity + ".columns"), "w+")
         mdb = managedb.ManagementDb()
         columnInfo = mdb.getColumnInfo(entity)
-        columnList = mdb.getColumnDesc(entity)
+        if settings.PROTHEUS_ENVIORMENT['default']['DICTIONARY_IN_DATABASE']:
+            columnList = mdb.getColumnDesc(entity)
         is_indice = ''
         dataType = ''
         is_keyPathParam = ''

@@ -20,6 +20,7 @@ PROTHEUS_ENVIORMENT = {
         'SEGMENT' : 'SEGMENT  
         'PRODUCT' : 'PRODUCT',
         'PRDUCT_DESCRIPTION' : 'PRDUCT_DESCRIPTION',
+        'DICTIONARY_IN_DATABASE' : True,
         'CONTACT' : 'CONTACT',
     }
 }
