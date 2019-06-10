@@ -51,6 +51,7 @@ class CodeGenerator():
                     
                 d = { 
                         'className': self.shortName, 
+                        'description': self.name, 
                         'serialize' : serialize,
                         'fields' : fields,
                         'entity' : self.entity,
