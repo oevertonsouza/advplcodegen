@@ -1,7 +1,7 @@
 #include "TOTVS.CH"
 
 /*/{Protheus.doc} 
-    Classe concreta da Entidade ${prefix}${className}
+    Classe concreta da Entidade ${prefix}${className} - ${description}
     @type  Class
     @author FrameworkApi 1.0
     @since 20190211

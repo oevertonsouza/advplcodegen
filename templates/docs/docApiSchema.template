@@ -12,7 +12,7 @@
 		"x-totvs": {
 			"messageDocumentation": {
 				"name": "${className}",
-				"description": "Guias de atendimento",
+				"description": "${className}",
 				"segment": "${segment}"
 			},
 			"productInformation": [

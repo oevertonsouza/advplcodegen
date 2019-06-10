@@ -23,28 +23,28 @@ class Storage:
         is_keyPathParam = ''
     
         for column in columnInfo:
-            desc = column[0].replace("_", "").lower()
+            name = column[0].replace("_", "").lower()
+            length = str(column[2])
+            is_indice = "1" if column[3] == 2 else "0"
+            is_keyPathParam = "1" if column[0] == keyParam else "0"
+            dataType = "string" if column[1] == "varchar" else column[1]
+            desc = 'Descricao do campo'
+            opcoes = ""
             for field in columnList:
                 if column[0].strip() in field[0]:
-                    desc = re.sub('[^A-Za-z0-9]+', '', field[2])
-                    desc = desc[0].lower() + desc[1:]
-                    
-            if column[3] == 2:
-                is_indice = "1"
-            else:
-                is_indice = "0"
+                    name = re.sub('[^A-Za-z0-9]+', '', field[2])
+                    name = name[0].lower() + name[1:]
+                    desc = field[7].strip()
+                    opcoes = field[6].strip().replace(";",",")
+                    if field[3] == 'C':
+                        dataType = "string"
+                    elif field[3] == 'D':
+                        dataType = "date"
+                    elif field[3] == 'N':
+                        dataType = "float"
+                        length = str(int(field[4]))
             
-            if column[1] == "varchar":
-                dataType = "string"
-            else:
-                dataType = column[1]
-            
-            if column[0] == keyParam:
-                is_keyPathParam = "1"
-            else:
-                is_keyPathParam = "0"
-            
-            f.write( column[0]+';'+desc+';'+dataType+';'+str(column[2])+';'+is_indice+';'+is_keyPathParam+'\n')
+            f.write( column[0]+';'+name+';'+dataType+';'+length+';'+is_indice+';'+is_keyPathParam+';'+desc+";"+opcoes+';\n')
         
         f.close()
     

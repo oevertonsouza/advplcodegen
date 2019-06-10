@@ -14,8 +14,9 @@ class CodeGenerator():
     company = settings.PROTHEUS_ENVIORMENT['default']['COMPANY']
     filial = settings.PROTHEUS_ENVIORMENT['default']['FILIAL']
 
-    def __init__ (self, entity=None, name=None, alias=None):
+    def __init__ (self, entity=None, name=None, alias=None, shortName=None):
         self.entity = entity, 
+        self.shortName = shortName,
         self.name = name,
         self.alias = alias,
         return
@@ -23,6 +24,10 @@ class CodeGenerator():
     def setEntity(self, entity):
         self.entity = entity
         self.alias = entity[:3]
+        return
+
+    def setShortName(self, shortName):
+        self.shortName = shortName
         return
 
     def setName(self, name):
@@ -45,7 +50,7 @@ class CodeGenerator():
                     fields      += '    self:oFields:push({"'+column[1]+'", self:getValue("'+column[1] +'")}) /* Column '+ column[0] +' */ \n'
                     
                 d = { 
-                        'className': self.name, 
+                        'className': self.shortName, 
                         'serialize' : serialize,
                         'fields' : fields,
                         'entity' : self.entity,
@@ -56,7 +61,7 @@ class CodeGenerator():
                 temp = Template(fileIn.read())
                 result = temp.substitute(d)
 
-                f = open(os.path.join(settings.PATH_SRC_ENTITY, self.prefix+self.name + ".prw") , "w+")
+                f = open(os.path.join(settings.PATH_SRC_ENTITY, self.prefix+self.shortName + ".prw") , "w+")
                 f.write(result)
                 f.close()
 
@@ -69,7 +74,7 @@ class CodeGenerator():
 
         if exists:
                 d = { 
-                        'className': self.name, 
+                        'className': self.shortName, 
                         'entity' : self.entity,
                         'prefix' : self.prefix,
                     }
@@ -78,13 +83,12 @@ class CodeGenerator():
                 temp = Template(fileIn.read())
                 result = temp.substitute(d)
 
-                f = open(os.path.join(settings.PATH_SRC_COLLECTION, self.prefix+"Clt"+ self.name + ".prw") , "w+")
+                f = open(os.path.join(settings.PATH_SRC_COLLECTION, self.prefix+"Clt"+ self.shortName + ".prw") , "w+")
                 f.write(result)
                 f.close()                    
 
         return
 
-    
     def buildDao(self):
 
         commitKey = ''
@@ -112,7 +116,7 @@ class CodeGenerator():
                         commitNoKey += ''.rjust(8)+self.alias+'->'+column[0]+' := _Super:normalizeType('+ self.alias +'->'+ column[0] +',self:getValue("'+ column[1] +'")) /* Column '+ column[0] +' */\n'
                         
                 d = { 
-                        'className': self.name,
+                        'className': self.shortName,
                         'alias': self.alias,
                         'entity' : self.entity,
                         'commitKey' : commitKey,
@@ -127,7 +131,7 @@ class CodeGenerator():
                 temp = Template(fileIn.read())
                 result = temp.substitute(d)
 
-                f = open(os.path.join(settings.PATH_SRC_DAO, self.prefix+"Dao"+ self.name + ".prw") , "w+")
+                f = open(os.path.join(settings.PATH_SRC_DAO, self.prefix+"Dao"+ self.shortName + ".prw") , "w+")
                 f.write(result)
                 f.close()
 
@@ -140,7 +144,6 @@ class CodeGenerator():
         applyFilterAll = ''
         applyFilterSingle = ''
         prepFilter = ''
-
         if exists:
             with open(storagePathFile) as datafile:
                 columnInfo = csv.reader(datafile, delimiter=';')
@@ -152,7 +155,7 @@ class CodeGenerator():
                         prepFilter += ''.rjust(4)+'self:oCollection:setValue("'+ column[1] +'", self:oRest:'+ column[1] +')\n'
 
         d = {
-                'className': self.name,                     
+                'className': self.shortName,                     
                 'entity' : self.entity,
                 'prefix' : self.prefix,
                 'applyFilterAll' : applyFilterAll,
@@ -164,7 +167,7 @@ class CodeGenerator():
         temp = Template(fileIn.read())
         result = temp.substitute(d)
 
-        f = open(os.path.join(settings.PATH_SRC_REQUEST, self.prefix+"Req"+ self.name +".prw") , "w+")
+        f = open(os.path.join(settings.PATH_SRC_REQUEST, self.prefix+"Req"+ self.shortName +".prw") , "w+")
         f.write(result)
         f.close()
 
@@ -201,54 +204,55 @@ class CodeGenerator():
                     if column[5] == "1" :
                         keyPath = column[1]
 
-        keyVarsNoKeyPath.remove('    '+keyPath)
+        if len(keyVarsNoKeyPath) > 0:
+            keyVarsNoKeyPath.remove('    '+keyPath)
+            d = {
+                    'classNameAbreviate': self.shortName,
+                    'description': self.name,
+                    'className': self.shortName,
+                    'classNameLower' : self.shortName.lower(),
+                    'entity' : self.entity,
+                    'prefix' : self.prefix,
+                    'segment' : self.segment,
+                    'wsDataKeys' : wsDataKeys,
+                    'wsDataNoKeys' : wsDataNoKeys,
+                    'defaultVarsKey' : defaultVarsKey,
+                    'defaultVarsNoKey' : defaultVarsNoKey,
+                    'varskey' : ',;\n'.join(varskey)+ ',;' if len(varsNokey) > 0 else ',;\n'.join(varskey)+ ';' ,
+                    'varsNokey' : ',;\n'.join(varsNokey)+';',
+                    'keyPath' : keyPath,
+                    'keyVarsNoKeyPath' : ',;\n'.join(keyVarsNoKeyPath)+';',
+                }
 
-        d = {
-                'classNameAbreviate': self.name[:4],
-                'className': self.name,
-                'classNameLower' : self.name.lower(),
-                'entity' : self.entity,
-                'prefix' : self.prefix,
-                'segment' : self.segment,
-                'wsDataKeys' : wsDataKeys,
-                'wsDataNoKeys' : wsDataNoKeys,
-                'defaultVarsKey' : defaultVarsKey,
-                'defaultVarsNoKey' : defaultVarsNoKey,
-                'varskey' : ',;\n'.join(varskey)+',;',
-                'varsNokey' : ',;\n'.join(varsNokey)+';',
-                'keyPath' : keyPath,
-                'keyVarsNoKeyPath' : ',;\n'.join(keyVarsNoKeyPath)+';',
-            }
-
-        #header
-        fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'Api.Header.template'))
-        temp = Template(fileIn.read())
-        result = temp.substitute(d)
-        f = open(os.path.join(settings.PATH_TEMP, "Api.Header.tmp") , "w+")
-        f.write(result)
-        f.close()
-        #header.wsdata
-        fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'Api.Header.WsData.template'))
-        temp = Template(fileIn.read())
-        result = temp.substitute(d)
-        f = open(os.path.join(settings.PATH_TEMP, "Api.Header.WsData."+ self.entity +".tmp") , "w+")
-        f.write(result)
-        f.close()
-        #header.methods
-        fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'Api.Header.Methods.template'))
-        temp = Template(fileIn.read())
-        result = temp.substitute(d)
-        f = open(os.path.join(settings.PATH_TEMP, "Api.Header.Methods."+ self.entity +".tmp") , "w+")
-        f.write(result)
-        f.close()
-        #footer
-        #body
-        fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'Api.Body.template'))
-        temp = Template(fileIn.read())
-        result = temp.substitute(d)
-        f = open(os.path.join(settings.PATH_TEMP, "Api.Body."+ self.entity +".tmp") , "w+")
-        f.write(result)
-        f.close()
+            #header
+            fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'Api.Header.template'))
+            temp = Template(fileIn.read())
+            result = temp.substitute(d)
+            f = open(os.path.join(settings.PATH_TEMP, "Api.Header.tmp") , "w+")
+            f.write(result)
+            f.close()
+            #header.wsdata
+            fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'Api.Header.WsData.template'))
+            temp = Template(fileIn.read())
+            result = temp.substitute(d)
+            f = open(os.path.join(settings.PATH_TEMP, "Api.Header.WsData."+ self.entity +".tmp") , "w+")
+            f.write(result)
+            f.close()
+            #header.methods
+            fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'Api.Header.Methods.template'))
+            temp = Template(fileIn.read())
+            result = temp.substitute(d)
+            f = open(os.path.join(settings.PATH_TEMP, "Api.Header.Methods."+ self.entity +".tmp") , "w+")
+            f.write(result)
+            f.close()
+            #footer
+            #body
+            fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'Api.Body.template'))
+            temp = Template(fileIn.read())
+            result = temp.substitute(d)
+            f = open(os.path.join(settings.PATH_TEMP, "Api.Body."+ self.entity +".tmp") , "w+")
+            f.write(result)
+            f.close()
 
         return                
 
@@ -305,12 +309,12 @@ class CodeGenerator():
                     else:
                         noKeyVariables += ''.rjust(4)+'Local '+ column[1] +' := Nil\n'
                         noKeyValues +=  ''.rjust(4)+'oCollection:setValue("'+ column[1] +'", '+column[1]+' ) /* Column '+ column[0] +' */ \n'
-                        changeValues += ''.rjust(8)+'o'+self.prefix+self.name+':setValue("'+ column[1] +'", '+ column[1] +')  /* Column '+ column[0] +' */ \n'
+                        changeValues += ''.rjust(8)+'o'+self.prefix+self.shortName+':setValue("'+ column[1] +'", '+ column[1] +')  /* Column '+ column[0] +' */ \n'
                         compare += ''.rjust(8)+'oResult:assertTrue(oCenProducts:getValue("'+ column[1] +'") == '+ column[1] +', "Valor comparado na coluna '+ column[0] +' de alias '+ column[1] +', nao sao iguais.")  /* Column '+ column[0] +' */ \n'
                         cleanVarCollection += ''.rjust(4)+column[1]+' := ""\n'
 
                 d = {
-                        'className': self.name, 
+                        'className': self.shortName, 
                         'entity' : self.entity,
                         'alias' : self.alias,
                         'keyValues' : keyValues,
@@ -327,7 +331,7 @@ class CodeGenerator():
                 temp = Template(fileIn.read())
                 result = temp.substitute(d)
 
-                f = open(os.path.join(settings.PATH_SRC_TEST_CASES, self.prefix+self.name + "TestCase.prw") , "w+")
+                f = open(os.path.join(settings.PATH_SRC_TEST_CASES, self.prefix+self.shortName + "TestCase.prw") , "w+")
                 f.write(result)
                 f.close()
 
@@ -338,7 +342,7 @@ class CodeGenerator():
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  self.entity + ".columns")
         if os.path.isfile(storagePathFile):
             d = { 
-                    'className': self.name, 
+                    'className': self.shortName, 
                     'entity' : self.entity,
                     'company' : self.company,
                     'filial' : self.filial,
@@ -349,7 +353,7 @@ class CodeGenerator():
             temp = Template(fileIn.read())
             result = temp.substitute(d)
 
-            f = open(os.path.join(settings.PATH_SRC_TEST_SUITE, self.prefix+self.name + "TestSuite.prw") , "w+")
+            f = open(os.path.join(settings.PATH_SRC_TEST_SUITE, self.prefix+self.shortName + "TestSuite.prw") , "w+")
             f.write(result)
             f.close()
 
@@ -360,7 +364,7 @@ class CodeGenerator():
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE , self.entity + ".columns")
         if os.path.isfile(storagePathFile):
             d = { 
-                    'className': self.name, 
+                    'className': self.shortName, 
                     'entity' : self.entity,
                     'prefix' : self.prefix,
                 }
@@ -369,7 +373,7 @@ class CodeGenerator():
             temp = Template(fileIn.read())
             result = temp.substitute(d)
 
-            f = open(os.path.join(settings.PATH_SRC_TEST_GROUP, self.prefix+self.name + "TestGroup.prw") , "w+")
+            f = open(os.path.join(settings.PATH_SRC_TEST_GROUP, self.prefix+self.shortName + "TestGroup.prw") , "w+")
             f.write(result)
             f.close()
         return
@@ -387,7 +391,7 @@ class CodeGenerator():
                     mapper += '    aAdd(self:aFields,{"'+ column[0] +'" ,"'+ column[1] +'"})\n'
                 
                 d = { 
-                        'className': self.name, 
+                        'className': self.shortName, 
                         'entity' : self.entity,
                         'mapper' : mapper,
                         'prefix' : self.prefix,
@@ -397,7 +401,7 @@ class CodeGenerator():
                 temp = Template(fileIn.read())
                 result = temp.substitute(d)
 
-                f = open(os.path.join(settings.PATH_SRC_MAPPER, self.prefix+"Mpr"+ self.name + ".prw") , "w+")
+                f = open(os.path.join(settings.PATH_SRC_MAPPER, self.prefix+"Mpr"+ self.shortName + ".prw") , "w+")
                 f.write(result)
                 f.close()
 
@@ -418,16 +422,16 @@ class CodeGenerator():
                     if column[4] == "1":
                         propertiesKey += ''.rjust(16)+(
                             '"'+column[1]+'": {\n'
-				            '                    "description": "Descrição do campo",\n'
+				            '                    "description": "'+column[6]+'",\n'
                             '                    "type": "string",\n'
                             '                    "x-totvs": [\n'
                             '		                {\n'
                             '                           "product": "'+ self.product +'",\n'
                             '                           "field": "'+ self.alias +'.'+column[0]+'",\n'
                             '                           "required": false,\n'
-                            '                           "type": "string",\n'
+                            '                           "type": "'+column[2]+'",\n'
                             '                           "length": "'+column[3]+'",\n'
-                            '                           "note": "Descrição do campo",\n'
+                            '                           "note": "'+column[6]+'",\n'
                             '                           "available": true,\n'
                             '                           "canUpdate": false\n'                            
                             '                        }\n'
@@ -437,16 +441,16 @@ class CodeGenerator():
                     else:
                         propertiesNoKey += ''.rjust(16)+(
                             '"'+column[1]+'": {\n'
-				            '                    "description": "Descrição do campo",\n'
+				            '                    "description": "'+column[6]+'",\n'
                             '                    "type": "string",\n'
                             '                    "x-totvs": [\n'
                             '		                {\n'
                             '                           "product": "'+ self.product +'",\n'
                             '                           "field": "'+ self.alias +'.'+column[0]+'",\n'
                             '                           "required": false,\n'
-                            '                           "type": "string",\n'
+                            '                           "type": "'+column[2]+'",\n'
                             '                           "length": "'+column[3]+'",\n'
-                            '                           "note": "Descrição do campo",\n'
+                            '                           "note": "'+column[6]+'",\n'
                             '                           "available": true,\n'
                             '                           "canUpdate": true\n'                            
                             '                        }\n'
@@ -470,7 +474,7 @@ class CodeGenerator():
                 temp = Template(fileIn.read())
                 result = temp.substitute(d)
 
-                f = open(os.path.join(settings.PATH_SRC_DOC, self.name+"_1_100.json") , "w+")
+                f = open(os.path.join(settings.PATH_SRC_DOC, self.name.capitalize().replace(" ","_")+"_1_100.json") , "w+")
                 f.write(result)
                 f.close()
 
@@ -483,7 +487,7 @@ class CodeGenerator():
         parameters = ''
         keyParameters = ''
         keyPath = ''
-        abreviate = self.name[:4]
+        abreviate = self.shortName
 
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  self.entity + ".columns")
         exists = os.path.isfile(storagePathFile)
@@ -507,7 +511,7 @@ class CodeGenerator():
 			                            '           "'+column[1]+'Param": {\n'
 			                        	'               "name": "'+column[1]+'",\n'
 			                        	'               "in": "path",\n'
-			                        	'               "description": "Descricao do Campo",\n'
+			                        	'               "description": "'+column[6]+'",\n'
 			                        	'               "required": true,\n'
 			                        	'               "schema": {\n'
     			                        '		            "type": "string",\n'
@@ -521,7 +525,7 @@ class CodeGenerator():
 			                                '           "'+column[1]+'Param": {\n'
 			                            	'               "name": "'+column[1]+'",\n'
 			                            	'               "in": "query",\n'
-			                            	'               "description": "Descricao do Campo",\n'
+			                            	'               "description": "'+column[6]+'",\n'
 			                            	'               "required": true,\n'
 			                            	'               "schema": {\n'
     			                            '		            "type": "string",\n'
@@ -534,7 +538,7 @@ class CodeGenerator():
 			                                '           "'+column[1]+'Param": {\n'
 			                                '               "name": "'+column[1]+'",\n'
 			                                '               "in": "query",\n'
-			                                '               "description": "Descricao do Campo",\n'
+			                                '               "description": "'+column[6]+'",\n'
 			                                '               "required": false,\n'
 			                                '               "schema": {\n'
     			                            '		            "type": "string",\n'
@@ -563,7 +567,7 @@ class CodeGenerator():
                 temp = Template(fileIn.read())
                 result = temp.substitute(d)
 
-                f = open(os.path.join(settings.PATH_SRC_DOC, self.name+"_v1_100.json") , "w+")
+                f = open(os.path.join(settings.PATH_SRC_DOC, self.name.capitalize().replace(" ","_")+"_v1_100.json") , "w+")
                 f.write(result)
                 f.close()
 
@@ -575,7 +579,7 @@ class CodeGenerator():
         if os.path.isfile(storagePathFile):
 
             d = {
-                    'className': self.name,                     
+                    'className': self.shortName,                     
                     'entity' : self.entity,
                     'prefix' : self.prefix,
                 }
@@ -584,7 +588,7 @@ class CodeGenerator():
             temp = Template(fileIn.read())
             result = temp.substitute(d)
 
-            f = open(os.path.join(settings.PATH_SRC_COMMAND, self.prefix+"Cmd"+ self.name +".prw") , "w+")
+            f = open(os.path.join(settings.PATH_SRC_COMMAND, self.prefix+"Cmd"+ self.shortName +".prw") , "w+")
             f.write(result)
             f.close()
 
@@ -596,7 +600,7 @@ class CodeGenerator():
         if os.path.isfile(storagePathFile):
 
             d = {
-                    'className': self.name,
+                    'className': self.shortName,
                     'entity' : self.entity,                    
                     'prefix' : self.prefix,
                 }
@@ -605,7 +609,7 @@ class CodeGenerator():
             temp = Template(fileIn.read())
             result = temp.substitute(d)
 
-            f = open(os.path.join(settings.PATH_SRC_VALIDATE, self.prefix+"Vld"+ self.name +".prw") , "w+")
+            f = open(os.path.join(settings.PATH_SRC_VALIDATE, self.prefix+"Vld"+ self.shortName +".prw") , "w+")
             f.write(result)
             f.close()
 

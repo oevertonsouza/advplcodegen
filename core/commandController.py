@@ -12,35 +12,48 @@ class ComandsController:
 
     def run(self, run):
         run[1] = run[1].upper()
+        script = run[0] if len(run) > 0 else ''
+        command = run[1] if len(run) > 1 else ''
         for comand in self.firstComands:
-            if run[1] == 'TESTCONNECT':
+            if command == 'TESTCONNECT':
                 mdb = managedb.ManagementDb()
                 mdb.testeConnect()
                 return
-            if run[1] == 'STARTPROJECT':
+            if command == 'STARTPROJECT':
                 self.api.startProject()
                 return
-            if run[1] == 'ADDENTITY':
-                self.api.setEntity(run[2])
-                self.api.setName(run[3])
-                self.api.setKeyColumn(run[4])
+            if command == 'ADDENTITY':
+                entity = run[2] if len(run) > 2 else ''
+                keyColumn = run[3] if len(run) > 3 else ''
+                shortName = run[4] if len(run) > 4 else ''
+                name = run[5] if len(run) > 5 else ''
+                self.api.setEntity(entity)
+                self.api.setKeyColumn(keyColumn)
+                self.api.setName(name)
+                self.api.setShortName(shortName)
                 self.api.addEntity()
                 return
-            if run[1] == 'LIST':
+            if command == 'ADDENTITIES':
+                file = run[2] if len(run) > 2 else ''
+                storagePathFile = os.path.join(os.path.split(file)[0] , os.path.split(file)[1])
+                if os.path.isfile(storagePathFile):
+                    self.api.addEntities(storagePathFile)
+                else:
+                    print("can't find or open file " + file)
+                return
+            if command == 'LIST':
                 self.api.list()
                 return
-            if run[1] == 'BUILD':
+            if command == 'BUILD':
                 self.api.build()
                 return
-            if run[1] == 'SETCOLUMNALIAS':
-                script = run[0]
-                command = run[1]
-                entity = run[2]
-                columnName = run[3]
-                aliasName = run[4]
+            if command == 'SETCOLUMNALIAS':
+                entity = run[2] if len(run) > 2 else ''
+                columnName = run[3] if len(run) > 3 else ''
+                aliasName = run[4] if len(run) > 4 else ''
                 self.api.setColumnAlias(entity, columnName, aliasName)
                 return
-            if run[1] == 'TESTEFUN':
+            if command == 'TESTEFUN':
                 print("TESTE")
                 return
         return

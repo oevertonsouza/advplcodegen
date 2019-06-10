@@ -100,12 +100,34 @@ class ManagementDb:
                     " SELECT X3_CAMPO,X3_TITENG "
                     "     ,X3_DESCENG "
                     "     ,X3_TIPO "
+                    "     ,X3_TAMANHO "
+                    "     ,X3_DECIMAL "
                     "     ,X3_CBOX "
-                    " FROM SX3" + entity[3:] + " "
+                    "     ,X3_DESCRIC "
+                    " FROM SX3" + settings.PROTHEUS_ENVIORMENT['default']['COMPANY'] + "0 "
                     " WHERE 1=1 "
                     "   AND X3_ARQUIVO = '"+ entity[:3] +"' "
                     "   AND D_E_L_E_T_ = ' '"
                     " ORDER BY X3_ORDEM"
+                )
+
+        cursor = conn.cursor()
+        cursor.execute(query)
+        result = cursor.fetchall()
+        cursor.close()
+
+        return result
+    #Retorna os dados da tabela do SX2
+    def getTable(self, entity):
+
+        conn = self.conn()
+
+        query = (
+                    " SELECT X2_NOMEENG "
+                    " FROM SX2" + settings.PROTHEUS_ENVIORMENT['default']['COMPANY'] + "0 "
+                    " WHERE 1=1 "
+                    "   AND X2_CHAVE = '"+ entity[:3] +"' "
+                    "   AND D_E_L_E_T_ = ' '"
                 )
 
         cursor = conn.cursor()

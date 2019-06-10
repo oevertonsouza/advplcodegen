@@ -1,21 +1,20 @@
-
-    // Metodos da entidade
-    WSMETHOD GET ${classNameAbreviate}Collection DESCRIPTION "" ;
+    // Metodos da entidade ${entity} - ${description}
+    WSMETHOD GET ${classNameAbreviate}Collection DESCRIPTION "${description} - Get Collection" ;
     WSsyntax "{version}/${classNameLower}" ;
     PATH "{version}/${classNameLower}" PRODUCES APPLICATION_JSON
 
-    WSMETHOD GET ${classNameAbreviate}Single DESCRIPTION "" ;
+    WSMETHOD GET ${classNameAbreviate}Single DESCRIPTION "${description} - Get Single" ;
     WSsyntax "{version}/${classNameLower}/{${keyPath}}" ;
     PATH "{version}/${classNameLower}/{${keyPath}}" PRODUCES APPLICATION_JSON
 
-    WSMETHOD PUT ${classNameAbreviate}Update DESCRIPTION "" ;
+    WSMETHOD PUT ${classNameAbreviate}Update DESCRIPTION "${description} - PUT" ;
     WSsyntax "{version}/${classNameLower}/{${keyPath}}" ;
     PATH "{version}/${classNameLower}/{${keyPath}}" PRODUCES APPLICATION_JSON
 
-    WSMETHOD POST ${classNameAbreviate}Insert DESCRIPTION "" ;
+    WSMETHOD POST ${classNameAbreviate}Insert DESCRIPTION "${description} - Post" ;
     WSsyntax "{version}/${classNameLower}" ;
     PATH "{version}/${classNameLower}" PRODUCES APPLICATION_JSON
 
-    WSMETHOD DELETE ${classNameAbreviate}Delete DESCRIPTION "" ;
+    WSMETHOD DELETE ${classNameAbreviate}Delete DESCRIPTION "${description} - Delete" ;
     WSsyntax "{version}/${classNameLower}/{${keyPath}}" ;
     PATH "{version}/${classNameLower}/{${keyPath}}" PRODUCES APPLICATION_JSON

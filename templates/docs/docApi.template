@@ -230,7 +230,7 @@ ${keyParameters}
 ${keyParameters}
 				],
 				"responses": {
-					"204 ": {
+					"204": {
 						"description": "No content, OK"
 					},
 					"404": {

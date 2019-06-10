@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import sys, os, settings, csv
+import sys, os, settings, csv, re
 from core import managedb, commandController, apiController, codeGenerator, storage
 from pathlib import Path
 
@@ -13,12 +13,27 @@ class ApiControl:
         return
 
     def setEntity(self, entity):
-        self.entity = entity
+        self.entity = entity + settings.PROTHEUS_ENVIORMENT['default']['COMPANY'] + "0"
         self.cgen.setEntity(entity)
         return
 
+    def setShortName(self, shortName):
+        
+        self.shortName = shortName.capitalize() if shortName.strip() != "" else shortName[:4]
+        self.cgen.setShortName(shortName)
+        return
+
     def setName(self, name):
-        self.name = name
+        
+        self.name = name.capitalize()
+        if settings.PROTHEUS_ENVIORMENT['default']['DICTIONARY_IN_DATABASE']:
+            mdb = managedb.ManagementDb()
+            tableList = mdb.getTable(self.entity)
+            if len(tableList) > 0 and tableList[0][0].strip() != '':
+                self.name = tableList[0][0].strip().capitalize()
+                self.name = re.sub('[^A-Za-z0-9 ]+', '', self.name)
+                self.name = self.name.replace("  "," ")
+
         self.cgen.setName(name)
         return
 
@@ -55,7 +70,7 @@ class ApiControl:
         stg = storage.Storage()
 
         if self.entityExist():
-            print('Entity '+ self.entity + ' already added! Execute command #advplapi.py listapi ')
+            print('Entity '+ self.entity + ' already added! Execute the command #advplapi.py listapi to show the entities added ')
             return
         
         if self.nameExist():
@@ -63,7 +78,8 @@ class ApiControl:
             return
 
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE,  "storage.entity")
-        dataStorage = self.entity+';'+ self.name +';'+self.keyColumn+'\n'
+
+        dataStorage = self.entity+';'+ self.name +';'+self.keyColumn+';'+self.shortName+'\n'
         exists = os.path.isfile(storagePathFile) 
 
         if exists:
@@ -76,6 +92,25 @@ class ApiControl:
             f.close()
 
         stg.genColumnStorage(self.entity, self.keyColumn)
+        print('Entity '+ self.entity + ' successfully added!')
+
+        return
+
+    def addEntities(self,file):
+        
+        with open(file) as datafile:
+            columnInfo = csv.reader(datafile, delimiter=';')
+            for column in columnInfo:
+
+                entity = column[0] if len(column) > 0 else ''
+                keyColumn = column[1] if len(column) > 1 else ''
+                shortName = column[2] if len(column) > 2 else ''
+                name = column[3] if len(column) > 3 else ''
+                self.setEntity(entity)
+                self.setKeyColumn(keyColumn)
+                self.setName(name)
+                self.setShortName(shortName)
+                self.addEntity()
 
         return
 
@@ -97,14 +132,14 @@ class ApiControl:
 
     def entityExist(self):
 
-        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  "storage.txt")
+        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  "storage.entity")
         exists = os.path.isfile(storagePathFile) 
 
         if exists:
             with open(storagePathFile) as datafile:
                 data = csv.reader(datafile, delimiter=';')
                 for row in data:
-                    if row[0] == entity:
+                    if len(row) > 0 and row[0] == self.entity:
                         return True
         else:
             return False
@@ -136,6 +171,7 @@ class ApiControl:
                 for row in data:
                     self.setEntity(row[0])
                     self.setName(row[1])
+                    self.setShortName(row[3])
                     self.cgen.buildEntity()
                     self.cgen.buildDao()
                     self.cgen.buildCollection()
