@@ -207,9 +207,12 @@ class CodeGenerator():
 
         if len(keyVarsNoKeyPath) > 0:
             keyVarsNoKeyPath.remove('    '+keyPath)
+            descriptionPath = self.name.title().replace(" ","")
+            descriptionPath = descriptionPath[0].lower() + descriptionPath[1:]
             d = {
                     'classNameAbreviate': self.shortName,
-                    'description': self.name,
+                    'description': self.name.title(),
+                    'descriptionPath': descriptionPath,
                     'className': self.shortName,
                     'classNameLower' : self.shortName.lower(),
                     'entity' : self.entity,
@@ -475,7 +478,7 @@ class CodeGenerator():
                 temp = Template(fileIn.read())
                 result = temp.substitute(d)
 
-                f = open(os.path.join(settings.PATH_SRC_DOC, self.name.capitalize().replace(" ","_")+"_1_100.json") , "w+")
+                f = open(os.path.join(settings.PATH_SRC_DOC, self.name.title().replace(" ","_")+"_1_100.json") , "w+")
                 f.write(result)
                 f.close()
 
@@ -568,7 +571,7 @@ class CodeGenerator():
                 temp = Template(fileIn.read())
                 result = temp.substitute(d)
 
-                f = open(os.path.join(settings.PATH_SRC_DOC, self.name.capitalize().replace(" ","_")+"_v1_100.json") , "w+")
+                f = open(os.path.join(settings.PATH_SRC_DOC, self.name.title().replace(" ","_")+"_v1_100.json") , "w+")
                 f.write(result)
                 f.close()
 

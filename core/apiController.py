@@ -19,18 +19,18 @@ class ApiControl:
 
     def setShortName(self, shortName):
         
-        self.shortName = shortName.capitalize() if shortName.strip() != "" else shortName[:4]
+        self.shortName = shortName.title() if shortName.strip() != "" else shortName[:4]
         self.cgen.setShortName(shortName)
         return
 
     def setName(self, name):
         
-        self.name = name.capitalize()
+        self.name = name.title()
         if settings.PROTHEUS_ENVIORMENT['default']['DICTIONARY_IN_DATABASE']:
             mdb = managedb.ManagementDb()
             tableList = mdb.getTable(self.entity)
             if len(tableList) > 0 and tableList[0][0].strip() != '':
-                self.name = tableList[0][0].strip().capitalize()
+                self.name = tableList[0][0].strip().title()
                 self.name = re.sub('[^A-Za-z0-9 ]+', '', self.name)
                 self.name = self.name.replace("  "," ")
 
@@ -169,21 +169,22 @@ class ApiControl:
             with open(storagePathFile) as datafile:
                 data = csv.reader(datafile, delimiter=';')
                 for row in data:
-                    self.setEntity(row[0])
-                    self.setName(row[1])
-                    self.setShortName(row[3])
-                    self.cgen.buildEntity()
-                    self.cgen.buildDao()
-                    self.cgen.buildCollection()
-                    self.cgen.buildTest()
-                    self.cgen.buildMapper()
-                    self.cgen.buildRequest()
-                    self.cgen.buildCommand()
-                    self.cgen.buildValidate()
-                    self.cgen.buildDocApiSchema()
-                    self.cgen.buildDocApi()
-                    self.cgen.buildApi()
-                self.cgen.finishApi()
+                    if len(row) > 0:
+                        self.setEntity(row[0])
+                        self.setName(row[1])
+                        self.setShortName(row[3])
+                        self.cgen.buildEntity()
+                        self.cgen.buildDao()
+                        self.cgen.buildCollection()
+                        self.cgen.buildTest()
+                        self.cgen.buildMapper()
+                        self.cgen.buildRequest()
+                        self.cgen.buildCommand()
+                        self.cgen.buildValidate()
+                        self.cgen.buildDocApiSchema()
+                        self.cgen.buildDocApi()
+                        self.cgen.buildApi()
+                    self.cgen.finishApi()
         return False
 
     def setColumnAlias(self, entity, columnName, aliasName):

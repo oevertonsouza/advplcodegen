@@ -32,7 +32,7 @@ class Storage:
             opcoes = ""
             for field in columnList:
                 if column[0].strip() in field[0]:
-                    name = re.sub('[^A-Za-z0-9]+', '', field[2])
+                    name = re.sub('[^A-Za-z0-9]+', '', field[2].title())
                     name = name[0].lower() + name[1:]
                     desc = field[7].strip()
                     opcoes = field[6].strip().replace(";",",")
