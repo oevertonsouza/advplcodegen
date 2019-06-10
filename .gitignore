@@ -8,8 +8,9 @@ filestorage/storage.txt
 settings.py
 *src/*
 *filestorage/*
+*temp/*
 *build/*
-__pycache__/
+*__pycache__/*
 api/**
 /core/__pycache__/
 __pycache__/*.cpython-37
@@ -19,3 +20,5 @@ core/__pycache__/codeGenerator.cpython-37.pyc
 core/__pycache__/commandController.cpython-37.pyc
 core/__pycache__/managedb.cpython-37.pyc
 core/
+*.pyc
+__pycache__/settings.cpython-37.pyc
