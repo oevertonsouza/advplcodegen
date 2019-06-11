@@ -38,7 +38,7 @@ METHOD getSingle_001() CLASS ${prefix}${className}TestCase
 
 	Local oResult := FWTestHelper():New()
 	Local oCollection := ${prefix}Clt${className}():New()
-	Local o${prefix}${className} := ${prefix}${className}():New()
+	Local o${prefix}${className} := Nil
 
 ${keyVariables}
 ${noKeyVariables}
@@ -64,7 +64,7 @@ METHOD getCollection_002() CLASS ${prefix}${className}TestCase
 
 	Local oResult := FWTestHelper():New()
 	Local oCollection := ${prefix}Clt${className}():New()
-	Local o${prefix}${className} := ${prefix}${className}():New()
+	Local o${prefix}${className} := Nil
  
 ${noKeyVariables}
 	oCollection:applyPageSize("1","2")
@@ -120,7 +120,7 @@ METHOD update_004() CLASS ${prefix}${className}TestCase
 
 	Local oResult := FWTestHelper():New()
 	Local oCollection := ${prefix}Clt${className}():New()
-	Local o${prefix}${className} := ${prefix}${className}():New()
+	Local o${prefix}${className} := Nil
 
 ${keyVariables}
 ${noKeyVariables}

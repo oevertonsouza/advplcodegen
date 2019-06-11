@@ -13,6 +13,7 @@ class CodeGenerator():
     segment = settings.PROTHEUS_ENVIORMENT['default']['SEGMENT']
     company = settings.PROTHEUS_ENVIORMENT['default']['COMPANY']
     filial = settings.PROTHEUS_ENVIORMENT['default']['FILIAL']
+    columnsToAdd = []
 
     def __init__ (self, entity=None, name=None, alias=None, shortName=None):
         self.entity = entity, 
@@ -189,22 +190,28 @@ class CodeGenerator():
 
         if exists:
             with open(storagePathFile) as datafile:
-                columnInfo = csv.reader(datafile, delimiter=';')
-                for column in columnInfo:
+                columnsCsv = csv.reader(datafile, delimiter=';')
+                for column in columnsCsv:
 
+                    exists = False
+                    for columnAdded in self.columnsToAdd:
+                        if column[1].strip() in columnAdded:
+                            exists = True
+                            break
+                    if not exists:
+                        self.columnsToAdd.append(column)
+                        wsDataNoKeys += ''.rjust(4)+'WSDATA '+ column[1] +' as STRING  OPTIONAL\n'
+                
                     if column[4] == "1" :
                         defaultVarsKey  += ''.rjust(4)+'Default self:'+ column[1] +' := ""\n'
-                        wsDataNoKeys += ''.rjust(4)+'WSDATA '+ column[1] +' as STRING  OPTIONAL\n'
                         varskey.append(''.rjust(4)+column[1])
                         keyVarsNoKeyPath.append(''.rjust(4)+column[1])
                     else:
                         defaultVarsNoKey  += ''.rjust(4)+'Default self:'+ column[1] +' := ""\n'
-                        wsDataNoKeys += ''.rjust(4)+'WSDATA '+ column[1] +' as STRING  OPTIONAL\n'
                         varsNokey.append(''.rjust(4)+column[1])
                     
                     if column[5] == "1" :
                         keyPath = column[1]
-
         if len(keyVarsNoKeyPath) > 0:
             keyVarsNoKeyPath.remove('    '+keyPath)
             descriptionPath = self.name.title().replace(" ","")
@@ -314,7 +321,7 @@ class CodeGenerator():
                         noKeyVariables += ''.rjust(4)+'Local '+ column[1] +' := Nil\n'
                         noKeyValues +=  ''.rjust(4)+'oCollection:setValue("'+ column[1] +'", '+column[1]+' ) /* Column '+ column[0] +' */ \n'
                         changeValues += ''.rjust(8)+'o'+self.prefix+self.shortName+':setValue("'+ column[1] +'", '+ column[1] +')  /* Column '+ column[0] +' */ \n'
-                        compare += ''.rjust(8)+'oResult:assertTrue(oCenProducts:getValue("'+ column[1] +'") == '+ column[1] +', "Valor comparado na coluna '+ column[0] +' de alias '+ column[1] +', nao sao iguais.")  /* Column '+ column[0] +' */ \n'
+                        compare += ''.rjust(8)+'oResult:assertTrue(o'+self.prefix+self.shortName+':getValue("'+ column[1] +'") == '+ column[1] +', "Valor comparado na coluna '+ column[0] +' de alias '+ column[1] +', nao sao iguais.")  /* Column '+ column[0] +' */ \n'
                         cleanVarCollection += ''.rjust(4)+column[1]+' := ""\n'
 
                 d = {

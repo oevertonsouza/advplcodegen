@@ -41,7 +41,7 @@ Method mapFromDao(oDao) Class ${prefix}Mapper
     Local nLen   := Len(self:aFields)
 
     For nField := 1 to nLen
-        self:oEntity:setValue(self:aFields[nField][JSONFIELD],AllTrim( (oDao:cAliasTemp)->&(self:aFields[nField][DBFIELD]) ) )
+        self:oEntity:setValue(self:aFields[nField][JSONFIELD], (oDao:cAliasTemp)->&(self:aFields[nField][DBFIELD]) )
     Next nField
 Return
 
