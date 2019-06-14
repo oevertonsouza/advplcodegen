@@ -2,7 +2,7 @@
 	"openapi": "3.0.1",
 	"servers": [
 		{
-			"description": "DescriÁ„o da API",
+			"description": "API para cadastro da entidade ${className}",
 			"url": "http://{serverUrl}:{serverHttpPort}/api/${segment}/v1",
 			"variables": {
 				"serverUrl": {
@@ -15,18 +15,18 @@
 		}
 	],
 	"info": {
-		"description": "DescriÁ„o da API",
+		"description": "API para cadastro da entidade ${className}",
 		"version": "1.100",
 		"title": "${className}",
 		"contact": {
 			"name": "T-Talk",
-			"url": "http://api.totvs.com.br",
+			"url": "api.totvs.com.br",
 			"email": "${contact}"
 		},
 		"x-totvs": {
 			"messageDocumentation": {
 				"name": "${className}",
-				"description": "Descricao da Funcionalidade.",
+				"description": "${className}",
 				"segment": "${segment}"
 			},
 			"productInformation": [
@@ -45,18 +45,17 @@
 					"${className}"
 				],
 				"operationId": "${abreviate}Collection",
-				"summary": "Dados do serviÁo ${className}, referente a entidade ${entity}.",
-				"description": "Retorna uma mensagem com a coleÁ„o de objetos do serviÁo ${className} da entidade ${entity}",
+				"summary": "Dados do servi√ßo ${className}, referente a entidade ${entity}.",
+				"description": "Retorna uma mensagem com a cole√ß√£o de objetos do servi√ßo ${className} da entidade ${entity}",
 				"x-totvs": {
 					"productInformation": [
 						{
 							"product": "${product}",
 							"available": true,
-							"note": "Este verbo est· disponÌvel com todos os parametros"
+							"note": "Este verbo est√° dispon√≠vel com todos os parametros"
 						}
 					]
 				},
-				"description": "Retorna uma mensagem do tipo colecao com os dados da entidade ${entity}",
 				"parameters": [
 					{
 						"$$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/apis/types/totvsApiTypesBase.json#/parameters/Page"
@@ -84,7 +83,7 @@ ${parameters}
 						"content": {
 							"application/json": {
 								"schema": {
-									"$$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/schemas/${className_}_1_100.json#/definitions/Paged${className_}"
+									"$$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/schemas/${classNameTitle}_1_100.json#/definitions/Paged${classNameTitle}"
 								}
 							}
 						}
@@ -106,14 +105,14 @@ ${parameters}
 					"${className}"
 				],
 				"operationId": "${abreviate}Update",
-				"summary": "Dados do serviÁo ${className}, referente a entidade ${entity}.",
-				"description": "Atualiza o dado referente ao serviÁo ${className}. Ao realizar a alteraÁ„o de um registro, o endpoint ir· responder com codigo 202 indicando que a requisicao foi adicionada, e um Body com o objeto Json.",
+				"summary": "Dados do servi√ßo ${className}, referente a entidade ${entity}.",
+				"description": "Atualiza o dado referente ao servi√ßo ${className}. Ao realizar a alteraÔøΩÔøΩo de um registro, o endpoint ir√° responder com codigo 202 indicando que a requisicao foi adicionada, e um Body com o objeto Json.",
 				"x-totvs": {
 					"productInformation": [
 						{
 							"product": "${product}",
 							"available": true,
-							"note": "Este verbo est· disponÌvel."
+							"note": "Este verbo est√° dispon√≠vel."
 						}
 					]
 				},
@@ -127,7 +126,7 @@ ${keyParameters}
 					"content": {
 						"application/json": {
 							"schema": {
-								"$$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/schemas/${className_}_1_100.json#/definitions/${className_}Body"
+								"$$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/schemas/${classNameTitle}_1_100.json#/definitions/${classNameTitle}Body"
 							}
 						}
 					},
@@ -139,7 +138,7 @@ ${keyParameters}
 						"description": "Accepted",
 						"headers": {
 							"location": {
-								"description": "URL onde o recurso estar· disponÌvel",
+								"description": "URL onde o recurso estar√° dispon√≠vel",
 								"schema": {
 									"type": "string"
 								}
@@ -148,7 +147,7 @@ ${keyParameters}
 						"content": {
 							"application/json": {
 								"schema": {
-									"$$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/schemas/${className_}_1_100.json#/definitions/${className_}Body"
+									"$$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/schemas/${classNameTitle}_1_100.json#/definitions/${classNameTitle}Body"
 								}
 							}
 						}
@@ -162,14 +161,14 @@ ${keyParameters}
 					"${className}"
 				],
 				"operationId": "${abreviate}Single",
-				"summary": "Dados do serviÁo ${className} referente a entidade ${entity}.",
-				"description": "Retorna uma mensagem com o objeto do serviÁo ${className} da entidade ${entity}",
+				"summary": "Dados do servi√ßo ${className} referente a entidade ${entity}.",
+				"description": "Retorna uma mensagem com o objeto do servi√ßo ${className} da entidade ${entity}",
 				"x-totvs": {
 					"productInformation": [
 						{
 							"product": "${product}",
 							"available": true,
-							"note": "Este verbo est· disponÌvel com os par‚metros Authorization."
+							"note": "Este verbo est√° dispon√≠vel com os par√¢metros Authorization."
 						}
 					]
 				},
@@ -191,7 +190,7 @@ ${keyParameters}
 						"content": {
 							"application/json": {
 								"schema": {
-									"$$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/schemas/${className_}_1_100.json#/definitions/${className_}"
+									"$$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/schemas/${classNameTitle}_1_100.json#/definitions/${classNameTitle}"
 								}
 							}
 						}
@@ -213,14 +212,14 @@ ${keyParameters}
 					"${className}"
 				],
 				"operationId": "${abreviate}Delete",
-				"summary": "Dados do serviÁo ${className} referente a entidade ${entity}.",
-				"description": "Exclui um registro referente ao serviÁo ${className}. Ao realizar a deleÁ„o de um registro, o endpoint ir· responder com codigo 200 indicando que a requisicao foi processada corretamente.",
+				"summary": "Dados do servi√ßo ${className} referente a entidade ${entity}.",
+				"description": "Exclui um registro referente ao servi√ßo ${className}. Ao realizar a dele√ß√£o de um registro, o endpoint ir√° responder com codigo 200 indicando que a requisicao foi processada corretamente.",
 				"x-totvs": {
 					"productInformation": [
 						{
 							"product": "${product}",
 							"available": true,
-							"note": "Este verbo est· disponÌvel com os par‚metros Authorization."
+							"note": "Este verbo est√° dispon√≠vel com os par√¢metros Authorization."
 						}
 					]
 				},

@@ -479,12 +479,12 @@ class CodeGenerator():
                             '                   ]\n'
                             '                },\n'
                         )
-                className_ = self.name.title().replace(" ","_")
+                classNameTitle = self.name.title().replace(" ","")
                 descriptionPath = self.name.title().replace(" ","")
                 descriptionPath = descriptionPath[0].lower() + descriptionPath[1:]
                 d = { 
                         'className': self.name, 
-                        'className_': className_, 
+                        'classNameTitle': classNameTitle, 
                         'descriptionPath': descriptionPath, 
                         'entity' : self.entity,
                         'product' : self.product,
@@ -500,7 +500,7 @@ class CodeGenerator():
                 temp = Template(fileIn.read())
                 result = temp.substitute(d)
 
-                f = open(os.path.join(settings.PATH_SRC_DOC, className_+"_1_100.json") , "w+")
+                f = open(os.path.join(settings.PATH_SRC_DOC_SCHEMA, classNameTitle+"_1_100.json") , "w+")
                 f.write(result)
                 f.close()
 
@@ -573,10 +573,10 @@ class CodeGenerator():
 			                                '           },\n'
                             )
 
-                className_ = self.name.title().replace(" ","_")
+                classNameTitle = self.name.title().replace(" ","")
                 d = { 
                         'className': self.name,
-                        'className_': className_,
+                        'classNameTitle': classNameTitle,
                         'entity' : self.entity,
                         'product' : self.product,
                         'productDescription' : self.productDescription,
@@ -595,7 +595,7 @@ class CodeGenerator():
                 temp = Template(fileIn.read())
                 result = temp.substitute(d)
 
-                f = open(os.path.join(settings.PATH_SRC_DOC, self.name.title().replace(" ","_")+"_v1_100.json") , "w+")
+                f = open(os.path.join(settings.PATH_SRC_DOC_API, self.name.title().replace(" ","")+"_v1_100.json") , "w+")
                 f.write(result)
                 f.close()
 

@@ -52,6 +52,8 @@ class ApiControl:
         if not os.path.isdir(settings.PATH_SRC_LIB): os.mkdir(settings.PATH_SRC_LIB)
         if not os.path.isdir(settings.PATH_SRC_COLLECTION): os.mkdir(settings.PATH_SRC_COLLECTION)
         if not os.path.isdir(settings.PATH_SRC_DOC): os.mkdir(settings.PATH_SRC_DOC)
+        if not os.path.isdir(settings.PATH_SRC_DOC_API): os.mkdir(settings.PATH_SRC_DOC_API)
+        if not os.path.isdir(settings.PATH_SRC_DOC_SCHEMA): os.mkdir(settings.PATH_SRC_DOC_SCHEMA)
         if not os.path.isdir(settings.PATH_SRC_API): os.mkdir(settings.PATH_SRC_API)
         if not os.path.isdir(settings.PATH_SRC_MAPPER): os.mkdir(settings.PATH_SRC_MAPPER)
         if not os.path.isdir(settings.PATH_SRC_REQUEST): os.mkdir(settings.PATH_SRC_REQUEST)
