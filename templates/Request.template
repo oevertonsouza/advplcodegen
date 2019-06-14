@@ -47,26 +47,30 @@ Method applyOrder(cOrder) Class ${prefix}Req${className}
     EndIf
 Return self:lSuccess
 
-Method prepFilter(cJson) Class ${prefix}Req${className}
+Method prepFilter(oJson) Class ${prefix}Req${className}
 
-    Default cJson := self:jRequest
+    Default oJson := self:jRequest
 ${prepFilter}    
-    self:oCollection:mapFromJson(cJson)
+    self:oCollection:mapFromJson(oJson)
 
 Return
 
 Method buscar(nType) Class ${prefix}Req${className}
 
-    Local lExiste := nil 
-
+    Local lExiste := .F.
     If self:lSuccess
-        If nType != BUSCA
-            lExiste := self:oCollection:bscChaPrim()
+        If nType == BUSCA
+            self:lSuccess := self:oCollection:buscar()
         Else
-            lExiste := self:oCollection:buscar()
+            lExiste := self:oCollection:bscChaPrim()
+            If nType == INSERT
+                self:lSuccess := !lExiste
+            Else
+                self:lSuccess := lExiste
+            EndIf
         EndIf
     EndIf
 
-Return lExiste
+Return self:lSuccess
 
 

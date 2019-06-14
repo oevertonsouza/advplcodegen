@@ -120,6 +120,10 @@ Method setHMap(hMap) Class ${prefix}Dao
     self:hMap := hMap
 Return
 
+Method setNumPage(cNumPage) Class CenDao
+    self:cNumPage := cNumPage 
+Return
+
 Method setPageSize(cPageSize) Class ${prefix}Dao
     self:cPageSize := cPageSize
 Return

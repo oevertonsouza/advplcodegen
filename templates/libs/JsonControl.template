@@ -19,12 +19,8 @@ Class ${prefix}JsonControl
     Method New()
     
     Method prepFields(cFields)
-    Method prepExpand(cExpand)
-    Method getExpandables(aExpandables)
-
+    
     Method notFiltered()
-    Method expand(oJson,cProp)
-    Method fillExpandable(oJson,cProp,oValue)
     Method fillArray(oJson,cProp,oValue)
     Method newArray(oJson,cProp)
     Method newObj(oJson,cProp)
@@ -59,73 +55,8 @@ Method prepFields(cFields) Class ${prefix}JsonControl
     
 return
 
-Method prepExpand(cExpand) Class ${prefix}JsonControl
-    Local nExpand    := 0
-    Local nLenExpand := 0
-    Local aExpand    := {}
-    Local aExpChild  := {}
-    Local nExpChild  := 1
-    Local nLenChild  := 0
-
-    if !empty(cExpand)
-        aExpand := StrTokArr2(cExpand, ",")
-        nLenExpand := Len(aExpand)
-        for nExpand := 1 to nLenExpand
-            if At(".",aExpand[nExpand]) > 0
-                aExpChild := StrTokArr2(aExpand[nExpand], ".")
-                nLenChild := Len(aExpChild)
-                if self:printProp(aExpChild[nExpChild])
-                    for nExpChild := 1 to nLenChild
-                        self:hmExpand:set(aExpChild[nExpChild],aExpChild[nExpChild])
-                    next
-                endif 
-            elseif self:printProp(aExpand[nExpand])
-                self:hmExpand:set(aExpand[nExpand],aExpand[nExpand])
-            endif
-        next nExpand
-    endif
-
-return
-
-Method getExpandables(aExpandables) Class ${prefix}JsonControl
-    Local nExpand    := 1
-    Local nLenExpand := Len(aExpandables)
-
-    while nExpand <= nLenExpand
-        if self:hmExpand:get(aExpandables[nExpand])
-            ArrayPop(@aExpandables,nExpand)
-            nLenExpand--
-        else
-            nExpand++
-        endif
-    enddo
-
-return aExpandables
-
 Method notFiltered() Class ${prefix}JsonControl
 Return !self:lFiltered .Or. self:lExpanding
-
-Method expand(oJson,cProp,lList) Class ${prefix}JsonControl
-    Local lExpand := self:hmExpand:get(cProp)
-    Default lList := .F.
-         
-    if !lExpand
-        iif(!lList,self:newObj(oJson,cProp),self:newArray(oJson,cProp))
-    endif
-
-return lExpand
-
-Method fillExpandable(oJson,cProp,oValue) Class ${prefix}JsonControl
-    
-    if !empty(oValue)
-        // TODO - instanciar novo ${prefix}jSonControl pro expandable
-        self:lExpanding := .T.
-        self:setProp(oJson,cProp,oValue:serialize(self))
-        self:lExpanding := .F.
-    else
-        self:setProp(oJson,cProp,JsonObject():New())
-    endif
-return
 
 Method fillArray(oJson,cProp,oValue) Class ${prefix}JsonControl
     
@@ -136,7 +67,6 @@ Method fillArray(oJson,cProp,oValue) Class ${prefix}JsonControl
     endif
 return
 
-//Everton -- Criada para adicionar objetos ao array sem serialize
 Method addObjtoProp(oJson,cProp, oObj) Class ${prefix}JsonControl
     
     if !empty(oObj:toJson())

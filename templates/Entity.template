@@ -11,7 +11,6 @@ Class ${prefix}${className} from ${prefix}Entity
     Method New(oDao)
   
     Method serialize(oJsonControl)
-    Method getFields()
     Method destroy()
 
 EndClass
@@ -27,13 +26,6 @@ Method serialize(oJsonControl) Class ${prefix}${className}
 
 $serialize
 Return oJson
-
-Method getFields() Class ${prefix}${className}
-
-	self:oFields := HMList():New()
-
-$fields
-Return self:oFields
 
 Method destroy() Class ${prefix}${className}
 	_Super:destroy()

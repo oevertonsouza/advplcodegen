@@ -298,13 +298,14 @@ class CodeGenerator():
     
     def buildTestCase(self):
 
-        keyValues = ''
-        noKeyValues = ''
+        keyCollumn = ''
         compare = ''
-        changeValues = ''
+        compareAll = ''
         keyVariables = ''
         noKeyVariables = ''
-        cleanVarCollection = ''
+        queryParams = []
+        order = []
+        body = []
         
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  self.entity + ".columns")
         exists = os.path.isfile(storagePathFile)
@@ -313,29 +314,39 @@ class CodeGenerator():
             with open(storagePathFile) as datafile:
                 columnInfo = csv.reader(datafile, delimiter=';')
                 for column in columnInfo:
-                    
-                    if column[4] == "1":
-                        keyValues += ''.rjust(4)+'oCollection:setValue("'+ column[1] +'", '+column[1]+' ) /* Column '+ column[0] +' */ \n'
-                        keyVariables += ''.rjust(4)+'Local '+ column[1] +' := Nil\n'
+                    compare += ''.rjust(8)+'oResult:assertTrue(oJson["'+ column[1] +'"] == '+ column[1] +', "Valor comparado na coluna '+ column[0] +' de alias '+ column[1] +', nao sao iguais. Retorno:" + cRet)  \n'
+                    compareAll += ''.rjust(8)+'oResult:assertTrue(oJson["items"][1]["'+ column[1] +'"] == '+ column[1] +', "Valor comparado na coluna '+ column[0] +' de alias '+ column[1] +', nao sao iguais. Retorno:" + cRet)  \n'
+                    order.append(column[1])
+                    if column[2] == 'float':
+                        body.append(''.rjust(24)+'\' "'+ column[1] +'": \'+AllTrim(Str('+ column[1] +'))+\'')
                     else:
-                        noKeyVariables += ''.rjust(4)+'Local '+ column[1] +' := Nil\n'
-                        noKeyValues +=  ''.rjust(4)+'oCollection:setValue("'+ column[1] +'", '+column[1]+' ) /* Column '+ column[0] +' */ \n'
-                        changeValues += ''.rjust(8)+'o'+self.prefix+self.shortName+':setValue("'+ column[1] +'", '+ column[1] +')  /* Column '+ column[0] +' */ \n'
-                        compare += ''.rjust(8)+'oResult:assertTrue(o'+self.prefix+self.shortName+':getValue("'+ column[1] +'") == '+ column[1] +', "Valor comparado na coluna '+ column[0] +' de alias '+ column[1] +', nao sao iguais.")  /* Column '+ column[0] +' */ \n'
-                        cleanVarCollection += ''.rjust(4)+column[1]+' := ""\n'
-
+                        body.append(''.rjust(24)+'\' "'+ column[1] +'": "\'+'+ column[1] +'+\'"')
+                    
+                    if column[5] == "1":
+                        keyCollumn = column[1]
+                    if column[4] == "1":
+                        keyVariables += ''.rjust(4)+'Local '+ column[1] +' := Nil /*<- change this value*/\n'
+                        if column[5] == "0":
+                            queryParams.append(''.rjust(20)+'"&'+ column[1] +'="+'+ column[1] +'+;')
+                    else:
+                        noKeyVariables += ''.rjust(4)+'Local '+ column[1] +' := Nil /*<- change this value*/\n'
+                
+                queryParams = '\n'.join(queryParams)
+                order = ','.join(order)
+                body = ',\' +;\n'.join(body)
                 d = {
                         'className': self.shortName, 
                         'entity' : self.entity,
                         'alias' : self.alias,
-                        'keyValues' : keyValues,
-                        'noKeyValues' : noKeyValues,
                         'prefix' : self.prefix,
                         'compare' : compare,
-                        'changeValues' : changeValues,
+                        'compareAll' : compareAll,
                         'keyVariables' : keyVariables,
                         'noKeyVariables' : noKeyVariables,
-                        'cleanVarCollection' : cleanVarCollection,
+                        'queryParams' : queryParams,
+                        'keyCollumn' : keyCollumn,
+                        'order' : order,
+                        'body' : body + '\' +;',
                     }
 
                 fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'TestCase.template'))
@@ -468,9 +479,13 @@ class CodeGenerator():
                             '                   ]\n'
                             '                },\n'
                         )
-                
+                className_ = self.name.title().replace(" ","_")
+                descriptionPath = self.name.title().replace(" ","")
+                descriptionPath = descriptionPath[0].lower() + descriptionPath[1:]
                 d = { 
                         'className': self.name, 
+                        'className_': className_, 
+                        'descriptionPath': descriptionPath, 
                         'entity' : self.entity,
                         'product' : self.product,
                         'productDescription' : self.productDescription,
@@ -485,7 +500,7 @@ class CodeGenerator():
                 temp = Template(fileIn.read())
                 result = temp.substitute(d)
 
-                f = open(os.path.join(settings.PATH_SRC_DOC, self.name.title().replace(" ","_")+"_1_100.json") , "w+")
+                f = open(os.path.join(settings.PATH_SRC_DOC, className_+"_1_100.json") , "w+")
                 f.write(result)
                 f.close()
 
@@ -558,8 +573,10 @@ class CodeGenerator():
 			                                '           },\n'
                             )
 
+                className_ = self.name.title().replace(" ","_")
                 d = { 
-                        'className': self.name, 
+                        'className': self.name,
+                        'className_': className_,
                         'entity' : self.entity,
                         'product' : self.product,
                         'productDescription' : self.productDescription,
