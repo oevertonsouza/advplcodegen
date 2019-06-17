@@ -574,9 +574,11 @@ class CodeGenerator():
                             )
 
                 classNameTitle = self.name.title().replace(" ","")
+                descriptionPath = classNameTitle[0].lower() + classNameTitle[1:]
                 d = { 
                         'className': self.name,
                         'classNameTitle': classNameTitle,
+                        'descriptionPath': descriptionPath,
                         'entity' : self.entity,
                         'product' : self.product,
                         'productDescription' : self.productDescription,

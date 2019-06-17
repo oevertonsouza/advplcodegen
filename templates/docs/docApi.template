@@ -83,7 +83,7 @@ ${parameters}
 						"content": {
 							"application/json": {
 								"schema": {
-									"$$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/schemas/${classNameTitle}_1_100.json#/definitions/Paged${classNameTitle}"
+									"$$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/${descriptionPath}/v1/1_100/jsonschema/schemas/${classNameTitle}_1_100.json#/definitions/Paged${classNameTitle}"
 								}
 							}
 						}
@@ -126,7 +126,7 @@ ${keyParameters}
 					"content": {
 						"application/json": {
 							"schema": {
-								"$$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/schemas/${classNameTitle}_1_100.json#/definitions/${classNameTitle}Body"
+								"$$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/${descriptionPath}/v1/1_100/jsonschema/schemas/${classNameTitle}_1_100.json#/definitions/${classNameTitle}Body"
 							}
 						}
 					},
@@ -147,7 +147,7 @@ ${keyParameters}
 						"content": {
 							"application/json": {
 								"schema": {
-									"$$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/schemas/${classNameTitle}_1_100.json#/definitions/${classNameTitle}Body"
+									"$$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/${descriptionPath}/v1/1_100/jsonschema/schemas/${classNameTitle}_1_100.json#/definitions/${classNameTitle}Body"
 								}
 							}
 						}
@@ -190,7 +190,7 @@ ${keyParameters}
 						"content": {
 							"application/json": {
 								"schema": {
-									"$$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/schemas/${classNameTitle}_1_100.json#/definitions/${classNameTitle}"
+									"$$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/${descriptionPath}/v1/1_100/jsonschema/schemas/${classNameTitle}_1_100.json#/definitions/${classNameTitle}"
 								}
 							}
 						}

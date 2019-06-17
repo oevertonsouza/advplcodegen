@@ -8,15 +8,15 @@
 /*/
 Class ${prefix}${className} from ${prefix}Entity
 
-    Method New(oDao)
+    Method New()
   
     Method serialize(oJsonControl)
     Method destroy()
 
 EndClass
 
-Method New(oDao) Class ${prefix}${className}
-	_Super:New(oDao)
+Method New() Class ${prefix}${className}
+	_Super:New()
 Return self
 
 Method serialize(oJsonControl) Class ${prefix}${className}

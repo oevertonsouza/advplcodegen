@@ -1,5 +1,5 @@
 {
-	"$$schema": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/schemas/${classNameTitle}_1_100.json#",
+	"$$schema": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/${descriptionPath}/v1/1_100/jsonschema/schemas/${classNameTitle}_1_100.json#",
 	"info": {
 		"description": "Contrato de Mensagem Padronizada manipulação da entidade ${classNameTitle}.",
 		"version": "1.100",
@@ -25,6 +25,14 @@
 		}
 	},
 	"definitions": {
+		"${classNameTitle}": {
+			"type": "object",
+			"allOf": [
+				{
+					"$$ref": "#/definitions/${classNameTitle}Body"
+				}
+			]
+		},
 		"Paged${classNameTitle}": {
 			"type": "object",
 			"allOf": [
