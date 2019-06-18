@@ -4,11 +4,6 @@ Class ${prefix}Clt${className} from ${prefix}Collection
 	   
     Method New() Constructor
     Method initEntity()
-    Method insert()
-    Method update()
-    Method delete()
-    Method bscChaPrim()
-    Method setEntity(oEntity)    
 
 EndClass
 
@@ -20,22 +15,3 @@ return self
 
 Method initEntity() Class ${prefix}Clt${className}
 return ${prefix}${className}():New()
-
-Method setEntity(oEntity) Class ${prefix}Clt${className}
-    self:oMapper:setEntity(oEntity)
-    self:oDao:setHMap(oEntity:getHMap())
-return
-
-Method insert() Class ${prefix}Clt${className}
-Return _Super:insert()
-
-Method update() Class ${prefix}Clt${className}
-Return _Super:update()
-
-Method delete() Class ${prefix}Clt${className}
-return _Super:delete()
-
-Method bscChaPrim() Class ${prefix}Clt${className}
-    self:lFound := self:getDao():bscChaPrim()
-    self:goTop()
-Return self:found()

@@ -48,6 +48,8 @@ Method bscChaPrim() Class ${prefix}Dao${className}
 	cQuery += " AND	${alias}_FILIAL = '" + xFilial("${alias}") + "' "
 
 ${bscChaPrim}
+    cQuery += " AND D_E_L_E_T_ = ? "
+    aAdd(self:aMapBuilder, ' ')
     self:setQuery(self:queryBuilder(cQuery))
 	lFound := self:executaQuery()
 

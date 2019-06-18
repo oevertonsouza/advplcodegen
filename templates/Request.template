@@ -26,6 +26,7 @@ Return _Super:destroy()
 Method New(oRest, cSvcName) Class ${prefix}Req${className}
     _Super:New(oRest,cSvcName)
     self:oCollection := ${prefix}Clt${className}():New()
+    self:oValidador := ${prefix}Vld${className}():New()
     self:cPropLote   := "${className}"
 Return self
 

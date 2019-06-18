@@ -193,7 +193,7 @@ ${queryParams}
 Return oResult
 
 //Test Erro
-METHOD error_006() CLASS CenBlctTestCase
+METHOD error_006() CLASS ${prefix}${className}TestCase
 
 	Local oResult := FWTestHelper():New()
 	Local oCollection := ${prefix}Clt${className}():New()

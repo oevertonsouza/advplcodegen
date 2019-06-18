@@ -61,7 +61,6 @@ Method New(oRest, cSvcName) Class ${prefix}Request
     self:oRespBody    := JsonObject():New()
     self:jRequest     := JsonObject():New()
     self:oRespControl := ${prefix}JsonControl():New()
-    self:oValidador   := ${prefix}Validator():New()
     self:nFault       := 0
     self:cFaultDesc   := ''
     self:cResponse    := ''
@@ -223,13 +222,16 @@ Method procGet(nType) Class ${prefix}Request
             Endif
             oEntity:destroy()
         Else
-            If nType == ALL
-                self:oRespBody["hasNext"] := self:oCollection:hasNext()
-                self:cResponse := self:oRespBody:toJson()
-            Else
-                self:cResponse := self:jRequest:toJson()
-            EndIF
+            self:nFault       := 404
+            self:nStatus      := 404
+            self:cFaultDesc   := "Operação não pode ser realizada."
+            self:cFaultDetail := "Registro não encontrado."
         Endif        
+    Else
+        self:nFault       := 404
+        self:nStatus      := 404
+        self:cFaultDesc   := "Operação não pode ser realizada."
+        self:cFaultDetail := "Registro não encontrado."
     Endif
 
     FreeObj(oEntity)
@@ -248,15 +250,14 @@ Method procDelete() Class ${prefix}Request
 
 Return self:lSuccess
 
-Method procPost(oJson,oCmd) Class ${prefix}Request
+Method procPost() Class ${prefix}Request
     
     Local cJsonResp     := ""
     Local oEntity   := nil
-    Default oJson := self:jRequest
-    Default oCmd := CenCmdPostClt():New(self:oCollection)
+    Local oCmd := CenCmdPostClt():New(self:oCollection)
     
     if self:lSuccess
-        self:prepFilter(oJson)
+        self:prepFilter(self:jRequest)
         self:buscar(INSERT)
         If self:lSuccess
             If self:oValidador:validate(self:oCollection) //Validate
@@ -270,19 +271,24 @@ Method procPost(oJson,oCmd) Class ${prefix}Request
                     EndIf
                     self:cResponse := cJsonResp
                 Else
-                    //Erro ao cadastrar o seguimento
                     self:lSuccess     := .F. 
                     self:nFault       := 400
                     self:nStatus      := 400
                     self:cFaultDesc   := "Operação não pode ser realizada."
                     self:cFaultDetail := "Erro ao realizar insert."
                 Endif
+            Else
+                self:lSuccess     := .F. 
+                self:nFault       := 400
+                self:nStatus      := 400
+                self:cFaultDesc   := "Operação não pode ser realizada."
+                self:cFaultDetail := self:oValidador:getErrMsg()
             EndIf //Fim Validate
         Else
-            self:nFault       := 404
-            self:nStatus      := 404
+            self:nFault       := 400
+            self:nStatus      := 400
             self:cFaultDesc   := "Operação não pode ser realizada."
-            self:cFaultDetail := "Registro não encontrado."
+            self:cFaultDetail := "Registro já existe no banco."
         EndIf
     Endif
 
@@ -402,7 +408,6 @@ Method procPut(oCmd) Class ${prefix}Request
                     EndIf
                     self:cResponse := cJson
                 Else
-                    //Erro ao cadastrar o seguimento
                     self:lSuccess     := .F. 
                     self:nFault       := 400
                     self:nStatus      := 400

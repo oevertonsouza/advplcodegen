@@ -4,13 +4,13 @@
 Class ${prefix}Vld${className} from ${prefix}Validator
 
     Method New() Constructor
-    Method validar(o${prefix}${className})
+    Method validate(oEntity)
 
 EndClass
 
-Method New(oRest) Class ${prefix}Vld${className}
-    _Super:New(oRest)
+Method New() Class ${prefix}Vld${className}
+    _Super:New()
 Return self
 
-Method validar(o${prefix}${className}) Class ${prefix}Vld${className}
+Method validate(oEntity) Class ${prefix}Vld${className}
 Return .T.
