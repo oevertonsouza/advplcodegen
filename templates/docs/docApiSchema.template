@@ -55,8 +55,7 @@
 		"${classNameTitle}Body": {
 			"type": "object",
 			"properties": {
-${propertiesKey}
-${propertiesNoKey}
+${properties}
 			}
 		}
 	}

@@ -15,9 +15,9 @@
 		}
 	],
 	"info": {
-		"description": "API para cadastro da entidade ${className}",
+		"description": "API para cadastro da entidade ${classNamePortuguese}",
 		"version": "1.100",
-		"title": "${className}",
+		"title": "${classNamePortuguese}",
 		"contact": {
 			"name": "T-Talk",
 			"url": "api.totvs.com.br",
@@ -39,7 +39,7 @@
 		}
 	},
 	"paths": {
-		"/${classNameLower}": {
+		"/${descriptionPath}": {
 			"get": {
 				"tags": [
 					"${className}"
@@ -104,9 +104,9 @@ ${parameters}
 				"tags": [
 					"${className}"
 				],
-				"operationId": "${abreviate}Update",
+				"operationId": "${abreviate}Insert",
 				"summary": "Dados do serviço ${className}, referente a entidade ${entity}.",
-				"description": "Atualiza o dado referente ao serviço ${className}. Ao realizar a altera��o de um registro, o endpoint irá responder com codigo 202 indicando que a requisicao foi adicionada, e um Body com o objeto Json.",
+				"description": "Inclui o dado referente ao serviço ${className}. Ao realizar a inclusao de um registro, o endpoint irá responder com codigo 202 indicando que a requisicao foi adicionada, e um Body com o objeto Json.",
 				"x-totvs": {
 					"productInformation": [
 						{
@@ -155,7 +155,7 @@ ${keyParameters}
 				}
 			}
 		},
-		"/${classNameLower}/{${keyPath}}": {
+		"/${descriptionPath}/{${keyPath}}": {
 			"get": {
 				"tags": [
 					"${className}"
@@ -207,13 +207,67 @@ ${keyParameters}
 					}
 				}
 			},
+			"put": {
+				"tags": [
+					"${className}"
+				],
+				"operationId": "${abreviate}Update",
+				"summary": "Dados do serviço ${className}, referente a entidade ${entity}.",
+				"description": "Altera o dado referente ao serviço ${className}. Ao realizar a alteracao de um registro, o endpoint irá responder com codigo 200 indicando que a requisicao foi adicionada, e um Body com o objeto Json.",
+				"x-totvs": {
+					"productInformation": [
+						{
+							"product": "${product}",
+							"available": true,
+							"note": "Este verbo está disponível."
+						}
+					]
+				},
+				"parameters": [
+					{
+						"$$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/apis/types/totvsApiTypesBase.json#/parameters/Authorization"
+					},
+${keyParameters}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/${descriptionPath}/v1/1_100/jsonschema/schemas/${classNameTitle}_1_100.json#/definitions/${classNameTitle}Body"
+							}
+						}
+					},
+					"description": "Informacoes da entidade ${entity}.",
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"description": "Accepted",
+						"headers": {
+							"location": {
+								"description": "URL onde o recurso estará disponível",
+								"schema": {
+									"type": "string"
+								}
+							}
+						},
+						"content": {
+							"application/json": {
+								"schema": {
+									"$$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/${descriptionPath}/v1/1_100/jsonschema/schemas/${classNameTitle}_1_100.json#/definitions/${classNameTitle}Body"
+								}
+							}
+						}
+					}
+				}
+			},
 			"delete": {
 				"tags": [
 					"${className}"
 				],
 				"operationId": "${abreviate}Delete",
 				"summary": "Dados do serviço ${className} referente a entidade ${entity}.",
-				"description": "Exclui um registro referente ao serviço ${className}. Ao realizar a deleção de um registro, o endpoint irá responder com codigo 200 indicando que a requisicao foi processada corretamente.",
+				"description": "Exclui um registro referente ao serviço ${className}. Ao realizar a deleção de um registro, o endpoint irá responder com codigo 204 indicando que a requisicao foi processada corretamente.",
 				"x-totvs": {
 					"productInformation": [
 						{

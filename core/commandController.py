@@ -27,10 +27,12 @@ class ComandsController:
                 keyColumn = run[3] if len(run) > 3 else ''
                 shortName = run[4] if len(run) > 4 else ''
                 name = run[5] if len(run) > 5 else ''
+                namePortuguese = run[6] if len(run) > 6 else ''
                 self.api.setEntity(entity)
                 self.api.setKeyColumn(keyColumn)
-                self.api.setName(name)
                 self.api.setShortName(shortName)
+                self.api.setName(name)
+                self.api.setNamePortuguese(namePortuguese)
                 self.api.addEntity()
                 return
             if command == 'ADDENTITIES':

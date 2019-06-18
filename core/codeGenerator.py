@@ -35,6 +35,10 @@ class CodeGenerator():
         self.name = name
         return
 
+    def setNamePortuguese(self, namePortuguese):
+        self.namePortuguese = namePortuguese
+        return
+
     def buildEntity(self):
 
         serialize = ''
@@ -431,8 +435,7 @@ class CodeGenerator():
 
     def buildDocApiSchema(self):
 
-        propertiesKey = ''
-        propertiesNoKey = ''
+        properties = ''
 
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  self.entity + ".columns")
         exists = os.path.isfile(storagePathFile)
@@ -441,44 +444,28 @@ class CodeGenerator():
             with open(storagePathFile) as datafile:
                 columnInfo = csv.reader(datafile, delimiter=';')
                 for column in columnInfo:
-                    if column[4] == "1":
-                        propertiesKey += ''.rjust(16)+(
-                            '"'+column[1]+'": {\n'
-				            '                    "description": "'+column[6]+'",\n'
-                            '                    "type": "string",\n'
-                            '                    "x-totvs": [\n'
-                            '		                {\n'
-                            '                           "product": "'+ self.product +'",\n'
-                            '                           "field": "'+ self.alias +'.'+column[0]+'",\n'
-                            '                           "required": false,\n'
-                            '                           "type": "'+column[2]+'",\n'
-                            '                           "length": "'+column[3]+'",\n'
-                            '                           "note": "'+column[6]+'",\n'
-                            '                           "available": true,\n'
-                            '                           "canUpdate": false\n'                            
-                            '                        }\n'
-                            '                   ]\n'
-                            '                },\n'
+                    canUpdate = "false" if column[4] == "1" else "true"
+                    required = "true" if column[5] == "1" else "false"
+                    
+                    properties += ''.rjust(16)+(
+                        '"'+column[1]+'": {\n'
+                        '                    "description": "'+column[6]+'",\n'
+                        '                    "type": "string",\n'
+                        '                    "x-totvs": [\n'
+                        '		                {\n'
+                        '                           "product": "'+ self.product +'",\n'
+                        '                           "field": "'+ self.alias +'.'+column[0]+'",\n'
+                        '                           "required": '+required+',\n'
+                        '                           "type": "'+column[2]+'",\n'
+                        '                           "length": "'+column[3]+'",\n'
+                        '                           "note": "'+column[6]+'",\n'
+                        '                           "available": true,\n'
+                        '                           "canUpdate": '+canUpdate+'\n'                            
+                        '                        }\n'
+                        '                   ]\n'
+                        '                },\n'
                         )
-                    else:
-                        propertiesNoKey += ''.rjust(16)+(
-                            '"'+column[1]+'": {\n'
-				            '                    "description": "'+column[6]+'",\n'
-                            '                    "type": "string",\n'
-                            '                    "x-totvs": [\n'
-                            '		                {\n'
-                            '                           "product": "'+ self.product +'",\n'
-                            '                           "field": "'+ self.alias +'.'+column[0]+'",\n'
-                            '                           "required": false,\n'
-                            '                           "type": "'+column[2]+'",\n'
-                            '                           "length": "'+column[3]+'",\n'
-                            '                           "note": "'+column[6]+'",\n'
-                            '                           "available": true,\n'
-                            '                           "canUpdate": true\n'                            
-                            '                        }\n'
-                            '                   ]\n'
-                            '                },\n'
-                        )
+
                 classNameTitle = self.name.title().replace(" ","")
                 descriptionPath = self.name.title().replace(" ","")
                 descriptionPath = descriptionPath[0].lower() + descriptionPath[1:]
@@ -491,8 +478,7 @@ class CodeGenerator():
                         'productDescription' : self.productDescription,
                         'contact' : self.contact,
                         'segment' : self.segment,
-                        'propertiesKey' : propertiesKey[:-1],
-                        'propertiesNoKey' : propertiesNoKey[:-2],
+                        'properties' : properties[:-2],
                         'classNameLower' : self.name.lower(),
                     }
 
@@ -577,6 +563,7 @@ class CodeGenerator():
                 descriptionPath = classNameTitle[0].lower() + classNameTitle[1:]
                 d = { 
                         'className': self.name,
+                        'classNamePortuguese': self.namePortuguese,
                         'classNameTitle': classNameTitle,
                         'descriptionPath': descriptionPath,
                         'entity' : self.entity,
