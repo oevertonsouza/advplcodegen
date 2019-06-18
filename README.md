@@ -50,6 +50,7 @@ SEGMENT = Seguimento qual o produto esta alocado.
 PRODUCT = Nome do produto.
 PRDUCT_DESCRIPTION = Descrição do produto.
 CONTACT = Email de Contato do produto.
+DICTIONARY_IN_DATABASE = Indica se o ambiente Protheus possui dicionário de dados no banco ou não
 
 Exemplo:
 
@@ -63,6 +64,7 @@ PROTHEUS_ENVIORMENT = {
         'PRODUCT' : 'Central de Obrigações',
         'PRDUCT_DESCRIPTION' : 'Central de Obrigações, para controle de legislações de operadoras de convênio de saúde.',
         'CONTACT' : 'centraldeobrigacoes@totvs.com.br',
+        'DICTIONARY_IN_DATABASE' : True,
     }
 }
 ```
@@ -93,26 +95,36 @@ Após a execução desse comando os diretório do projeto assim como suas libs d
 
 ![SRC arvore do projeto](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/apis/docImg/src.png)
 
-<b>Comando addentity</b><br>
-Para adicionar uma entidade ao projeto.<br>
-<b>Parametros:</b><br>
+<b>Comando addentity</b>
+<br>Para adicionar uma entidade ao projeto.<br>
+<br>Esse processo irá criar, caso já não exista, o arquivo /filestorage/storage.entity que armazena os principais dados da entidade
+<br>e para cada entidade adicionada irá criar o arquivo [entidade].columns que armazena os dados das colunas da entidade.
+
+<b>Parametros:</b>
+<p>
 <b>Entidade:</b> Nome da entidade qual os fontes e API, serão destinados.<br>
-<b>Nome da entidade em Ingles:</b> Nome da tabela no banco de dados em Ingles, deve ser em ingles devido ao comite de API.<br>
 <b>Coluna chave:</b> Deverá ser referenciado uma e apenas uma coluna como chave, essa coluna será usada como parametro do Path da sua API.<br>
-</br>
+<b>Nome abreviado:</b> Nome com 4 caracteres que será utilizado para nomear as classes e arquivos referentes a essa entidade.<br>
+<b>Nome da entidade em Ingles:</b> Nome da tabela no banco de dados em Ingles, deve ser em ingles devido ao comite de API.<br>
+<b>Nome da entidade em português:</b> Nome da tabela no banco de dados em português.<br>
+</p>
+
+Nota:<br>
+Caso o ambiente possua dicionário no banco de dados, os parâmetros "nome da entidade em inglês" e "nome da entidade em português" serão opcionais.<br>
+Nessa situação as colunas das entidades também terão os nomes retirados automaticamente do dicionário de dados.<br>
 
 ```console
-$ advplcodegen.py addentity <entidade> <nome da entidade em inglês> <coluna chave>
+$ advplcodegen.py addentity <entidade> <coluna chave> <nome abreviado> [<nome da entidade em inglês> <nome da entidade em português>]
 ```
 
 Exemplo:
 
 ```console
-$ advplcodegen.py addentity B3JT10 Product B3J_CODIGO
+$ advplcodegen.py addentity B3JT10 B3J_CODIGO Prod Product Produto
 ```
 
 Nota:<br>
-No exemplo acima o parametro passado B3J_CODIGO, será a coluna usada no Parametro do Path da sua API, nos verbos de get e delete, os demais dados do indice primario da tabela, serão usados como Parametros da query, para os mesmos verbos.<br>
+No exemplo acima o parametro passado B3J_CODIGO, será a coluna usada no Parametro do Path da sua API, nos verbos de get, put e delete, os demais dados do indice primario da tabela serão usados como Parametros da query, para os mesmos verbos.<br>
 Neste mesmo exemplo usamos a tabela B3JT10, o indice primario dessa tabela é composta pelas colunas B3J_CODIGO e B3J_CODOPE,<br>
 portanto uma requisição get de um unico registro funcionará da seguinte maneira.<br>
 <br>
