@@ -101,13 +101,12 @@ Após a execução desse comando os diretório do projeto assim como suas libs d
 <br>e para cada entidade adicionada irá criar o arquivo [entidade].columns que armazena os dados das colunas da entidade.
 
 <b>Parametros:</b>
-<p>
 <b>Entidade:</b> Nome da entidade qual os fontes e API, serão destinados.<br>
 <b>Coluna chave:</b> Deverá ser referenciado uma e apenas uma coluna como chave, essa coluna será usada como parametro do Path da sua API.<br>
 <b>Nome abreviado:</b> Nome com 4 caracteres que será utilizado para nomear as classes e arquivos referentes a essa entidade.<br>
 <b>Nome da entidade em Ingles:</b> Nome da tabela no banco de dados em Ingles, deve ser em ingles devido ao comite de API.<br>
 <b>Nome da entidade em português:</b> Nome da tabela no banco de dados em português.<br>
-</p>
+</br>
 
 Nota:<br>
 Caso o ambiente possua dicionário no banco de dados, os parâmetros "nome da entidade em inglês" e "nome da entidade em português" serão opcionais.<br>
@@ -137,7 +136,7 @@ http://localhost/api/healthcare/v1/product/5561003?b3Jcodope=123456<br>
 Repare que healthcare na URL foi preenchido de acordo com o Seguimento preenchido no arquivo settings.py, assim como "/product", que foi passado como parametro no comando addentity.<br>
 <br>
 Após a execução desse comando os arquivos de storage deverão ser criados, esses arquivos contem os dados necessários para criação dos fontes e documentações.<br>
-Os arquivos terão um aspecto semelhante aos exemplos abaixo, note que no arquivo .storage o nome do arquivo é é o nome da propria entidade.
+Os arquivos terão um aspecto semelhante aos exemplos abaixo, note que no arquivo .columns o nome do arquivo é o nome da propria entidade.
 </br>
 
 ![Arquivos Storage](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/apis/docImg/filestorage.png)
@@ -145,18 +144,18 @@ Os arquivos terão um aspecto semelhante aos exemplos abaixo, note que no arquiv
 Arquivo .entity</br>
 
 Segue a seguinte estutura.</br>
-|Nome da Entidade|Descrição em inglês da entidade|Coluna chave|<br>
+|Nome da Entidade|Descrição em inglês da entidade|Coluna chave|Nome abreviado|Nome em português da entidade|<br>
 
 ![Arquivos Storage](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/apis/docImg/entityfile.png)
 
 Nota:<br>
-Nesse exemplo temos duas tabelas adicionadas B3JT10 e B3JT10.<br>
+Nesse exemplo temos duas tabelas adicionadas B3JT10 e B3KT10.<br>
 <br>
 
 Arquivo [entidade].storage</br>
 
 Segue a seguinte estutura.</br>
-|Nome da coluna|descrição da coluna|tipo da coluna|tamanho da coluna|se a coluna faz parte do indice primario|coluna chave|
+|Nome da coluna|descrição da coluna|tipo da coluna|tamanho da coluna|se a coluna faz parte do indice primario|coluna chave|Descrição da Coluna|Lista de opções (CBOX)|
 
 ![Storage de colunas](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/apis/docImg/columnsfile.png)
 
