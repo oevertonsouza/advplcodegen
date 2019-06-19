@@ -58,7 +58,10 @@ class ApiControl:
 
     #Criate project folders 
     def startProject(self):
+        self.createDir()
         
+    def createDir(self):
+    
         if not os.path.isdir(settings.PATH_TEMP): os.mkdir(settings.PATH_TEMP)
         if not os.path.isdir(settings.PATH_FILESTORAGE): os.mkdir(settings.PATH_FILESTORAGE)
         if not os.path.isdir(settings.PATH_SRC): os.mkdir(settings.PATH_SRC)

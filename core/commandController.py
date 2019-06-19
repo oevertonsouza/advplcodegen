@@ -47,6 +47,7 @@ class ComandsController:
                 self.api.list()
                 return
             if command == 'BUILD':
+                self.api.createDir()
                 self.api.build()
                 return
             if command == 'SETCOLUMNALIAS':
