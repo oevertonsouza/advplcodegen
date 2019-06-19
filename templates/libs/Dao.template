@@ -37,6 +37,7 @@ Class ${prefix}Dao
 	Method getQuery()
 	Method setValue(cProperty,xData)
 	Method getValue(cProperty)
+	Method setHMap(hMap)
 	Method setNumPage(cNumPage)
 	Method setPageSize(cPageSize)
 	Method getNumPage()
@@ -115,7 +116,11 @@ Method getValue(cProperty) Class ${prefix}Dao
 	self:hMap:get(cProperty,@xValue)
 Return xValue
 
-Method setNumPage(cNumPage) Class ${prefix}Dao
+Method setHMap(hMap) Class ${prefix}Dao
+    self:hMap := hMap
+Return
+
+Method setNumPage(cNumPage) Class CenDao
     self:cNumPage := cNumPage 
 Return
 
@@ -255,7 +260,6 @@ Method posReg(nRecno) Class ${prefix}Dao
 Return
 
 Method posDbRecno(nRecno) Class ${prefix}Dao
-	Local lFound := .F.
 	If nRecno <> (self:cAlias)->(RECNO())
 		(self:cAlias)->(DbGoto(nRecno))
 	EndIf
@@ -430,7 +434,6 @@ Method toInt(xValue) Class ${prefix}Dao
 		cValue := VAL(xValue)
 	EndIf
 
-Return
 Return cValue
 
 Method hasNext(nRecno) Class ${prefix}Dao

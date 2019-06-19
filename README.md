@@ -44,12 +44,13 @@ EMPRESA = Empresa prefixo das tabelas no seu dicionário</br>
 FILIAL = Filial do seu ambiente</br>
 SEGMENT = Seguimento em que atua.</br>
 PREFIX = Prefixo com 3 caracteres, será o prefixo das suas classe e nome de fontes para distinguir dos fontes já existentes.</br>
+DICTIONARY_IN_DATABASE = Indica se o ambiente Protheus possui dicionário de dados no banco ou não</br>
 
--Especificos para gerção de APIS e documentação no padrão OpenAapi em Json.
-SEGMENT = Seguimento qual o produto esta alocado.
-PRODUCT = Nome do produto.
-PRDUCT_DESCRIPTION = Descrição do produto.
-CONTACT = Email de Contato do produto.
+-Especificos para geração de APIS e documentação no padrão OpenAapi em Json.</br>
+SEGMENT = Seguimento qual o produto esta alocado.</br>
+PRODUCT = Nome do produto.</br>
+PRDUCT_DESCRIPTION = Descrição do produto.</br>
+CONTACT = Email de Contato do produto.</br>
 
 Exemplo:
 
@@ -63,6 +64,7 @@ PROTHEUS_ENVIORMENT = {
         'PRODUCT' : 'Central de Obrigações',
         'PRDUCT_DESCRIPTION' : 'Central de Obrigações, para controle de legislações de operadoras de convênio de saúde.',
         'CONTACT' : 'centraldeobrigacoes@totvs.com.br',
+        'DICTIONARY_IN_DATABASE' : True,
     }
 }
 ```
@@ -93,26 +95,35 @@ Após a execução desse comando os diretório do projeto assim como suas libs d
 
 ![SRC arvore do projeto](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/apis/docImg/src.png)
 
-<b>Comando addentity</b><br>
-Para adicionar uma entidade ao projeto.<br>
-<b>Parametros:</b><br>
+<b>Comando addentity</b>
+<br>Para adicionar uma entidade ao projeto.<br>
+<br>Esse processo irá criar, caso já não exista, o arquivo /filestorage/storage.entity que armazena os principais dados da entidade
+<br>e para cada entidade adicionada irá criar o arquivo [entidade].columns que armazena os dados das colunas da entidade.
+
+<b>Parametros:</b>
 <b>Entidade:</b> Nome da entidade qual os fontes e API, serão destinados.<br>
-<b>Nome da entidade em Ingles:</b> Nome da tabela no banco de dados em Ingles, deve ser em ingles devido ao comite de API.<br>
 <b>Coluna chave:</b> Deverá ser referenciado uma e apenas uma coluna como chave, essa coluna será usada como parametro do Path da sua API.<br>
+<b>Nome abreviado:</b> Nome com 4 caracteres que será utilizado para nomear as classes e arquivos referentes a essa entidade.<br>
+<b>Nome da entidade em Ingles:</b> Nome da tabela no banco de dados em Ingles, deve ser em ingles devido ao comite de API.<br>
+<b>Nome da entidade em português:</b> Nome da tabela no banco de dados em português.<br>
 </br>
 
+Nota:<br>
+Caso o ambiente possua dicionário no banco de dados, os parâmetros "nome da entidade em inglês" e "nome da entidade em português" serão opcionais.<br>
+Nessa situação as colunas das entidades também terão os nomes retirados automaticamente do dicionário de dados.<br>
+
 ```console
-$ advplcodegen.py addentity <entidade> <nome da entidade em inglês> <coluna chave>
+$ advplcodegen.py addentity <entidade> <coluna chave> <nome abreviado> [<nome da entidade em inglês> <nome da entidade em português>]
 ```
 
 Exemplo:
 
 ```console
-$ advplcodegen.py addentity B3JT10 Product B3J_CODIGO
+$ advplcodegen.py addentity B3JT10 B3J_CODIGO Prod Product Produto
 ```
 
 Nota:<br>
-No exemplo acima o parametro passado B3J_CODIGO, será a coluna usada no Parametro do Path da sua API, nos verbos de get e delete, os demais dados do indice primario da tabela, serão usados como Parametros da query, para os mesmos verbos.<br>
+No exemplo acima o parametro passado B3J_CODIGO, será a coluna usada no Parametro do Path da sua API, nos verbos de get, put e delete, os demais dados do indice primario da tabela serão usados como Parametros da query, para os mesmos verbos.<br>
 Neste mesmo exemplo usamos a tabela B3JT10, o indice primario dessa tabela é composta pelas colunas B3J_CODIGO e B3J_CODOPE,<br>
 portanto uma requisição get de um unico registro funcionará da seguinte maneira.<br>
 <br>
@@ -125,7 +136,7 @@ http://localhost/api/healthcare/v1/product/5561003?b3Jcodope=123456<br>
 Repare que healthcare na URL foi preenchido de acordo com o Seguimento preenchido no arquivo settings.py, assim como "/product", que foi passado como parametro no comando addentity.<br>
 <br>
 Após a execução desse comando os arquivos de storage deverão ser criados, esses arquivos contem os dados necessários para criação dos fontes e documentações.<br>
-Os arquivos terão um aspecto semelhante aos exemplos abaixo, note que no arquivo .storage o nome do arquivo é é o nome da propria entidade.
+Os arquivos terão um aspecto semelhante aos exemplos abaixo, note que no arquivo .columns o nome do arquivo é o nome da propria entidade.
 </br>
 
 ![Arquivos Storage](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/apis/docImg/filestorage.png)
@@ -133,18 +144,18 @@ Os arquivos terão um aspecto semelhante aos exemplos abaixo, note que no arquiv
 Arquivo .entity</br>
 
 Segue a seguinte estutura.</br>
-|Nome da Entidade|Descrição em inglês da entidade|Coluna chave|<br>
+|Nome da Entidade|Descrição em inglês da entidade|Coluna chave|Nome abreviado|Nome em português da entidade|<br>
 
 ![Arquivos Storage](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/apis/docImg/entityfile.png)
 
 Nota:<br>
-Nesse exemplo temos duas tabelas adicionadas B3JT10 e B3JT10.<br>
+Nesse exemplo temos duas tabelas adicionadas B3JT10 e B3KT10.<br>
 <br>
 
 Arquivo [entidade].storage</br>
 
 Segue a seguinte estutura.</br>
-|Nome da coluna|descrição da coluna|tipo da coluna|tamanho da coluna|se a coluna faz parte do indice primario|coluna chave|
+|Nome da coluna|descrição da coluna|tipo da coluna|tamanho da coluna|se a coluna faz parte do indice primario|coluna chave|Descrição da Coluna|Lista de opções (CBOX)|
 
 ![Storage de colunas](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/apis/docImg/columnsfile.png)
 

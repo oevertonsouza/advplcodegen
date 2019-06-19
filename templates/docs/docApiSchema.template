@@ -1,17 +1,17 @@
 {
-	"$$schema": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/schemas/${className}_1_100.json#",
+	"$$schema": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/${descriptionPath}/v1/1_100/jsonschema/schemas/${classNameTitle}_1_100.json#",
 	"info": {
-		"description": "Contrato de Mensagem Padronizada manipulação da entidade ${entity} do produto ${product}.",
+		"description": "Contrato de Mensagem Padronizada manipulação da entidade ${classNameTitle}.",
 		"version": "1.100",
 		"title": "${className}",
 		"contact": {
 			"name": "T-Talk",
-			"url": "http://api.totvs.com.br",
+			"url": "api.totvs.com.br",
 			"email": "comiteintegracao@totvs.com.br"
 		},
 		"x-totvs": {
 			"messageDocumentation": {
-				"name": "${className}",
+				"name": "${classNameTitle}",
 				"description": "${className}",
 				"segment": "${segment}"
 			},
@@ -25,7 +25,15 @@
 		}
 	},
 	"definitions": {
-		"Paged${className}": {
+		"${classNameTitle}": {
+			"type": "object",
+			"allOf": [
+				{
+					"$$ref": "#/definitions/${classNameTitle}Body"
+				}
+			]
+		},
+		"Paged${classNameTitle}": {
 			"type": "object",
 			"allOf": [
 				{
@@ -37,18 +45,17 @@
 						"items": {
 							"type": "array",
 							"items": {
-								"$$ref": "#/definitions/${className}Body"
+								"$$ref": "#/definitions/${classNameTitle}Body"
 							}
 						}
 					}
 				}
 			]
 		},
-		"${className}Body": {
+		"${classNameTitle}Body": {
 			"type": "object",
 			"properties": {
-${propertiesKey}
-${propertiesNoKey}
+${properties}
 			}
 		}
 	}

@@ -123,7 +123,7 @@ class ManagementDb:
         conn = self.conn()
 
         query = (
-                    " SELECT X2_NOMEENG "
+                    " SELECT X2_NOMEENG, X2_NOME "
                     " FROM SX2" + settings.PROTHEUS_ENVIORMENT['default']['COMPANY'] + "0 "
                     " WHERE 1=1 "
                     "   AND X2_CHAVE = '"+ entity[:3] +"' "

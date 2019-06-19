@@ -13,6 +13,7 @@ class CodeGenerator():
     segment = settings.PROTHEUS_ENVIORMENT['default']['SEGMENT']
     company = settings.PROTHEUS_ENVIORMENT['default']['COMPANY']
     filial = settings.PROTHEUS_ENVIORMENT['default']['FILIAL']
+    columnsToAdd = []
 
     def __init__ (self, entity=None, name=None, alias=None, shortName=None):
         self.entity = entity, 
@@ -32,6 +33,10 @@ class CodeGenerator():
 
     def setName(self, name):
         self.name = name
+        return
+
+    def setNamePortuguese(self, namePortuguese):
+        self.namePortuguese = namePortuguese
         return
 
     def buildEntity(self):
@@ -189,22 +194,28 @@ class CodeGenerator():
 
         if exists:
             with open(storagePathFile) as datafile:
-                columnInfo = csv.reader(datafile, delimiter=';')
-                for column in columnInfo:
+                columnsCsv = csv.reader(datafile, delimiter=';')
+                for column in columnsCsv:
 
+                    exists = False
+                    for columnAdded in self.columnsToAdd:
+                        if column[1].strip() in columnAdded:
+                            exists = True
+                            break
+                    if not exists:
+                        self.columnsToAdd.append(column)
+                        wsDataNoKeys += ''.rjust(4)+'WSDATA '+ column[1] +' as STRING  OPTIONAL\n'
+                
                     if column[4] == "1" :
                         defaultVarsKey  += ''.rjust(4)+'Default self:'+ column[1] +' := ""\n'
-                        wsDataNoKeys += ''.rjust(4)+'WSDATA '+ column[1] +' as STRING  OPTIONAL\n'
                         varskey.append(''.rjust(4)+column[1])
                         keyVarsNoKeyPath.append(''.rjust(4)+column[1])
                     else:
                         defaultVarsNoKey  += ''.rjust(4)+'Default self:'+ column[1] +' := ""\n'
-                        wsDataNoKeys += ''.rjust(4)+'WSDATA '+ column[1] +' as STRING  OPTIONAL\n'
                         varsNokey.append(''.rjust(4)+column[1])
                     
                     if column[5] == "1" :
                         keyPath = column[1]
-
         if len(keyVarsNoKeyPath) > 0:
             keyVarsNoKeyPath.remove('    '+keyPath)
             descriptionPath = self.name.title().replace(" ","")
@@ -291,13 +302,14 @@ class CodeGenerator():
     
     def buildTestCase(self):
 
-        keyValues = ''
-        noKeyValues = ''
+        keyCollumn = ''
         compare = ''
-        changeValues = ''
+        compareAll = ''
         keyVariables = ''
         noKeyVariables = ''
-        cleanVarCollection = ''
+        queryParams = []
+        order = []
+        body = []
         
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  self.entity + ".columns")
         exists = os.path.isfile(storagePathFile)
@@ -306,29 +318,39 @@ class CodeGenerator():
             with open(storagePathFile) as datafile:
                 columnInfo = csv.reader(datafile, delimiter=';')
                 for column in columnInfo:
-                    
-                    if column[4] == "1":
-                        keyValues += ''.rjust(4)+'oCollection:setValue("'+ column[1] +'", '+column[1]+' ) /* Column '+ column[0] +' */ \n'
-                        keyVariables += ''.rjust(4)+'Local '+ column[1] +' := Nil\n'
+                    compare += ''.rjust(8)+'oResult:assertTrue(oJson["'+ column[1] +'"] == '+ column[1] +', "Valor comparado na coluna '+ column[0] +' de alias '+ column[1] +', nao sao iguais. Retorno:" + cRet)  \n'
+                    compareAll += ''.rjust(8)+'oResult:assertTrue(oJson["items"][1]["'+ column[1] +'"] == '+ column[1] +', "Valor comparado na coluna '+ column[0] +' de alias '+ column[1] +', nao sao iguais. Retorno:" + cRet)  \n'
+                    order.append(column[1])
+                    if column[2] == 'float':
+                        body.append(''.rjust(24)+'\' "'+ column[1] +'": \'+AllTrim(Str('+ column[1] +'))+\'')
                     else:
-                        noKeyVariables += ''.rjust(4)+'Local '+ column[1] +' := Nil\n'
-                        noKeyValues +=  ''.rjust(4)+'oCollection:setValue("'+ column[1] +'", '+column[1]+' ) /* Column '+ column[0] +' */ \n'
-                        changeValues += ''.rjust(8)+'o'+self.prefix+self.shortName+':setValue("'+ column[1] +'", '+ column[1] +')  /* Column '+ column[0] +' */ \n'
-                        compare += ''.rjust(8)+'oResult:assertTrue(oCenProducts:getValue("'+ column[1] +'") == '+ column[1] +', "Valor comparado na coluna '+ column[0] +' de alias '+ column[1] +', nao sao iguais.")  /* Column '+ column[0] +' */ \n'
-                        cleanVarCollection += ''.rjust(4)+column[1]+' := ""\n'
-
+                        body.append(''.rjust(24)+'\' "'+ column[1] +'": "\'+'+ column[1] +'+\'"')
+                    
+                    if column[5] == "1":
+                        keyCollumn = column[1]
+                    if column[4] == "1":
+                        keyVariables += ''.rjust(4)+'Local '+ column[1] +' := Nil /*<- change this value*/\n'
+                        if column[5] == "0":
+                            queryParams.append(''.rjust(20)+'"&'+ column[1] +'="+'+ column[1] +'+;')
+                    else:
+                        noKeyVariables += ''.rjust(4)+'Local '+ column[1] +' := Nil /*<- change this value*/\n'
+                
+                queryParams = '\n'.join(queryParams)
+                order = ','.join(order)
+                body = ',\' +;\n'.join(body)
                 d = {
                         'className': self.shortName, 
                         'entity' : self.entity,
                         'alias' : self.alias,
-                        'keyValues' : keyValues,
-                        'noKeyValues' : noKeyValues,
                         'prefix' : self.prefix,
                         'compare' : compare,
-                        'changeValues' : changeValues,
+                        'compareAll' : compareAll,
                         'keyVariables' : keyVariables,
                         'noKeyVariables' : noKeyVariables,
-                        'cleanVarCollection' : cleanVarCollection,
+                        'queryParams' : queryParams,
+                        'keyCollumn' : keyCollumn,
+                        'order' : order,
+                        'body' : body + '\' +;',
                     }
 
                 fileIn = open(os.path.join(settings.PATH_TEMPLATE, 'TestCase.template'))
@@ -413,8 +435,7 @@ class CodeGenerator():
 
     def buildDocApiSchema(self):
 
-        propertiesKey = ''
-        propertiesNoKey = ''
+        properties = ''
 
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  self.entity + ".columns")
         exists = os.path.isfile(storagePathFile)
@@ -423,54 +444,41 @@ class CodeGenerator():
             with open(storagePathFile) as datafile:
                 columnInfo = csv.reader(datafile, delimiter=';')
                 for column in columnInfo:
-                    if column[4] == "1":
-                        propertiesKey += ''.rjust(16)+(
-                            '"'+column[1]+'": {\n'
-				            '                    "description": "'+column[6]+'",\n'
-                            '                    "type": "string",\n'
-                            '                    "x-totvs": [\n'
-                            '		                {\n'
-                            '                           "product": "'+ self.product +'",\n'
-                            '                           "field": "'+ self.alias +'.'+column[0]+'",\n'
-                            '                           "required": false,\n'
-                            '                           "type": "'+column[2]+'",\n'
-                            '                           "length": "'+column[3]+'",\n'
-                            '                           "note": "'+column[6]+'",\n'
-                            '                           "available": true,\n'
-                            '                           "canUpdate": false\n'                            
-                            '                        }\n'
-                            '                   ]\n'
-                            '                },\n'
+                    canUpdate = "false" if column[4] == "1" else "true"
+                    required = "true" if column[5] == "1" else "false"
+                    
+                    properties += ''.rjust(16)+(
+                        '"'+column[1]+'": {\n'
+                        '                    "description": "'+column[6]+'",\n'
+                        '                    "type": "string",\n'
+                        '                    "x-totvs": [\n'
+                        '		                {\n'
+                        '                           "product": "'+ self.product +'",\n'
+                        '                           "field": "'+ self.alias +'.'+column[0]+'",\n'
+                        '                           "required": '+required+',\n'
+                        '                           "type": "'+column[2]+'",\n'
+                        '                           "length": "'+column[3]+'",\n'
+                        '                           "note": "'+column[6]+'",\n'
+                        '                           "available": true,\n'
+                        '                           "canUpdate": '+canUpdate+'\n'                            
+                        '                        }\n'
+                        '                   ]\n'
+                        '                },\n'
                         )
-                    else:
-                        propertiesNoKey += ''.rjust(16)+(
-                            '"'+column[1]+'": {\n'
-				            '                    "description": "'+column[6]+'",\n'
-                            '                    "type": "string",\n'
-                            '                    "x-totvs": [\n'
-                            '		                {\n'
-                            '                           "product": "'+ self.product +'",\n'
-                            '                           "field": "'+ self.alias +'.'+column[0]+'",\n'
-                            '                           "required": false,\n'
-                            '                           "type": "'+column[2]+'",\n'
-                            '                           "length": "'+column[3]+'",\n'
-                            '                           "note": "'+column[6]+'",\n'
-                            '                           "available": true,\n'
-                            '                           "canUpdate": true\n'                            
-                            '                        }\n'
-                            '                   ]\n'
-                            '                },\n'
-                        )
-                
+
+                classNameTitle = self.name.title().replace(" ","")
+                descriptionPath = self.name.title().replace(" ","")
+                descriptionPath = descriptionPath[0].lower() + descriptionPath[1:]
                 d = { 
                         'className': self.name, 
+                        'classNameTitle': classNameTitle, 
+                        'descriptionPath': descriptionPath, 
                         'entity' : self.entity,
                         'product' : self.product,
                         'productDescription' : self.productDescription,
                         'contact' : self.contact,
                         'segment' : self.segment,
-                        'propertiesKey' : propertiesKey[:-1],
-                        'propertiesNoKey' : propertiesNoKey[:-2],
+                        'properties' : properties[:-2],
                         'classNameLower' : self.name.lower(),
                     }
 
@@ -478,7 +486,7 @@ class CodeGenerator():
                 temp = Template(fileIn.read())
                 result = temp.substitute(d)
 
-                f = open(os.path.join(settings.PATH_SRC_DOC, self.name.title().replace(" ","_")+"_1_100.json") , "w+")
+                f = open(os.path.join(settings.PATH_SRC_DOC_SCHEMA, classNameTitle+"_1_100.json") , "w+")
                 f.write(result)
                 f.close()
 
@@ -551,8 +559,13 @@ class CodeGenerator():
 			                                '           },\n'
                             )
 
+                classNameTitle = self.name.title().replace(" ","")
+                descriptionPath = classNameTitle[0].lower() + classNameTitle[1:]
                 d = { 
-                        'className': self.name, 
+                        'className': self.name,
+                        'classNamePortuguese': self.namePortuguese,
+                        'classNameTitle': classNameTitle,
+                        'descriptionPath': descriptionPath,
                         'entity' : self.entity,
                         'product' : self.product,
                         'productDescription' : self.productDescription,
@@ -571,7 +584,7 @@ class CodeGenerator():
                 temp = Template(fileIn.read())
                 result = temp.substitute(d)
 
-                f = open(os.path.join(settings.PATH_SRC_DOC, self.name.title().replace(" ","_")+"_v1_100.json") , "w+")
+                f = open(os.path.join(settings.PATH_SRC_DOC_API, self.name.title().replace(" ","")+"_v1_100.json") , "w+")
                 f.write(result)
                 f.close()
 

@@ -47,7 +47,9 @@ Class ${prefix}Collection
     Method update()
     Method delete()
     Method buscar()
-        
+    Method bscChaPrim()
+    Method setEntity(oEntity)
+
 EndClass
 
 Method New() Class ${prefix}Collection
@@ -164,3 +166,13 @@ Method buscar() Class ${prefix}Collection
     self:lFound := self:getDao():buscar()
     self:goTop()
 Return self:found()
+
+Method bscChaPrim() Class CenCollection
+    self:lFound := self:getDao():bscChaPrim()
+    self:goTop()
+Return self:found()
+
+Method setEntity(oEntity) Class CenCollection
+    self:oMapper:setEntity(oEntity)
+    self:oDao:setHMap(oEntity:getHMap())
+return

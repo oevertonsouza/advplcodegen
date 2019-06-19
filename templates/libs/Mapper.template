@@ -39,9 +39,14 @@ Return
 Method mapFromDao(oDao) Class ${prefix}Mapper
     Local nField := 0
     Local nLen   := Len(self:aFields)
+    Local xValue := ""
 
     For nField := 1 to nLen
-        self:oEntity:setValue(self:aFields[nField][JSONFIELD],AllTrim( (oDao:cAliasTemp)->&(self:aFields[nField][DBFIELD]) ) )
+        xValue := (oDao:cAliasTemp)->&(self:aFields[nField][DBFIELD])
+        If ValType( xValue ) == "C"
+            xValue := AllTrim(xValue)
+        EndIf
+        self:oEntity:setValue(self:aFields[nField][JSONFIELD],xValue )
     Next nField
 Return
 

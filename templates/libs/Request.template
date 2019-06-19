@@ -37,7 +37,6 @@ Class ${prefix}Request
     Method checkAuth()
     Method applyFields()
     Method applyPageSize()
-    Method applyExpandables()
     Method checkBody()
     Method getSuccess()
     Method initRequest()
@@ -62,7 +61,6 @@ Method New(oRest, cSvcName) Class ${prefix}Request
     self:oRespBody    := JsonObject():New()
     self:jRequest     := JsonObject():New()
     self:oRespControl := ${prefix}JsonControl():New()
-    self:oValidador   := ${prefix}Validator():New()
     self:nFault       := 0
     self:cFaultDesc   := ''
     self:cResponse    := ''
@@ -122,17 +120,6 @@ Method applyPageSize() Class ${prefix}Request
 
 Return self:lSuccess
 
-/*/{Protheus.doc} applyExpandables
-Expande os dados compostos do objeto
-@author  victor.silva
-@since   20180312
-/*/
-Method applyExpandables() Class ${prefix}Request
-    if self:lSuccess
-        self:oRespControl:prepExpand(self:oRest:expand)
-    endif
-Return
-
 /*/{Protheus.doc} checkBody
 Realiza o parser do JSon enviado pelo client
 @author  victor.silva
@@ -147,8 +134,9 @@ Method checkBody() Class ${prefix}Request
     if empty(cParseError)
          self:lSuccess  := .T.
     else
-        self:nFault     := 404
-        self:cFaultDesc := cParseError
+        self:nFault     := 400
+        self:cFaultDesc   := "Não foi possível fazer o parse da mensagem."
+        self:cFaultDetail := cParseError
         self:lSuccess   := .F.
     endif
 
@@ -232,17 +220,20 @@ Method procGet(nType) Class ${prefix}Request
                 self:jRequest := self:buildBody(oEntity)
                 self:cResponse := self:jRequest:toJson()
             Endif
+            oEntity:destroy()
         Else
-            If nType == ALL
-                self:oRespBody["hasNext"] := self:oCollection:hasNext()
-                self:cResponse := self:oRespBody:toJson()
-            Else
-                self:cResponse := self:jRequest:toJson()
-            EndIF
+            self:nFault       := 404
+            self:nStatus      := 404
+            self:cFaultDesc   := "Operação não pode ser realizada."
+            self:cFaultDetail := "Registro não encontrado."
         Endif        
+    Else
+        self:nFault       := 404
+        self:nStatus      := 404
+        self:cFaultDesc   := "Operação não pode ser realizada."
+        self:cFaultDetail := "Registro não encontrado."
     Endif
 
-    oEntity:destroy()
     FreeObj(oEntity)
     oEntity := Nil
 
@@ -259,15 +250,14 @@ Method procDelete() Class ${prefix}Request
 
 Return self:lSuccess
 
-Method procPost(cJson,oCmd) Class ${prefix}Request
+Method procPost() Class ${prefix}Request
     
     Local cJsonResp     := ""
     Local oEntity   := nil
-    Default cJson := ""
-    Default oCmd := CenCmdPostClt():New(self:oCollection)
+    Local oCmd := CenCmdPostClt():New(self:oCollection)
     
     if self:lSuccess
-        self:prepFilter(cJson)
+        self:prepFilter(self:jRequest)
         self:buscar(INSERT)
         If self:lSuccess
             If self:oValidador:validate(self:oCollection) //Validate
@@ -281,14 +271,24 @@ Method procPost(cJson,oCmd) Class ${prefix}Request
                     EndIf
                     self:cResponse := cJsonResp
                 Else
-                    //Erro ao cadastrar o seguimento
                     self:lSuccess     := .F. 
                     self:nFault       := 400
                     self:nStatus      := 400
                     self:cFaultDesc   := "Operação não pode ser realizada."
                     self:cFaultDetail := "Erro ao realizar insert."
                 Endif
+            Else
+                self:lSuccess     := .F. 
+                self:nFault       := 400
+                self:nStatus      := 400
+                self:cFaultDesc   := "Operação não pode ser realizada."
+                self:cFaultDetail := self:oValidador:getErrMsg()
             EndIf //Fim Validate
+        Else
+            self:nFault       := 400
+            self:nStatus      := 400
+            self:cFaultDesc   := "Operação não pode ser realizada."
+            self:cFaultDetail := "Registro já existe no banco."
         EndIf
     Endif
 
@@ -303,7 +303,6 @@ Method procLotePost(oCmd) Class ${prefix}Request
     Local nMaxLimit     := 100
     Local nRegistro     := 1
     Local nCount        := 0
-    Local cJson         := ""
     Local oEntity       := 0
     Local jAlreadyExists:= JsonObject():New()        
     Local jErrors       := JsonObject():New()
@@ -371,7 +370,7 @@ Method procLotePost(oCmd) Class ${prefix}Request
             self:nStatus      := 400
             self:nFault       := 400
             self:cFaultDesc   := "Operação não pode ser realizada."
-            self:cFaultDetail := "Operação só pode ser realizada em lote, com um array de objetos válidos."
+            self:cFaultDetail := "Operação só pode ser realizada em lote, informe um array de objetos válidos."
         EndIf
     EndIf
 
@@ -409,7 +408,6 @@ Method procPut(oCmd) Class ${prefix}Request
                     EndIf
                     self:cResponse := cJson
                 Else
-                    //Erro ao cadastrar o seguimento
                     self:lSuccess     := .F. 
                     self:nFault       := 400
                     self:nStatus      := 400
@@ -417,6 +415,11 @@ Method procPut(oCmd) Class ${prefix}Request
                     self:cFaultDetail := "Erro ao realizar update."
                 Endif
             EndIf //Fim Validate
+        Else
+            self:nFault       := 404
+            self:nStatus      := 404
+            self:cFaultDesc   := "Operação não pode ser realizada."
+            self:cFaultDetail := "Registro não encontrado."
         EndIf
     Endif
 

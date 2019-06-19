@@ -7,14 +7,20 @@
     @since 20190402
 /*/
 Class ${prefix}Validator
+    Data cMsg
 
     Method New() Constructor
     Method validate()
+    Method getErrMsg()
 
 EndClass
 
 Method New() Class ${prefix}Validator
+    self:cMsg := ""
 Return self
 
 Method validate() Class ${prefix}Validator
 Return .T.
+
+Method getErrMsg() Class CenValidator
+Return self:cMsg

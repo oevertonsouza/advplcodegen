@@ -10,6 +10,7 @@ CLASS ${prefix}${className}TestCase FROM FWDefaultTestCase
 	METHOD insert_003()
 	METHOD update_004()
 	METHOD delete_005()
+	METHOD error_006()
 
 ENDCLASS
 
@@ -20,6 +21,7 @@ METHOD ${prefix}${className}TestCase() CLASS ${prefix}${className}TestCase
 	self:AddTestMethod( "INSERT_003",,"Insere um registro na tabela ${entity}." )
 	self:AddTestMethod( "UPDATE_004",,"Altera um registro na tabela ${entity}." )
 	self:AddTestMethod( "DELETE_005",,"Deleta um registro na tabela ${entity}." )
+	self:AddTestMethod( "ERROR_006",,"Testa o registro de um erro." )
 Return
 
 METHOD SetUpClass() CLASS ${prefix}${className}TestCase
@@ -37,24 +39,30 @@ Return oResult
 METHOD getSingle_001() CLASS ${prefix}${className}TestCase
 
 	Local oResult := FWTestHelper():New()
-	Local oCollection := ${prefix}Clt${className}():New()
-	Local o${prefix}${className} := ${prefix}${className}():New()
+	Local aHeader   := {"Content-Type: application/json"}
+    Local cRet      := ""
+    Local oJson := JsonObject():New()
 
 ${keyVariables}
 ${noKeyVariables}
-	/* Include first index values from ${alias}  */
-${keyValues}
 	oResult:activate()
+	oResult:UTSetAPI("/healthcare/v1/trimesterBalanceSheet/"+${keyCollumn}+;
+					"?page=1"+;
+${queryParams}
+                    "&order=${order}";
+                    ,"REST")
 
-	oResult:AssertTrue(oCollection:bscChaPrim(), "Registro não encontrado na entidade ${entity} com os dados informados.")
+	cRet := oResult:UTGetWS(aHeader)
+    oResult:AssertFalse(Empty(cRet), "Não houve retorno para a requisição")
 
-	If oCollection:hasNext()
+	If !Empty(cRet)
 
-		o${prefix}${className} := oCollection:getNext()
+        oJson:fromJson(cRet)
+
 ${compare}
 	EndIf
 
-	oCollection:destroy()
+	oResult:AssertTrue( oResult:lOk, "" )
 	oResult:deactivate()
 
 Return oResult
@@ -63,30 +71,30 @@ Return oResult
 METHOD getCollection_002() CLASS ${prefix}${className}TestCase
 
 	Local oResult := FWTestHelper():New()
-	Local oCollection := ${prefix}Clt${className}():New()
-	Local o${prefix}${className} := ${prefix}${className}():New()
- 
+	Local aHeader   := {"Content-Type: application/json"}
+    Local cRet      := ""
+    Local oJson := JsonObject():New()
+
+${keyVariables}
 ${noKeyVariables}
-	oCollection:applyPageSize("1","2")
-		
 	oResult:activate()
-	oResult:AssertTrue(oCollection:buscar(), "Registro não encontrado na entidade ${entity} com os dados informados.")
+	oResult:UTSetAPI("/healthcare/v1/trimesterBalanceSheet"+;
+					"?page=1"+;
+					"&pageSize=2"+;
+                    "&order=${order}";
+                    ,"REST")
+					
+	cRet := oResult:UTGetWS(aHeader)
+    oResult:AssertFalse(Empty(cRet), "Não houve retorno para a requisição")
 
-	if oCollection:hasNext()
+	If !Empty(cRet)
 
-		o${prefix}${className} := oCollection:getNext()
-${compare}
+        oJson:fromJson(cRet)
+
+${compareAll}
 	EndIf
 
-	o${prefix}${className} := Nil
-${cleanVarCollection}
-	if oCollection:hasNext()
-
-		o${prefix}${className} := oCollection:getNext()
-${compare}
-	EndIf	
-
-	oCollection:destroy()
+	oResult:AssertTrue( oResult:lOk, "" )
 	oResult:deactivate()
 
 Return oResult
@@ -95,22 +103,28 @@ Return oResult
 METHOD insert_003() CLASS ${prefix}${className}TestCase
 
 	Local oResult := FWTestHelper():New()
-	Local oCollection := ${prefix}Clt${className}():New()
 
 ${keyVariables}
 ${noKeyVariables}
-    
-	/* Include first index values from ${alias}  */
-${keyValues}
-	/* Values not key ${alias}  */
-${noKeyValues}
-
+    Local aHeader   := {"Content-Type: application/json"}
+    Local cRet      := ""
+    Local oJson := JsonObject():New()
+	Local cBody := '{ ' +;
+${body}
+		            '}'
 	oResult:activate()
-		oResult:AssertTrue(oCollection:insert(), "Não foi possivel inserir o registro na tabela ${entity} com os dados fornecidos.")
-		oResult:AssertTrue(oCollection:bscChaPrim(), "Não foi possivel encontrar o registro na tabela ${entity} com os dados fornecidos.")
-	oResult:deactivate()
+    oResult:UTSetAPI("/healthcare/v1/trimesterBalanceSheet";
+                    ,"REST")
+	cRet := oResult:UTPostWS(cBody,aHeader)
+    oResult:AssertFalse(Empty(cRet), "Não houve retorno para a requisição. Verifique se o serviço está no ar.")
 
-	oCollection:destroy()
+	If !Empty(cRet)
+
+        oJson:fromJson(cRet)
+		
+${compare}
+	EndIf
+
 	oResult:deactivate()
 
 Return oResult
@@ -119,36 +133,33 @@ Return oResult
 METHOD update_004() CLASS ${prefix}${className}TestCase
 
 	Local oResult := FWTestHelper():New()
-	Local oCollection := ${prefix}Clt${className}():New()
-	Local o${prefix}${className} := ${prefix}${className}():New()
 
 ${keyVariables}
 ${noKeyVariables}
-    
-	/* Include first index values from ${alias}  */
-${keyValues}
+    Local aHeader   := {"Content-Type: application/json"}
+    Local cRet      := ""
+    Local oJson := JsonObject():New()
+    Local cBody := '{ ' +;
+${body}
+		            '}'
 	oResult:activate()
-	oResult:assertTrue(oCollection:bscChaPrim(), "Registro não encontrado na entidade ${entity} com os dados informados.")
+	
+	oResult:UTSetAPI("/healthcare/v1/trimesterBalanceSheet/"+${keyCollumn}+;
+					"?page=1"+;
+${queryParams}
+                    "&pageSize=2";
+					,"REST")
+	
+	cRet := oResult:UTPutWS(cBody,aHeader)
+    oResult:AssertFalse(Empty(cRet), "Não houve retorno para a requisição. Verifique se o serviço está no ar.")
 
-	If oResult:lOk
+	If !Empty(cRet)
 
-		o${prefix}${className} := oCollection:getNext()
-${changeValues}
-		oCollection:setEntity(o${prefix}${className})
-		oResult:assertTrue(oCollection:update(), "Registro não pode ser alterado na entidade ${entity} com os dados informados.")
-
-    EndIf
-
-    oResult:assertTrue(oCollection:bscChaPrim(),  "Registro não encontrado na entidade ${entity} com os dados informados.")
-
-	If oCollection:hasNext()
+        oJson:fromJson(cRet)
 		
-		o${prefix}${className} := nil
-		o${prefix}${className} := oCollection:getNext()
 ${compare}
 	EndIf
 
-	oCollection:destroy()
 	oResult:deactivate()
 
 Return oResult
@@ -157,15 +168,40 @@ Return oResult
 METHOD delete_005() CLASS ${prefix}${className}TestCase
 
 	Local oResult := FWTestHelper():New()
-	Local oCollection := ${prefix}Clt${className}():New()
 
 ${keyVariables}	
-    
-	/* Include first index values from ${alias}  */
-${keyValues}
+    Local aHeader   := {"Content-Type: application/json"}
+    Local cRet      := ""
+    Local oJson := JsonObject():New()
+    Local cBody     := ""
+
 	oResult:activate()
-	oResult:AssertTrue(oCollection:delete(), "Não foi possivel deletar o registro na entidade ${entity} com os dados informados.")
-	oResult:AssertFalse(oCollection:bscChaPrim(), "Registro não foi deletado.")
+	
+	oResult:UTSetAPI("/healthcare/v1/trimesterBalanceSheet/"+${keyCollumn}+;
+					"?page=1"+;
+${queryParams}
+                    "&pageSize=2";
+					,"REST")
+	
+	cRet := oResult:UTDeleteWS(cBody,aHeader)
+
+	oResult:AssertFalse(Empty(cRet), "Não houve retorno para a requisição. Verifique se o serviço está no ar.")
+    oResult:AssertTrue(cRet=="204 NoContent", "Retorno diferente de '204 NoContent'. Retorno " + cRet)
+
+	oResult:deactivate()
+
+Return oResult
+
+//Test Erro
+METHOD error_006() CLASS ${prefix}${className}TestCase
+
+	Local oResult := FWTestHelper():New()
+	Local oCollection := ${prefix}Clt${className}():New()
+    Local cMsg := "Erro caso de teste"
+
+    oCollection:setError(cMsg)
+	oResult:activate()
+	oResult:AssertTrue(oCollection:getError() == cMsg, "Não retornou a mensagem de erro esperada.")
 	
 	oCollection:destroy()
 	oResult:deactivate()

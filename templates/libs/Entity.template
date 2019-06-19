@@ -18,12 +18,8 @@ Class ${prefix}Entity
 	
 	Method getHMap()
 	Method setHMap(hMap)
-	Method getData(xKey, cType)
 	Method setValue(cProperty,xData)
-	Method getRecno()
-	Method setRecno(nRecno)
 	Method destroy()
-	Method hasValue(cProperty,cType)
 	Method getValue(cProperty)
 	Method dateToUtc(dDate, cTime, utc)
 	Method utcToDate(cUtcDate)
@@ -43,54 +39,8 @@ Method setHMap(hMap) Class ${prefix}Entity
 	self:hMap := hMap
 Return
 
-Method getData(xKey, cType) Class ${prefix}Entity
-    Local xValue := ""
-	Local cDia := ""
-	Local cMes := ""
-	Local cAno := ""
-    default cType := CARACTER
-    self:hMap:get(xKey,@xValue)
-    
-    if empty(xValue)
-
-        DO CASE
-            CASE cType == NUMBER
-                xValue := 0
-            CASE cType == BOOLEAN
-                xValue := .F.
-            CASE cType == DATE
-                xValue := ""
-            CASE cType == ARRAY
-                xValue := {}
-            CASE cType == OBJECT
-                xValue := nil
-	    END CASE
-	
-	else
-		// TODO verificar se essa é a melhor tratativa para esse caso
-		// por conta das barras estava gravando datas tipo 1912 e a validade estava ficando negativa
-
-		if cType == DATE .and. "/" $$ xValue 
-			cDia := SubStr(xValue, 1, (at("/", xValue)-1))
-			xValue :=  SubStr(xValue, (at("/", xValue)+1))
-			cMes := SubStr(xValue, 1, (at("/", xValue)-1))
-			xValue :=  SubStr(xValue, (at("/", xValue)+1))
-			cAno := SubStr(xValue, (at("/", xValue)+1))
-			xValue :=  cAno+cMes+cDia
-		endIf
-    endIf
-
-Return xValue
-
 Method setValue(cProperty,xData) Class ${prefix}Entity
 Return self:hMap:set(cProperty,xData)
-
-Method getRecno() Class ${prefix}Entity
-Return self:nRecno
-
-Method setRecno(nRecno) Class ${prefix}Entity
-	self:nRecno := nRecno
-Return
 
 Method destroy() Class ${prefix}Entity
 	if !empty(self:hMap)
@@ -104,31 +54,6 @@ Method destroy() Class ${prefix}Entity
         self:oHashFields := nil
     endif
 return
-
-Method hasValue(cProperty,cType) Class ${prefix}Entity
-    Local anyValue := ""
-    default cType := CARACTER
-
-    lFound := !(empty(self:hMap:get(cProperty,@anyValue)))
-	
-	if !lFound
-        DO CASE
-            CASE cType == CARACTER
-                self:hMap:set(cProperty,"")
-            CASE cType == NUMBER
-                self:hMap:set(cProperty,0)
-            CASE cType == BOOLEAN
-                self:hMap:set(cProperty,.F.)
-            CASE cType == DATE
-                self:hMap:set(cProperty,StoD(""))
-            CASE cType == ARRAY
-                self:hMap:set(cProperty,{})
-            CASE cType == OBJECT
-                self:hMap:set(cProperty,nil)
-	    END CASE
-    endIf
-
-Return lFound
 
 Method getValue(cProperty) Class ${prefix}Entity
 	Local anyValue := ""

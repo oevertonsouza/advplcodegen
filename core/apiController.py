@@ -5,9 +5,10 @@ from pathlib import Path
 
 class ApiControl:
 
-    def __init__(self, cgen=None, entity=None, name=None, keyColumn=None):
+    def __init__(self, cgen=None, entity=None, name=None, keyColumn=None, namePortuguese=None):
         self.entity = entity
         self.name = name
+        self.namePortuguese = namePortuguese
         self.keyColumn = keyColumn
         self.cgen = codeGenerator.CodeGenerator()
         return
@@ -37,13 +38,30 @@ class ApiControl:
         self.cgen.setName(name)
         return
 
+    def setNamePortuguese(self, namePortuguese):
+        
+        self.namePortuguese = namePortuguese.title()
+        if settings.PROTHEUS_ENVIORMENT['default']['DICTIONARY_IN_DATABASE']:
+            mdb = managedb.ManagementDb()
+            tableList = mdb.getTable(self.entity)
+            if len(tableList) > 0 and tableList[0][1].strip() != '':
+                self.namePortuguese = tableList[0][1].strip().title()
+                self.namePortuguese = re.sub('[^A-Za-z0-9 ]+', '', self.namePortuguese)
+                self.namePortuguese = self.namePortuguese.replace("  "," ")
+
+        self.cgen.setNamePortuguese(namePortuguese)
+        return
+
     def setKeyColumn(self, keyColumn):
         self.keyColumn = keyColumn
         return
 
     #Criate project folders 
     def startProject(self):
+        self.createDir()
         
+    def createDir(self):
+    
         if not os.path.isdir(settings.PATH_TEMP): os.mkdir(settings.PATH_TEMP)
         if not os.path.isdir(settings.PATH_FILESTORAGE): os.mkdir(settings.PATH_FILESTORAGE)
         if not os.path.isdir(settings.PATH_SRC): os.mkdir(settings.PATH_SRC)
@@ -52,6 +70,8 @@ class ApiControl:
         if not os.path.isdir(settings.PATH_SRC_LIB): os.mkdir(settings.PATH_SRC_LIB)
         if not os.path.isdir(settings.PATH_SRC_COLLECTION): os.mkdir(settings.PATH_SRC_COLLECTION)
         if not os.path.isdir(settings.PATH_SRC_DOC): os.mkdir(settings.PATH_SRC_DOC)
+        if not os.path.isdir(settings.PATH_SRC_DOC_API): os.mkdir(settings.PATH_SRC_DOC_API)
+        if not os.path.isdir(settings.PATH_SRC_DOC_SCHEMA): os.mkdir(settings.PATH_SRC_DOC_SCHEMA)
         if not os.path.isdir(settings.PATH_SRC_API): os.mkdir(settings.PATH_SRC_API)
         if not os.path.isdir(settings.PATH_SRC_MAPPER): os.mkdir(settings.PATH_SRC_MAPPER)
         if not os.path.isdir(settings.PATH_SRC_REQUEST): os.mkdir(settings.PATH_SRC_REQUEST)
@@ -79,7 +99,7 @@ class ApiControl:
 
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE,  "storage.entity")
 
-        dataStorage = self.entity+';'+ self.name +';'+self.keyColumn+';'+self.shortName+'\n'
+        dataStorage = self.entity+';'+ self.name +';'+self.keyColumn+';'+self.shortName+';'+self.namePortuguese+'\n'
         exists = os.path.isfile(storagePathFile) 
 
         if exists:
@@ -106,10 +126,12 @@ class ApiControl:
                 keyColumn = column[1] if len(column) > 1 else ''
                 shortName = column[2] if len(column) > 2 else ''
                 name = column[3] if len(column) > 3 else ''
+                namePortuguese = column[4] if len(column) > 4 else ''
                 self.setEntity(entity)
                 self.setKeyColumn(keyColumn)
                 self.setName(name)
                 self.setShortName(shortName)
+                self.setNamePortuguese(namePortuguese)
                 self.addEntity()
 
         return
@@ -173,6 +195,7 @@ class ApiControl:
                         self.setEntity(row[0])
                         self.setName(row[1])
                         self.setShortName(row[3])
+                        self.setNamePortuguese(row[4])
                         self.cgen.buildEntity()
                         self.cgen.buildDao()
                         self.cgen.buildCollection()
