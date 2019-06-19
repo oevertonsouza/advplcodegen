@@ -45,12 +45,12 @@ FILIAL = Filial do seu ambiente</br>
 SEGMENT = Seguimento em que atua.</br>
 PREFIX = Prefixo com 3 caracteres, será o prefixo das suas classe e nome de fontes para distinguir dos fontes já existentes.</br>
 
--Especificos para gerção de APIS e documentação no padrão OpenAapi em Json.
-SEGMENT = Seguimento qual o produto esta alocado.
-PRODUCT = Nome do produto.
-PRDUCT_DESCRIPTION = Descrição do produto.
-CONTACT = Email de Contato do produto.
-DICTIONARY_IN_DATABASE = Indica se o ambiente Protheus possui dicionário de dados no banco ou não
+-Especificos para gerção de APIS e documentação no padrão OpenAapi em Json.</br>
+SEGMENT = Seguimento qual o produto esta alocado.</br>
+PRODUCT = Nome do produto.</br>
+PRDUCT_DESCRIPTION = Descrição do produto.</br>
+CONTACT = Email de Contato do produto.</br>
+DICTIONARY_IN_DATABASE = Indica se o ambiente Protheus possui dicionário de dados no banco ou não</br>
 
 Exemplo:
 
