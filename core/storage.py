@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import sys, os, settings, csv, re
-from core import managedb, commandController, apiController, codeGenerator
+from core import managedb
 from pathlib import Path
 
 class Storage:
