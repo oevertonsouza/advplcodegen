@@ -93,7 +93,7 @@ Após a execução desse comando os diretório do projeto assim como suas libs d
 </br>
 </br>
 
-![SRC arvore do projeto](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/apis/docImg/src.png)
+![SRC arvore do projeto](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/master/docImg/src.png)
 
 <b>Comando addentity</b>
 <br>Para adicionar uma entidade ao projeto.<br>
@@ -139,14 +139,14 @@ Após a execução desse comando os arquivos de storage deverão ser criados, es
 Os arquivos terão um aspecto semelhante aos exemplos abaixo, note que no arquivo .columns o nome do arquivo é o nome da propria entidade.
 </br>
 
-![Arquivos Storage](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/apis/docImg/filestorage.png)
+![Arquivos Storage](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/master/docImg/filestorage.png)
 
 Arquivo .entity</br>
 
 Segue a seguinte estutura.</br>
 |Nome da Entidade|Descrição em inglês da entidade|Coluna chave|Nome abreviado|Nome em português da entidade|<br>
 
-![Arquivos Storage](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/apis/docImg/entityfile.png)
+![Arquivos Storage](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/master/docImg/entityfile.png)
 
 Nota:<br>
 Nesse exemplo temos duas tabelas adicionadas B3JT10 e B3KT10.<br>
@@ -157,19 +157,19 @@ Arquivo [entidade].storage</br>
 Segue a seguinte estutura.</br>
 |Nome da coluna|descrição da coluna|tipo da coluna|tamanho da coluna|se a coluna faz parte do indice primario|coluna chave|Descrição da Coluna|Lista de opções (CBOX)|
 
-![Storage de colunas](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/apis/docImg/columnsfile.png)
+![Storage de colunas](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/master/docImg/columnsfile.png)
 
 Nota:<br>
 Nesse arquivo você poderá alterar a segunda coluna para a descrição do campo da sua tabela em ingles conforme o comitê de API's, o como no exemplo abaixo.<br>
 <br>
 
-![Arquivo alterado](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/apis/docImg/colunsfileinglishchange.png)
+![Arquivo alterado](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/master/docImg/colunsfileinglishchange.png)
 
 <br>
 Caso isso não seja feito sua API retornara os campos conforme sua propria descrição no banco de dados, semelhante ao exemplo abaixo.
 <br>
 
-![Resultado da API sem alteração dos campos](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/apis/docImg/apicampossemalterar.png)
+![Resultado da API sem alteração dos campos](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/master/docImg/apicampossemalterar.png)
 
 </br>
 <b>Comano build</b></br>
@@ -184,7 +184,7 @@ $ advplcodegen.py build
 Após a execução desse comando será criando na arvore do seu projeto os fontes necessários para a sua API com os seguintes verbos, GET, POST, PUT e DELETE. conforme o exemplo abaixo.<br>
 <br>
 
-![Arquivos Gerados](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/apis/docImg/fontesgerados.png)
+![Arquivos Gerados](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/master/docImg/fontesgerados.png)
 
 <br>
 Compile seus fontes e teste sua API usando Postman ou qualquer outro software de requisições HTTP rest.
