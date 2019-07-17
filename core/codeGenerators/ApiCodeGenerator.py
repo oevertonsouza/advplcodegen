@@ -83,21 +83,21 @@ class ApiCodeGenerator(codeGenerator):
         variables = self.getVariables(storagePathFile)
         if os.path.isfile(storagePathFile):
             #header
-            self.makeTempFile(variables,'Api.Header')
+            self.makeTempFile(variables,'Api.Header',"")
             #header.wsdata
-            self.makeTempFile(variables,'Api.Header.WsData')
+            self.makeTempFile(variables,'Api.Header.WsData',self.entity)
             #header.methods
-            self.makeTempFile(variables,'Api.Header.Methods')
+            self.makeTempFile(variables,'Api.Header.Methods',self.entity)
             #footer
             #body
-            self.makeTempFile(variables,'Api.Body')
+            self.makeTempFile(variables,'Api.Body',self.entity)
         return
 
-    def makeTempFile(self, variables, file):
+    def makeTempFile(self, variables, file, entity):
         fileIn = open(os.path.join(settings.PATH_TEMPLATE, file+'.template'))
         temp = Template(fileIn.read())
         result = temp.substitute(variables)
-        f = open(os.path.join(settings.PATH_TEMP, file + self.entity + ".tmp") , "w+")
+        f = open(os.path.join(settings.PATH_TEMP, file + entity + ".tmp") , "w+")
         f.write(result)
         f.close()
     
