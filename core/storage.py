@@ -30,6 +30,7 @@ class Storage:
             dataType = "string" if column[1] == "varchar" else column[1]
             desc = 'Descricao do campo'
             opcoes = ""
+            varName = "x" + column[0].replace("_", "").lower()
             for field in columnList:
                 if column[0].strip() in field[0]:
                     name = re.sub('[^A-Za-z0-9]+', '', field[2].title())
@@ -43,9 +44,13 @@ class Storage:
                     elif field[3] == 'N':
                         dataType = "float"
                         length = str(int(field[4]))
-            
-            f.write( column[0]+';'+name+';'+dataType+';'+length+';'+is_indice+';'+is_keyPathParam+';'+desc+";"+opcoes+';\n')
+                    varName = field[3].lower() + re.sub('[^A-Za-z0-9]+', '', field[1].title())
+            f.write( column[0]+';'+name+';'+dataType+';'+length+';'+is_indice+';'+is_keyPathParam+';'+desc+";"+varName+";"+opcoes+';\n')
         
         f.close()
     
         return
+    
+    def varPrefix(self, dataType):
+        prefix = ""
+        return prefix

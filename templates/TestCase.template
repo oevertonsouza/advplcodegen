@@ -49,7 +49,8 @@ ${noKeyVariables}
 	oResult:UTSetAPI("/healthcare/v1/trimesterBalanceSheet/"+${keyCollumn}+;
 					"?page=1"+;
 ${queryParams}
-                    "&order=${order}";
+                    "&order=${order}"+;
+                    "&fields=${order}";
                     ,"REST")
 
 	cRet := oResult:UTGetWS(aHeader)
@@ -81,7 +82,8 @@ ${noKeyVariables}
 	oResult:UTSetAPI("/healthcare/v1/trimesterBalanceSheet"+;
 					"?page=1"+;
 					"&pageSize=2"+;
-                    "&order=${order}";
+                    "&order=${order}"+;
+                    "&fields=${order}";
                     ,"REST")
 					
 	cRet := oResult:UTGetWS(aHeader)
