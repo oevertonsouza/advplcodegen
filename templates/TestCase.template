@@ -46,7 +46,7 @@ METHOD getSingle_001() CLASS ${prefix}${className}TestCase
 ${keyVariables}
 ${noKeyVariables}
 	oResult:activate()
-	oResult:UTSetAPI("/healthcare/v1/trimesterBalanceSheet/"+${keyCollumn}+;
+	oResult:UTSetAPI("/healthcare/v1/${descriptionPath}/"+escape(${keyCollumn})+;
 					"?page=1"+;
 ${queryParams}
                     "&order=${order}"+;
@@ -58,7 +58,7 @@ ${queryParams}
 
 	If !Empty(cRet)
 
-        oJson:fromJson(cRet)
+        oJson:fromJson(DecodeUTF8(cRet))
 
 ${compare}
 	EndIf
@@ -79,7 +79,7 @@ METHOD getCollection_002() CLASS ${prefix}${className}TestCase
 ${keyVariables}
 ${noKeyVariables}
 	oResult:activate()
-	oResult:UTSetAPI("/healthcare/v1/trimesterBalanceSheet"+;
+	oResult:UTSetAPI("/healthcare/v1/${descriptionPath}"+;
 					"?page=1"+;
 					"&pageSize=2"+;
                     "&order=${order}"+;
@@ -91,7 +91,7 @@ ${noKeyVariables}
 
 	If !Empty(cRet)
 
-        oJson:fromJson(cRet)
+        oJson:fromJson(DecodeUTF8(cRet))
 
 ${compareAll}
 	EndIf
@@ -115,14 +115,14 @@ ${noKeyVariables}
 ${body}
 		            '}'
 	oResult:activate()
-    oResult:UTSetAPI("/healthcare/v1/trimesterBalanceSheet";
+    oResult:UTSetAPI("/healthcare/v1/${descriptionPath}";
                     ,"REST")
-	cRet := oResult:UTPostWS(cBody,aHeader)
+	cRet := oResult:UTPostWS(EncodeUtf8(cBody),aHeader)
     oResult:AssertFalse(Empty(cRet), "Não houve retorno para a requisição. Verifique se o serviço está no ar.")
 
 	If !Empty(cRet)
 
-        oJson:fromJson(cRet)
+        oJson:fromJson(DecodeUTF8(cRet))
 		
 ${compare}
 	EndIf
@@ -146,18 +146,18 @@ ${body}
 		            '}'
 	oResult:activate()
 	
-	oResult:UTSetAPI("/healthcare/v1/trimesterBalanceSheet/"+${keyCollumn}+;
+	oResult:UTSetAPI("/healthcare/v1/${descriptionPath}/"+${keyCollumn}+;
 					"?page=1"+;
 ${queryParams}
                     "&pageSize=2";
 					,"REST")
 	
-	cRet := oResult:UTPutWS(cBody,aHeader)
+	cRet := oResult:UTPutWS(EncodeUtf8(cBody),aHeader)
     oResult:AssertFalse(Empty(cRet), "Não houve retorno para a requisição. Verifique se o serviço está no ar.")
 
 	If !Empty(cRet)
 
-        oJson:fromJson(cRet)
+        oJson:fromJson(DecodeUTF8(cRet))
 		
 ${compare}
 	EndIf
@@ -179,13 +179,13 @@ ${keyVariables}
 
 	oResult:activate()
 	
-	oResult:UTSetAPI("/healthcare/v1/trimesterBalanceSheet/"+${keyCollumn}+;
+	oResult:UTSetAPI("/healthcare/v1/${descriptionPath}/"+${keyCollumn}+;
 					"?page=1"+;
 ${queryParams}
                     "&pageSize=2";
 					,"REST")
 	
-	cRet := oResult:UTDeleteWS(cBody,aHeader)
+	cRet := oResult:UTDeleteWS(EncodeUtf8(cBody),aHeader)
 
 	oResult:AssertFalse(Empty(cRet), "Não houve retorno para a requisição. Verifique se o serviço está no ar.")
     oResult:AssertTrue(cRet=="204 NoContent", "Retorno diferente de '204 NoContent'. Retorno " + cRet)
