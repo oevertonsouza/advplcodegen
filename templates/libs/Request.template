@@ -263,7 +263,7 @@ Method procPost() Class ${prefix}Request
             If self:oValidador:validate(self:oCollection) //Validate
                 If oCmd:execute()
                     self:nStatus := 201
-                    If self:buscar(BUSCA)
+                    If self:buscar(SINGLE)
                         oEntity := self:oCollection:getNext()
                         self:oRespBody := oEntity:serialize(self:oRespControl)
                         cJsonResp := self:oRespBody:toJson()

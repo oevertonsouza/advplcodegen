@@ -53,11 +53,11 @@ class TestCaseCodeGenerator(codeGenerator):
                 if column[5] == "1":
                     keyCollumn = column[7]
                 if column[4] == "1":
-                    keyVariables += ''.rjust(4)+'Local '+ column[7] +' := '+defaultVar+' /*<- change this value - Column ' + column[0] + '*/\n'
+                    keyVariables += ''.rjust(4)+'Local '+ column[7] +' := '+defaultVar+' /*Column ' + column[0] + '*/\n'
                     if column[5] == "0":
-                        queryParams.append(''.rjust(20)+'"&'+ column[1] +'="+escape('+ column[7] +')+;')
+                        queryParams.append(''.rjust(20)+'"&'+ column[1] +'="+escape('+ compareValue +')+;')
                 else:
-                    noKeyVariables += ''.rjust(4)+'Local '+ column[7] +' := '+defaultVar+' /*<- change this value - Column ' + column[0] + '*/\n'
+                    noKeyVariables += ''.rjust(4)+'Local '+ column[7] +' := '+defaultVar+' /*Column ' + column[0] + '*/\n'
             
             descriptionPath = self.name.title().replace(" ","")
             descriptionPath = descriptionPath[0].lower() + descriptionPath[1:]
