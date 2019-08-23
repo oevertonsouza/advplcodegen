@@ -1,0 +1,444 @@
+{
+	"openapi": "3.0.1",
+	"servers": [
+		{
+			"description": "API para cadastro da entidade Obligations",
+			"url": "http://{serverUrl}:{serverHttpPort}/api/healthcare/v1",
+			"variables": {
+				"serverUrl": {
+					"default": "localhost"
+				},
+				"serverHttpPort": {
+					"default": "4202"
+				}
+			}
+		}
+	],
+	"info": {
+		"description": "API para cadastro da entidade Obrigacoes",
+		"version": "1.100",
+		"title": "Obrigacoes",
+		"contact": {
+			"name": "T-Talk",
+			"url": "api.totvs.com.br",
+			"email": "comiteintegracao@totvs.com.br"
+		},
+		"x-totvs": {
+			"messageDocumentation": {
+				"name": "Obligations",
+				"description": "Obligations",
+				"segment": "healthcare"
+			},
+			"productInformation": [
+				{
+					"product": "Central de Obrigacoes",
+					"contact": "comiteintegracao@totvs.com.br",
+					"description": "Operacoes referente a entidade B3AT10."
+				}
+			]
+		}
+	},
+	"paths": {
+		"/obligations": {
+			"get": {
+				"tags": [
+					"Obligations"
+				],
+				"operationId": "ObriCollection",
+				"summary": "Dados do serviço Obligations, referente a entidade B3AT10.",
+				"description": "Retorna uma mensagem com a coleção de objetos do serviço Obligations da entidade B3AT10",
+				"x-totvs": {
+					"productInformation": [
+						{
+							"product": "Central de Obrigacoes",
+							"available": true,
+							"note": "Este verbo está disponível com todos os parametros"
+						}
+					]
+				},
+				"parameters": [
+					{
+						"$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/apis/types/totvsApiTypesBase.json#/parameters/Page"
+					},
+					{
+						"$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/apis/types/totvsApiTypesBase.json#/parameters/PageSize"
+					},
+					{
+						"$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/apis/types/totvsApiTypesBase.json#/parameters/Order"
+					},
+					{
+						"$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/apis/types/totvsApiTypesBase.json#/parameters/Expand"
+					},
+					{
+						"$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/apis/types/totvsApiTypesBase.json#/parameters/Fields"
+					},
+					{
+						"$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/apis/types/totvsApiTypesBase.json#/parameters/Authorization"
+					},
+                    {
+                        "$ref": "#/components/parameters/obligationCodeParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/providerRegisterParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/systemBranchParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/seasonalityParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/obligationTypeParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/obligationDescriptionParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/activeInactiveParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/dueDateNotificationParam"
+                    }
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/obligations/v1/1_100/jsonschema/schemas/Obligations_1_100.json#/definitions/PagedObligations"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/apis/types/totvsApiTypesBase.json#/definitions/ErrorModel"
+								}
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"tags": [
+					"Obligations"
+				],
+				"operationId": "ObriInsert",
+				"summary": "Dados do serviço Obligations, referente a entidade B3AT10.",
+				"description": "Inclui o dado referente ao serviço Obligations. Ao realizar a inclusao de um registro, o endpoint irá responder com codigo 202 indicando que a requisicao foi adicionada, e um Body com o objeto Json.",
+				"x-totvs": {
+					"productInformation": [
+						{
+							"product": "Central de Obrigacoes",
+							"available": true,
+							"note": "Este verbo está disponível."
+						}
+					]
+				},
+				"parameters": [
+					{
+						"$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/apis/types/totvsApiTypesBase.json#/parameters/Authorization"
+					},
+                    {
+                        "$ref": "#/components/parameters/obligationCodeParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/providerRegisterParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/systemBranchParam"
+                    }
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/obligations/v1/1_100/jsonschema/schemas/Obligations_1_100.json#/definitions/ObligationsBody"
+							}
+						}
+					},
+					"description": "Informacoes da entidade B3AT10.",
+					"required": true
+				},
+				"responses": {
+					"202": {
+						"description": "Accepted",
+						"headers": {
+							"location": {
+								"description": "URL onde o recurso estará disponível",
+								"schema": {
+									"type": "string"
+								}
+							}
+						},
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/obligations/v1/1_100/jsonschema/schemas/Obligations_1_100.json#/definitions/ObligationsBody"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/obligations/{obligationCode}": {
+			"get": {
+				"tags": [
+					"Obligations"
+				],
+				"operationId": "ObriSingle",
+				"summary": "Dados do serviço Obligations referente a entidade B3AT10.",
+				"description": "Retorna uma mensagem com o objeto do serviço Obligations da entidade B3AT10",
+				"x-totvs": {
+					"productInformation": [
+						{
+							"product": "Central de Obrigacoes",
+							"available": true,
+							"note": "Este verbo está disponível com os parâmetros Authorization."
+						}
+					]
+				},
+				"parameters": [
+					{
+						"$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/apis/types/totvsApiTypesBase.json#/parameters/Authorization"
+					},
+					{
+						"$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/apis/types/totvsApiTypesBase.json#/parameters/Expand"
+					},
+					{
+						"$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/apis/types/totvsApiTypesBase.json#/parameters/Fields"
+					},
+                    {
+                        "$ref": "#/components/parameters/obligationCodeParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/providerRegisterParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/systemBranchParam"
+                    }
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/obligations/v1/1_100/jsonschema/schemas/Obligations_1_100.json#/definitions/Obligations"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/apis/types/totvsApiTypesBase.json#/definitions/ErrorModel"
+								}
+							}
+						}
+					}
+				}
+			},
+			"put": {
+				"tags": [
+					"Obligations"
+				],
+				"operationId": "ObriUpdate",
+				"summary": "Dados do serviço Obligations, referente a entidade B3AT10.",
+				"description": "Altera o dado referente ao serviço Obligations. Ao realizar a alteracao de um registro, o endpoint irá responder com codigo 200 indicando que a requisicao foi adicionada, e um Body com o objeto Json.",
+				"x-totvs": {
+					"productInformation": [
+						{
+							"product": "Central de Obrigacoes",
+							"available": true,
+							"note": "Este verbo está disponível."
+						}
+					]
+				},
+				"parameters": [
+					{
+						"$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/apis/types/totvsApiTypesBase.json#/parameters/Authorization"
+					},
+                    {
+                        "$ref": "#/components/parameters/obligationCodeParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/providerRegisterParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/systemBranchParam"
+                    }
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/obligations/v1/1_100/jsonschema/schemas/Obligations_1_100.json#/definitions/ObligationsBody"
+							}
+						}
+					},
+					"description": "Informacoes da entidade B3AT10.",
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"description": "Accepted",
+						"headers": {
+							"location": {
+								"description": "URL onde o recurso estará disponível",
+								"schema": {
+									"type": "string"
+								}
+							}
+						},
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/obligations/v1/1_100/jsonschema/schemas/Obligations_1_100.json#/definitions/ObligationsBody"
+								}
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"tags": [
+					"Obligations"
+				],
+				"operationId": "ObriDelete",
+				"summary": "Dados do serviço Obligations referente a entidade B3AT10.",
+				"description": "Exclui um registro referente ao serviço Obligations. Ao realizar a deleção de um registro, o endpoint irá responder com codigo 204 indicando que a requisicao foi processada corretamente.",
+				"x-totvs": {
+					"productInformation": [
+						{
+							"product": "Central de Obrigacoes",
+							"available": true,
+							"note": "Este verbo está disponível com os parâmetros Authorization."
+						}
+					]
+				},
+				"parameters": [
+					{
+						"$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/apis/types/totvsApiTypesBase.json#/parameters/Authorization"
+					},
+                    {
+                        "$ref": "#/components/parameters/obligationCodeParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/providerRegisterParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/systemBranchParam"
+                    }
+				],
+				"responses": {
+					"204": {
+						"description": "No content, OK"
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "https://raw.githubusercontent.com/totvs/ttalk-standard-message/master/jsonschema/apis/types/totvsApiTypesBase.json#/definitions/ErrorModel"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"parameters": {
+           "obligationCodeParam": {
+               "name": "obligationCode",
+               "in": "path",
+               "description": "C�digo da obriga��o",
+               "required": true,
+               "schema": {
+		            "type": "string",
+	                "format": "string"
+               }
+           },
+
+           "providerRegisterParam": {
+               "name": "providerRegister",
+               "in": "query",
+               "description": "Registro da operadora",
+               "required": true,
+               "schema": {
+		            "type": "string",
+	                "format": "string"
+               }
+           },
+           "systemBranchParam": {
+               "name": "systemBranch",
+               "in": "query",
+               "description": "Filial do sistema",
+               "required": true,
+               "schema": {
+		            "type": "string",
+	                "format": "string"
+               }
+           },
+           "seasonalityParam": {
+               "name": "seasonality",
+               "in": "query",
+               "description": "Sazonalidade",
+               "required": false,
+               "schema": {
+		            "type": "string",
+	                "format": "string"
+               }
+           },
+           "obligationTypeParam": {
+               "name": "obligationType",
+               "in": "query",
+               "description": "Tipo de obriga��o",
+               "required": false,
+               "schema": {
+		            "type": "string",
+	                "format": "string"
+               }
+           },
+           "obligationDescriptionParam": {
+               "name": "obligationDescription",
+               "in": "query",
+               "description": "Descri��o da obirga��o",
+               "required": false,
+               "schema": {
+		            "type": "string",
+	                "format": "string"
+               }
+           },
+           "activeInactiveParam": {
+               "name": "activeInactive",
+               "in": "query",
+               "description": "Ativo / Inativo",
+               "required": false,
+               "schema": {
+		            "type": "string",
+	                "format": "string"
+               }
+           },
+           "dueDateNotificationParam": {
+               "name": "dueDateNotification",
+               "in": "query",
+               "description": "Aviso de Vencimento",
+               "required": false,
+               "schema": {
+		            "type": "string",
+	                "format": "string"
+               }
+           }
+		}
+	}
+}

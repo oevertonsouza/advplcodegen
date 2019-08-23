@@ -20,4 +20,4 @@ Method New(oExecutor) Class ${prefix}Cmd${className}
 Return self
 
 Method execute() Class ${prefix}Cmd${className}
-Return nil
+Return _Super:execute()

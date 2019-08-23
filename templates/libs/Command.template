@@ -18,3 +18,6 @@ EndClass
 Method New(oExecutor) Class ${prefix}Command
     self:oExecutor    := oExecutor
 Return self
+
+Method execute() Class ${prefix}Command
+Return self:oExecutor:commit()

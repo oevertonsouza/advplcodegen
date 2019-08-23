@@ -12,7 +12,10 @@ O propósito desse projeto é utilizar classes abstratas que possuam métodos qu
 
 # Pré-requisitos
 
-Python 3 instalado, base de dados e ambiente de desenvolvimento (ADVPL) protheus configurados.
+* Python 3 instalado (https://www.python.org/downloads/)
+* Pip instalado - Execute o arquivo get-pip.py
+* Biblioteca PyMsSql instalada - pip install pymssql
+* Base de dados e ambiente de desenvolvimento (ADVPL) protheus configurados.
 
 # Configuração de Ambiente
 

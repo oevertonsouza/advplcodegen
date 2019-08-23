@@ -1,0 +1,453 @@
+#INCLUDE "TOTVS.CH"
+#INCLUDE 'FWMVCDEF.CH'
+
+#Define DBFIELD 1
+#Define JSONFIELD 2
+
+#DEFINE SQLSERVER  "MSSQL"
+
+/*/{Protheus.doc} 
+    Classe abstrata que faz o controle de abertura e fechamento e posicionamento de alias
+    @type  Class
+    @author everton.mateus
+    @since 29/11/2017
+    @version version
+/*/
+
+Class CenDao
+
+	Data cQuery
+	Data cAlias
+	Data cAliasTemp
+	Data cNumPage
+	Data cPageSize
+	Data cDB
+	Data cFields
+	Data cfieldOrder
+	Data oHashOrder
+	Data aMapBuilder
+	Data aFields
+    Data oStatement  
+	Data hMap
+	Data cError
+
+	Method New(aFields) Constructor
+
+	Method destroy()
+	Method getQuery()
+	Method setValue(cProperty,xData)
+	Method getValue(cProperty)
+	Method setHMap(hMap)
+	Method setNumPage(cNumPage)
+	Method setPageSize(cPageSize)
+	Method getNumPage()
+	Method getPageSize()
+	Method getRowControl()
+	Method getWhereRow()
+	Method getQryPage()
+	Method setQuery(cQuery)
+	Method getAliasTemp()
+	Method aliasSelected()
+	Method executaQuery()
+	Method execStatement()
+	Method fechaQuery()
+	Method verificaPos(nRecno)
+	Method getTypeOpe(lExiste, nType)
+	Method posReg(nRecno)
+	Method posDbRecno(nRecno)
+	Method setOrder(cOrder)
+	Method queryBuilder(cQuery)
+	Method buscar()
+	Method delete()
+	Method getFields()
+	Method getFilters()
+	Method normalizeType(xPointer,xValue)
+	Method toString(xValue)
+	Method toDate(xValue)
+	Method toInt(xValue)
+	Method hasNext(nRecno)
+	Method setError(cMsg)
+	Method getError()
+
+EndClass
+
+Method New(aFields) Class CenDao
+    self:oStatement := FWPreparedStatement():New()
+	self:oHashOrder := THashMap():New()
+	self:hMap 		:= THashMap():New()
+	self:aMapBuilder:= {}
+	self:aFields 	:= aFields
+	self:cDB 		:= TcGetDB()
+    self:cNumPage 	:= "1"
+    self:cPageSize 	:= "0"
+	self:cFields 	:= ""
+	self:cfieldOrder:= ""
+	self:cError     := ""
+Return self
+
+Method destroy() Class CenDao
+	self:fechaQuery()
+	if !empty(self:hMap)
+        self:hMap:clean()
+        FreeObj(self:hMap)
+        self:hMap := nil
+    endif
+	if !empty(self:oHashOrder)
+        self:oHashOrder:clean()
+        FreeObj(self:oHashOrder)
+        self:oHashOrder := nil
+    endif
+	if !empty(self:oStatement)
+        self:oStatement:destroy()
+        FreeObj(self:oStatement)
+        self:oStatement := nil
+    endif
+
+Return
+
+Method getQuery() Class CenDao
+Return self:cQuery
+
+Method setValue(cProperty,xData) Class CenDao
+Return self:hMap:set(cProperty,xData)
+
+Method getValue(cProperty) Class CenDao
+	Local xValue := ""
+	self:hMap:get(cProperty,@xValue)
+Return xValue
+
+Method setHMap(hMap) Class CenDao
+    self:hMap := hMap
+Return
+
+Method setNumPage(cNumPage) Class CenDao
+    self:cNumPage := cNumPage 
+Return
+
+Method setPageSize(cPageSize) Class CenDao
+    self:cPageSize := cPageSize
+Return
+
+Method getNumPage() Class CenDao
+Return self:cNumPage
+
+Method getPageSize() Class CenDao
+Return self:cPageSize
+
+Method getRowControl() Class CenDao
+
+	Local cQuery := ""
+	
+	// Para fazer o controle da paginação em SQL, usado dessa maneira porque OFFSET e FETCH não funciona em versões sql menor que 2012
+	If SQLSERVER $ self:cDB
+		cQuery += " WITH " + self:cAlias + " AS ( SELECT ROW_NUMBER() OVER(ORDER BY " + self:cfieldOrder + " ) AS ROW#, "
+	Else
+		cQuery += " SELECT "
+	EndIf
+
+Return cQuery
+
+Method getWhereRow() Class CenDao
+
+	Local cQuery := ""
+	Local cNumIni := alltrim(str((val(self:cNumPage ) - 1) * val(self:cPageSize)))
+	Local cNumFim := alltrim(str(((val(self:cNumPage )) * val(self:cPageSize)) + 1))
+
+	// Para fazer o controle da paginação em SQL, usado dessa maneira porque OFFSET e FETCH não funciona em versões sql menor que 2012
+	If SQLSERVER $ self:cDB  
+		cQuery += " ) SELECT * FROM " + self:cAlias
+		If val(self:cPageSize) > 0
+			cQuery += " WHERE ROW# > " + cNumIni 
+			cQuery += "  AND ROW# <= " + cNumFim
+		EndIf
+	EndIf
+
+Return cQuery
+
+Method getQryPage() Class CenDao
+
+    Local cQuery := ""
+    Local cNumPage := alltrim(str((val(self:cNumPage ) - 1) * val(self:cPageSize)))
+
+    //Nesse ponto, pegamos sempre 1 registro a mais do tamanho da página para efeitos de paginação na tela.
+    cQuery += " OFFSET " + cNumPage + " ROWS FETCH NEXT " + SOMA1(self:cPageSize) + " ROWS ONLY "
+
+Return cQuery
+
+Method setQuery(cQuery) Class CenDao
+	self:cQuery := cQuery
+Return
+
+Method getAliasTemp() Class CenDao
+	if empty(self:cAliasTemp)
+		self:cAliasTemp := getNextAlias()
+	endif
+Return self:cAliasTemp
+
+Method aliasSelected() Class CenDao
+Return Select(self:getAliasTemp()) > 0
+
+Method executaQuery() Class CenDao
+	Local lFound := .F.
+
+	self:fechaQuery()
+	self:setQuery(self:getQuery())
+	dbUseArea(.T.,"TOPCONN",TCGENQRY(,,self:getQuery()),self:getAliasTemp(),.F.,.T.)
+	/*	
+		Essa linha serve para conferirmos se todos os alias abertos foram fechados.
+		Nos codereviews devemos: Descomentar, compilar, fechar o server, apagar o appserver.log, 
+		abrir o server, rodar o autorizadortestsuite, abrir o appserver.log e 
+		conferir se o total de :abriu == total de :fechou
+	*/
+	//conout(self:getAliasTemp()+":abriu:"+procName(6)+">"+procName(5)+">"+procName(4)+">"+procName(3)+">"+procName(2)+">"+procName(1)+": "+self:getQuery()) 
+	lFound := (self:getAliasTemp())->(!Eof())
+	If !lFound
+		self:fechaQuery()
+	EndIf
+	
+Return lFound
+
+Method execStatement() Class CenDao
+	Local lSuccess := .F.
+
+	lSuccess := TcSqlExec(self:getQuery()) >= 0
+	If lSuccess .AND. SubStr(Alltrim(Upper(TCGetDb())),1,6) == "ORACLE"
+		lSuccess := TCSQLEXEC("COMMIT") >= 0
+	Endif
+
+	If !lSuccess
+		self:setError(TcSqlError())
+	EndIf
+	
+Return lSuccess
+
+Method fechaQuery() Class CenDao
+	if self:aliasSelected()
+		(self:getAliasTemp())->(dbCloseArea())
+		/*	
+			Essa linha serve para conferirmos se todos os alias abertos foram fechados.
+			Nos codereviews devemos: Descomentar, compilar, fechar o server, apagar o appserver.log, 
+			abrir o server, rodar o autorizadortestsuite, abrir o appserver.log e conferir se o total de :abriu == total de :fechou
+		*/
+		//conout(self:getAliasTemp()+":fechou:"+procName(6)+">"+procName(5)+">"+procName(4)+">"+procName(3)+">"+procName(2)+">"+procName(1)+": "+self:getQuery()) 
+	endIf
+Return
+
+Method verificaPos(nRecno) Class CenDao
+
+	If  self:aliasSelected() .and. nRecno != (self:getAliasTemp())->(RECNO())
+		self:posReg(nRecno)
+	EndIf
+
+Return
+
+Method posReg(nRecno) Class CenDao
+	Local nSkip := 0
+	If self:aliasSelected() 
+		If nRecno < (self:getAliasTemp())->(RECNO())
+			(self:getAliasTemp())->(dbGoTop())
+			If nRecno <> 1
+				nSkip := nRecno-1
+			EndIf
+		Else
+			nSkip := nRecno-(self:getAliasTemp())->(RECNO())
+		EndIf
+		If nRecno <> 1
+			(self:getAliasTemp())->(dbSkip(nSkip))
+		EndIf
+		self:posDbRecno((self:getAliasTemp())->RECNO)
+	EndIf
+Return
+
+Method posDbRecno(nRecno) Class CenDao
+	If nRecno <> (self:cAlias)->(RECNO())
+		(self:cAlias)->(DbGoto(nRecno))
+	EndIf
+Return !(self:cAlias)->(Eof())
+
+Method setOrder(cOrder) Class CenDao
+	Local aOrder	:= {}
+	Local nField	:= 0
+	Local nLen		:= 0
+	Local cField	:= ""
+	Local cTypeOrder := " ASC "
+
+	If !Empty(cOrder)
+		aOrder = StrTokArr(cOrder, "," )
+		nLen := Len( aOrder )
+		For nField := 1 to nLen
+			cField := UPPER(aOrder[nField])
+			If SubStr(cField,1,1) == "-"
+				cField := SubStr(cField, 2, LEN(cField))
+				cTypeOrder := " DESC "
+			EndIf
+			If self:oHashOrder:get(cField)
+				self:oHashOrder:get(cField, cField)
+				self:cfieldOrder += IIf(nField == 1,""," , ") + cField + cTypeOrder
+			EndIf
+		Next nField
+	EndIf
+Return
+
+Method queryBuilder(cQuery) Class CenDao
+
+    Local nStatement := 1
+    Local cQryFixed := ""
+
+    self:oStatement:SetQuery(cQuery) 
+    
+    For nStatement:= 1 to Len(self:aMapBuilder)
+        self:oStatement:SetString( nStatement , self:aMapBuilder[nStatement])
+    Next
+
+    cQryFixed := self:oStatement:GetFixQuery()
+
+    self:aMapBuilder := nil
+    self:aMapBuilder := {}
+
+    self:oStatement:destroy()
+	FreeObj(self:oStatement)
+    self:oStatement := nil
+    self:oStatement :=  FWPreparedStatement():New()
+
+Return cQryFixed
+
+Method buscar() Class CenDao
+	
+    Local cQuery := ""
+	Local lFound := .F.
+
+    cQuery += self:getRowControl()
+    cQuery += self:getFields()
+    cQuery += " FROM " + RetSqlName(self:cAlias) + " " + self:cAlias + " "
+    cQuery += self:getFilters()
+    cQuery := self:queryBuilder(cQuery)
+	cQuery += self:getWhereRow()	
+
+    self:setQuery(cQuery)
+    lFound := self:executaQuery()
+
+Return lFound
+
+Method delete() Class CenDao
+    Local cQuery := ""
+    Local lFound := .F.
+
+    cQuery := " DELETE FROM "
+    cQuery += " " + RetSqlName(self:cAlias) + " "
+    cQuery += self:getFilters()
+    cQuery := self:queryBuilder(cQuery)
+    self:setQuery(cQuery)
+    lFound := self:execStatement()
+
+Return lFound
+
+Method getFields() Class CenDao
+
+	Local nField := 0
+    Local nLen   := Len(self:aFields)
+
+	If empty(self:cFields)
+		For nField := 1 to nLen
+			self:cFields += IIf(nField > 1," , ","") + self:aFields[nField][DBFIELD] + " "
+		Next nField
+		self:cFields += " ,R_E_C_N_O_ RECNO "
+	EndIf
+
+Return self:cFields
+
+Method getFilters() Class CenDao
+
+    Local cFilter := ""
+    Local xValue  := ""
+    Local nField := 0
+    Local nLen   := Len(self:aFields)
+
+    cFilter += " WHERE "
+    cFilter += " "+ self:cAlias + "_FILIAL = '" + xFilial( self:cAlias ) + "' "
+    
+    For nField := 1 to nLen
+        xValue := self:getValue(self:aFields[nField][JSONFIELD])
+        If !empty(xValue)
+            cFilter += " AND " + self:aFields[nField][DBFIELD] + " = ? "
+            aAdd(self:aMapBuilder, self:toString(xValue))
+        EndIf
+    Next nField
+
+    cFilter += " AND D_E_L_E_T_ = ? "
+    aAdd(self:aMapBuilder, ' ')
+
+Return cFilter
+
+Method normalizeType(xPointer,xValue) Class CenDao
+
+    Local cValue := ""
+
+    if ValType( xPointer ) == "C"
+        cValue := self:toString(xValue)
+    ElseIf ValType( xPointer ) == "N"
+        cValue := self:toInt(xValue)
+    ElseIf ValType( xPointer ) == "D"
+        cValue := self:toDate(xValue)
+    EndIf
+
+Return cValue
+
+Method toString(xValue) Class CenDao
+	Local cValue := ""
+
+	If xValue == Nil
+		cValue := ""
+	ElseIf ValType( xValue ) == "N"
+		cValue := AllTrim(Str(xValue))
+	ElseIf ValType( xValue ) == "C"
+		cValue := xValue
+	ElseIf ValType( xValue ) == "D"
+		cValue := DTOS(xValue)
+	EndIf
+
+Return cValue
+
+Method toDate(xValue) Class CenDao
+	
+	Local cValue := ""
+
+	If xValue == Nil
+		cValue := STOD("")
+	ElseIf ValType( xValue ) == "D"
+		cValue := xValue
+	ElseIf ValType( xValue ) == "C"
+		cValue := STOD(xValue)
+	EndIf
+
+Return cValue
+
+Method toInt(xValue) Class CenDao
+	
+	Local cValue := ""
+
+	If xValue == Nil
+		cValue := VAL("")
+	ElseIf ValType( xValue ) == "N"
+		cValue := xValue
+	ElseIf ValType( xValue ) == "C"
+		cValue := VAL(xValue)
+	EndIf
+
+Return cValue
+
+Method hasNext(nRecno) Class CenDao
+    Local lTemProx := .F.
+    If self:aliasSelected()
+        self:verificaPos(nRecno)
+        lTemProx := !(self:getAliasTemp())->(Eof())
+    EndIf
+return lTemProx
+
+Method setError(cMsg) Class CenDao
+    self:cError := cMsg
+    self:lFault := .T.
+return
+
+Method getError() Class CenDao
+return self:cError
