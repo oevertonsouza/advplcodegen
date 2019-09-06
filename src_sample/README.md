@@ -24,7 +24,7 @@ O projeto é criado dividindo os fontes por pastas que os agrupam por funcionali
 	 - [ ] validate
 
 ## Detalhamento das classes
-### Classes "api"
+### Classes API
 São as classes onde criamos os verbos das APIs (GET, PUT, POST e DELETE), elas são implementações das classes WSRESTFUL do framework ADVPL que está documentada no [TDN](https://tdn.totvs.com/display/framework/WSRESTFUL) <br>
 Buscamos utilizar nestas classes o padrão de projeto estrutural [FACADE](https://sourcemaking.com/design_patterns/facade) e comportamental [TEMPLATE METHOD](https://sourcemaking.com/design_patterns/template_method). Nele apenas definimos "**o caminho a se seguir**", sem necessariamente dizer o "como seguir". O "como" fica de responsabilidade das demais classes implementar.<br>
 
@@ -34,6 +34,8 @@ Buscamos utilizar nestas classes o padrão de projeto estrutural [FACADE](https:
 [colocar imagem]
 
 ### Classes Request
+**Classe Abstrata:** Request.PRW <br>
+**Nome padrão das classes concretas:** \<Product\>**Req**\<Entity\>.PRW -> CenReqObri.PRW <br>
 Esta classe é responsável por orquestrar o tratamento da entrada do dado, seu processamento e o tratamento de sua resposta.<br>
 Se a classe API diz o caminho, aqui começamos a detalhar o como. Aqui queremos centralizar como o padrão de implementação de APIs da Totvs deve ser implementado.<br>
 **Principais métodos:**<br><br>
@@ -83,6 +85,8 @@ Processa o verbo **PUT**. Assim como o procPost, é feita a validação do regis
 Este método irá solicitar a entidade para serializar seus dados e devolver o Json para a requisição.<br>
 
 ### Classes Collection
+**Classe Abstrata:** Collection.PRW <br>
+**Nome padrão das classes concretas:** \<Product\>**Clt**\<Entity\>.PRW -> CenCltObri.PRW <br>
 Essas classes tem por objetivo fornecer uma listagem de objetos que podem ser manipulados. Para isso é necessário fazer a comunicação entre as classes de processamento (request, command, etc...) e as classes de acesso ao dado (DAOs e Mapper).<br>
 Não aconselhamos incluir validações e regras de negócio nessas classes, visto que o objetivo da collection é apenas chamar as classes de acesso a dados e devolver objetos já mapeados com os dados encontrados.<br>
 Esta classe aplica de forma explícita o padrão de projetos [Iterator](https://sourcemaking.com/design_patterns/iterator). Este padrão provê uma forma de acessar uma lista de resultados independente de como essa lista foi criada. No nosso caso, estamos criando uma lista de objetos e permitindo que ela seja percorrida chamando apenas os métodos hasNext() e getNext(). Nosso sonho é que todas as listas do ADVPL (Array, HashMap, etc.) sejam assim =]<br>
