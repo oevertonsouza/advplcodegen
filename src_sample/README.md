@@ -11,17 +11,17 @@ Pretendemos abordar aqui:
 O projeto é criado dividindo os fontes por pastas que os agrupam por funcionalidade. Vamos detalhar cada uma delas posteriormente. Abaixo temos a estrutura criada:
 
  - src_sample
-	 - api
-	 - collection
-	 - command
-	 - dao
-	 - doc
-	 - entity
-	 - lib
-	 - mapper
-	 - request
-	 - test
-	 - validate
+	 - [x] api
+	 - [x] collection
+	 - [ ] command
+	 - [ ] dao
+	 - [ ] doc
+	 - [ ] entity
+	 - [ ] lib
+	 - [ ] mapper
+	 - [x] request
+	 - [ ] test
+	 - [ ] validate
 
 ## Detalhamento das classes
 ### Classes "api"
@@ -33,10 +33,10 @@ Buscamos utilizar nestas classes o padrão de projeto estrutural [FACADE](https:
 **Exemplo**
 [colocar imagem]
 
-### Classes "request"
+### Classes Request
 Esta classe é responsável por orquestrar o tratamento da entrada do dado, seu processamento e o tratamento de sua resposta.
-Se a classe API diz o caminho, aqui começamos a detalhar o como.
-Principais métodos:
+Se a classe API diz o caminho, aqui começamos a detalhar o como. Aqui queremos centralizar como o padrão de implementação de APIs da Totvs deve ser implementado.
+**Principais métodos:**
 
  **checkAuth()**
 	Chama uma classe responsável por fazer a autenticação da requisição. Podemos, por exemplo, recuperar um token da requisição e passar para um serviço de oAuth2 autenticar.
@@ -81,3 +81,24 @@ Processa o verbo **PUT**. Assim como o procPost, é feita a validação do regis
 
 **buildBody(oEntity)**
 Este método irá solicitar a entidade para serializar seus dados e devolver o Json para a requisição
+
+### Classes Collection
+Essas classes tem por objetivo fornecer uma listagem de objetos que podem ser manipulados. Para isso é necessário fazer a comunicação entre as classes de processamento (request, command, etc...) e as classes de acesso ao dado (DAOs e Mapper).
+Não aconselhamos incluir validações e regras de negócio nessas classes, visto que o objetivo da collection é apenas chamar as classes de acesso a dados e devolver objetos já mapeados com os dados encontrados.
+Esta classe aplica de forma explícita o padrão de projetos [Iterator](https://sourcemaking.com/design_patterns/iterator). Este padrão provê uma forma de acessar uma lista de resultados independente de como essa lista foi criada. No nosso caso, estamos criando uma lista de objetos e permitindo que ela seja percorrida chamando apenas os métodos hasNext() e getNext(). Nosso sonho é que todas as listas do ADVPL (Array, HashMap, etc.) sejam assim =]
+
+**Principais métodos:**
+**found()** Informa se houve sucesso ao chamar um comando de banco.
+**hasNext()** Diz se há mais registros na lista para processar.
+**getNext()** Devolve o próximo objeto da lista.
+**mapFromJson(cJson)** Cria um objeto mapeado com os dados do Json.
+**applyPageSize()** Aplica o tamanho de página esperado para a busca
+**applyOrder()** Aplica a ordem do resultado esperado para a busca
+**setValue()** Seta um valor na Collection, esse valor poderá ser recuperado em uma busca, ou gravado no banco.
+**getValue()** Devolve um valor setado na collection.
+**commit()** Chama o DAO para fazer a persistência dos dados.
+**insert()** Chama o DAO para fazer a persistência dos dados.
+**update()** Chama o DAO para fazer a persistência dos dados.
+**delete()** Chama o DAO para fazer a persistência dos dados.
+**buscar()** Realiza uma busca no DAO com os dados que foram setados na Collection
+**bscChaPrim()** Realiza a busca no DAO pela chave primária da entidade.
