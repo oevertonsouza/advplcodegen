@@ -189,6 +189,8 @@ Após a execução desse comando será criando na arvore do seu projeto os fonte
 
 ![Arquivos Gerados](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/master/docImg/fontesgerados.png)
 
+<br>É possível encontrar os exemplos de fontes gerados na pasta <b>/src_samples</b> do projeto padrão.
+
 <br>
 Compile seus fontes e teste sua API usando Postman ou qualquer outro software de requisições HTTP rest.
 <br>
