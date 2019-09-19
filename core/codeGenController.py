@@ -6,12 +6,18 @@ import sys
 from pathlib import Path
 
 import settings
-from core.codeGenerators import (ApiCodeGenerator, CollectionCodeGenerator,
-                  CommandCodeGenerator, DaoCodeGenerator, DocApiCodeGenerator,
-                  DocApiSchemaCodeGenerator, MapperCodeGenerator,
-                  RequestCodeGenerator, TestCaseCodeGenerator,
-                  TestGroupCodeGenerator, TestSuiteCodeGenerator,
-                  ValidateCodeGenerator, entityCodeGenerator)
+from core.codeGenerators import (
+                ApiCodeGenerator, CollectionCodeGenerator,
+                CommandCodeGenerator, DaoCodeGenerator, DocApiCodeGenerator,
+                DocApiSchemaCodeGenerator, MapperCodeGenerator,
+                RequestCodeGenerator, TestCaseCodeGenerator,
+                TestGroupCodeGenerator, TestSuiteCodeGenerator,
+                ValidateCodeGenerator, entityCodeGenerator
+            )
+from core.codeGenerators.portinari import (
+                AppComponentTsGenerator,AppRoutingModuleTsGenerator,
+                DefaultComponentHtmlGenerator
+            )
 from core import storage
 
 
@@ -38,6 +44,13 @@ class codeGenController:
 
         return generators
 
+    def getPoGenerators(self):
+        generators = []
+        generators.append(AppComponentTsGenerator.AppComponentTsGenerator())
+        generators.append(AppRoutingModuleTsGenerator.AppRoutingModuleTsGenerator())
+        generators.append(DefaultComponentHtmlGenerator.DefaultComponentHtmlGenerator())
+        return generators
+
     def build(self):
 
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  "storage.entity")
@@ -57,6 +70,24 @@ class codeGenController:
                             generator.build()
 
             self.finishApi()
+        return
+
+    def PoBuild(self):
+
+        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  "storage.entity")
+        exists = os.path.isfile(storagePathFile) 
+
+        if exists:
+            generators = self.getPoGenerators()
+            with open(storagePathFile) as datafile:
+                data = csv.reader(datafile, delimiter=';')
+                for entity in data:
+                    for generator in generators:  
+                        generator.setEntity(entity[0])
+                        generator.setName(entity[1])
+                        generator.setShortName(entity[3])
+                        generator.setNamePortuguese(entity[4])
+                        generator.build()
         return
 
     def finishApi(self):

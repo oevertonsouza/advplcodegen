@@ -3,7 +3,7 @@ import pymssql, settings
 
 class ManagementDb:
 
-    #gera uma conexão com o banco
+    #gera uma conexï¿½o com o banco
     def conn(self):
         conn = pymssql.connect(
             server=settings.DATABASES['default']['HOST'], 
@@ -13,7 +13,7 @@ class ManagementDb:
         )
         return conn    
 
-    #Testa uma conexão com o banco executando uma query simples
+    #Testa uma conexï¿½o com o banco executando uma query simples
     def testeConnect(self):
         
         conn = self.conn()

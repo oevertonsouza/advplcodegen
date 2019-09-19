@@ -19,7 +19,7 @@ class codeGenerator():
     srcPath = ''
 
     def __init__ (self, entity=None, name=None, alias=None, shortName=None):
-        self.entity = entity, 
+        self.entity = entity,
         self.shortName = shortName,
         self.name = name,
         self.alias = alias,
