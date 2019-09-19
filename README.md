@@ -8,14 +8,14 @@ O propósito desse projeto é utilizar classes abstratas que possuam métodos qu
 
 * Python 3x 
 * 1 Sqlserver 2012 
-* 2 Protheus 12.1.17
+* 2 Protheus ^12.1.17 - Para compila��o
 
 # Pré-requisitos
 
 * Python 3 instalado (https://www.python.org/downloads/)
 * Pip instalado - Execute o arquivo get-pip.py
 * Biblioteca PyMsSql instalada - pip install pymssql
-* Base de dados e ambiente de desenvolvimento (ADVPL) protheus configurados.
+* Base de dados e ambiente de desenvolvimento (ADVPL) protheus configurados "Melhor uso com o dicionario Protheus no banco de dados".
 
 # Configuração de Ambiente
 
