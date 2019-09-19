@@ -8,7 +8,7 @@ O propósito desse projeto é utilizar classes abstratas que possuam métodos qu
 
 * Python 3x 
 * 1 Sqlserver 2012 
-* 2 Protheus ^12.1.17 - Para compila��o
+* 2 Protheus ^12.1.17 - Para compila��o
 
 # Pré-requisitos
 
