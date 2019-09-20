@@ -222,10 +222,8 @@ Method procGet(nType) Class ${prefix}Request
             Endif
             oEntity:destroy()
         Else
-            self:nFault       := 404
-            self:nStatus      := 404
-            self:cFaultDesc   := "Operação não pode ser realizada."
-            self:cFaultDetail := "Registro não encontrado."
+            self:oRespBody["hasNext"] := self:oCollection:hasNext()
+            self:cResponse := self:oRespBody:toJson()
         Endif        
     Else
         self:nFault       := 404

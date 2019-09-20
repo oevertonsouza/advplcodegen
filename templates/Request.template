@@ -61,7 +61,7 @@ Method buscar(nType) Class ${prefix}Req${className}
     Local lExiste := .F.
     If self:lSuccess
         If nType == BUSCA
-            self:lSuccess := self:oCollection:buscar()
+            self:oCollection:buscar()
         Else
             lExiste := self:oCollection:bscChaPrim()
             If nType == INSERT
