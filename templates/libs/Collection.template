@@ -34,6 +34,8 @@ Class ${prefix}Collection
     Method hasNext()
     Method getNext()
     Method mapFromJson(cJson)
+    Method mapFromDao()
+    Method mapDaoJson()    
     Method goTop()
     Method applyPageSize(cPage,cPageSize)
     Method getPageSize()
@@ -106,6 +108,16 @@ Method mapFromJson(oJson) Class ${prefix}Collection
     self:oMapper:mapFromJson(oJson)
 return self:oMapper:getEntity()
 
+Method mapFromDao() Class CenCollection
+    self:oMapper:setEntity(self)
+    self:oMapper:mapFromDao(self:getDao())
+return self:oMapper:getEntity()
+
+Method mapDaoJson(oJson) Class CenCollection
+    self:mapFromDao()
+    self:mapFromJson(oJson)
+return self:oMapper:getEntity()
+
 Method goTop() Class ${prefix}Collection
     self:nRecno := 1
     self:getDao():posReg(self:nRecno)
@@ -176,3 +188,4 @@ Method setEntity(oEntity) Class CenCollection
     self:oMapper:setEntity(oEntity)
     self:oDao:setHMap(oEntity:getHMap())
 return
+

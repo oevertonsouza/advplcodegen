@@ -222,7 +222,11 @@ Method procGet(nType) Class ${prefix}Request
             Endif
             oEntity:destroy()
         Else
-            self:oRespBody["hasNext"] := self:oCollection:hasNext()
+            If nType == ALL
+                self:oRespBody["hasNext"] := self:oCollection:hasNext()    
+            Else
+                self:oRespBody := JsonObject():New()
+            EndIf
             self:cResponse := self:oRespBody:toJson()
         Endif        
     Else
@@ -396,6 +400,7 @@ Method procPut(oCmd) Class ${prefix}Request
         self:buscar(SINGLE)
         If self:lSuccess
             If self:oValidador:validate(self:oCollection) //Validate
+                self:oCollection:mapDaoJson(self:jRequest)
                 If oCmd:execute()
                     self:nStatus := 200
                     If self:buscar(SINGLE)
