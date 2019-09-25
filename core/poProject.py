@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
-import sys, os, settings, csv, re
-from core import managedb, storage
+import sys, os, csv, shutil
+from advplcodegen import settings
+from advplcodegen.core import managedb, storage
 from pathlib import Path
 from string import Template
 
 class poProject:
+    prefix  = settings.PROTHEUS_ENVIORMENT['default']['PREFIX']
 
     def __init__(self):
         self.poSrcPath = settings.PATH_PO_SRC_APP
@@ -17,7 +19,7 @@ class poProject:
 
     def createDir(self):
         pathDir = ''
-        dirName = ''
+        dirName = ''                                    
         with open(self.storagePathFile) as datafile:
             columnInfos = csv.reader(datafile, delimiter=';')
             for columnInfo in columnInfos:

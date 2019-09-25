@@ -1,6 +1,7 @@
 # -*- coding: cp1252 -*-
-import sys, os, settings, csv, shutil
-from core.codeGenerators.codeGenerator import codeGenerator
+import sys, os, csv, shutil
+from advplcodegen import settings
+from codeGenerator import codeGenerator
 from string import Template
 
 class RequestCodeGenerator(codeGenerator):

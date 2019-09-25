@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-import sys, os, settings, csv, re
-from core import managedb
+import sys, os, csv, re
+from advplcodegen import settings
+from advplcodegen.core import managedb
 from pathlib import Path
 
 class Storage:

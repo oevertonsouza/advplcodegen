@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import sys, os, settings
-from core import managedb, codeGenController, project, poProject, entityController
+from advplcodegen.core import managedb, codeGenController, project, poProject, entityController
 
 class ComandsController:
     

@@ -1,6 +1,7 @@
 # -*- coding: cp1252 -*-
 import sys, os, settings, csv, shutil
-from core.codeGenerators.codeGenerator import codeGenerator
+from advplcodegen import settings
+from advplcodegen.core.codeGenerators.codeGenerator import codeGenerator
 from string import Template
 
 class AppRoutingModuleTsGenerator(codeGenerator):

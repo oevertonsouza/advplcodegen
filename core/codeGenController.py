@@ -5,8 +5,8 @@ import re
 import sys
 from pathlib import Path
 
-import settings
-from core.codeGenerators import (
+from advplcodegen import settings
+from advplcodegen.core.codeGenerators import (
                 ApiCodeGenerator, CollectionCodeGenerator,
                 CommandCodeGenerator, DaoCodeGenerator, DocApiCodeGenerator,
                 DocApiSchemaCodeGenerator, MapperCodeGenerator,
@@ -14,11 +14,11 @@ from core.codeGenerators import (
                 TestGroupCodeGenerator, TestSuiteCodeGenerator,
                 ValidateCodeGenerator, entityCodeGenerator
             )
-from core.codeGenerators.portinari import (
+from advplcodegen.core.codeGenerators.portinari import (
                 AppComponentTsGenerator,AppRoutingModuleTsGenerator,
                 DefaultComponentHtmlGenerator
             )
-from core import storage
+from advplcodegen.core import storage
 
 
 class codeGenController:

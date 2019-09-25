@@ -1,7 +1,9 @@
 # -*- coding: cp1252 -*-
 import sys, os, settings, csv, shutil
-from core import managedb, commandController, codeGenController
+from advplcodegen import settings
+from advplcodegen.core import managedb, commandController, codeGenController
 from string import Template
+
 
 
 class codeGenerator():

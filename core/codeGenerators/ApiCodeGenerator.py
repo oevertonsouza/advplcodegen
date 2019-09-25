@@ -5,8 +5,8 @@ import shutil
 import sys
 from string import Template
 
-import settings
-from core.codeGenerators.codeGenerator import codeGenerator
+from advplcodegen import settings
+from advplcodegen.core.codeGenerators.codeGenerator import codeGenerator
 
 
 class ApiCodeGenerator(codeGenerator):
