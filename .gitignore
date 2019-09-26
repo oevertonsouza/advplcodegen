@@ -7,7 +7,7 @@ filestorage/apistorage.txt
 filestorage/storage.txt
 settings.py
 *src/*
-*filestorage/*
+filestorage/*
 *temp/*
 *build/*
 *__pycache__/*
