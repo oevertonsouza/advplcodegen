@@ -3,11 +3,8 @@ core/__pycache__/codeGenController.cpython-37.pyc
 core/__pycache__/codeGenerator.cpython-37.pyc
 core/__pycache__/commandController.cpython-37.pyc
 core/__pycache__/managedb.cpython-37.pyc
-filestorage/apistorage.txt
-filestorage/storage.txt
 settings.py
 *src/*
-filestorage/*
 *temp/*
 *build/*
 *__pycache__/*
