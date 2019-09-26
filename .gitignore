@@ -18,7 +18,8 @@ core/__pycache__/commandController.cpython-37.pyc
 core/__pycache__/managedb.cpython-37.pyc
 *.pyc
 __pycache__/settings.cpython-37.pyc
-
 *.ptm
-
 \.vscode/
+filestorage/apistorage.txt
+filestorage/storage.txt
+filestorage/*

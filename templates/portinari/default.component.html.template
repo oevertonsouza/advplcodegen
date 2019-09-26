@@ -1,1 +1,12 @@
-<p>${ComponentName} works!</p>
+<div class="po-wrapper">
+  <po-toolbar p-title="Frame Work ADVPL"></po-toolbar>
+
+  <po-menu [p-menus]="menus"></po-menu>
+
+  <po-page-default p-title="${apiName}">
+    <po-dynamic-form #dynamicForm
+        [p-fields]="fields"
+        [p-value]="${jsonName}">
+    </po-dynamic-form>
+  </po-page-default>
+</div>

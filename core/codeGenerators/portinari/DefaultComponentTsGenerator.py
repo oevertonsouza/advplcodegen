@@ -4,11 +4,11 @@ import settings
 from core.codeGenerators.codeGenerator import codeGenerator
 from string import Template
 
-class DefaultComponentHtmlGenerator(codeGenerator):
+class DefaultComponentTsGenerator(codeGenerator):
 
     def __init__ (self, entity=None, name=None, alias=None, shortName=None):
         super().__init__(entity=None, name=None, alias=None, shortName=None)
-        self.templateFile = 'default.component.html.template'
+        self.templateFile = 'default.component.ts.template'
         self.templatePath = settings.PATH_TEMPLATE_PO
         self.srcPath = settings.PATH_PO_SRC_APP
         return
@@ -17,15 +17,16 @@ class DefaultComponentHtmlGenerator(codeGenerator):
         self.fileOut = ""
     
     def getVariables(self,storagePathFile):
-        sufixFileName = '-dynamic-form.component.html'
+        sufixFileName = '-dynamic-form.component.ts'
         componentName = self.namePortuguese.replace(" ","").lower()
-        apiName = self.namePortuguese
         className = self.namePortuguese.title().replace(" ","")
         jsonName = className[0].lower() + className[1:]
         self.fileOut = componentName + sufixFileName
         self.srcPath = os.path.join(settings.PATH_PO_SRC_APP,self.namePortuguese.replace(" ","").lower())
+        
         variables = {
-                'apiName' : apiName,
+                'componentName' : componentName,
                 'jsonName' : jsonName,
+                'className' : className
             }
         return variables

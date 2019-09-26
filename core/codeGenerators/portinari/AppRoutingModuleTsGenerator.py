@@ -29,7 +29,7 @@ class AppRoutingModuleTsGenerator(codeGenerator):
                 routeName = componentName.lower() 
                 routes += ''.rjust(4)+"{ path: '" + routeName + "' , component: " +  componentName + 'Component' " },\n"
                 if componentName != 'Home':
-                    imports += "import { "+ componentName + 'Component'" } from './"+ routeName +"/"+ routeName +".component';\n"
+                    imports += "import { "+ componentName + 'Component'" } from './"+ routeName +"/"+ routeName +"-dynamic-form.component';\n"
 
         variables = { 
                     'imports': imports,

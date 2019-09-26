@@ -16,7 +16,8 @@ from core.codeGenerators import (
             )
 from core.codeGenerators.portinari import (
                 AppComponentTsGenerator,AppRoutingModuleTsGenerator,
-                DefaultComponentHtmlGenerator, PackageJsonGenerator
+                DefaultComponentHtmlGenerator, PackageJsonGenerator,
+                DefaultComponentTsGenerator
             )
 from core import storage
 
@@ -49,6 +50,7 @@ class codeGenController:
         generators.append(AppComponentTsGenerator.AppComponentTsGenerator())
         generators.append(AppRoutingModuleTsGenerator.AppRoutingModuleTsGenerator())
         generators.append(DefaultComponentHtmlGenerator.DefaultComponentHtmlGenerator())
+        generators.append(DefaultComponentTsGenerator.DefaultComponentTsGenerator())
         return generators
 
     def build(self):

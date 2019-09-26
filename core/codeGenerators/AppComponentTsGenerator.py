@@ -22,7 +22,6 @@ class AppComponentTsGenerator(codeGenerator):
         with open(storagePathFile) as datafile:
             columnInfos = csv.reader(datafile, delimiter=';')
             for columnInfo in columnInfos:
-                print(columnInfo[1])
                 menu += '{ label: '+ columnInfo[1] +', action: this.onClick.bind(this) }\n'
         variables = { 
                     'menu': menu,

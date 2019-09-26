@@ -1,12 +1,20 @@
 import { Component, OnInit } from '@angular/core';
+import { PoDynamicFormField, PoNotificationService } from '@portinari/portinari-ui';
 
 @Component({
-  selector: 'app-${ComponentName}',
-  templateUrl: './${ComponentName}.component.html'
+  selector: 'app-${componentName}',
+  templateUrl: './${componentName}-dynamic-form.component.html'
 })
-export class ${ComponentName}Component implements OnInit {
 
-  constructor() { }
+export class ${className}Component implements OnInit {
+
+  ${jsonName} = {};
+
+  fields: Array<PoDynamicFormField> = [
+    { property: 'name', divider: 'PERSONAL DATA', required: true, minLength: 4, maxLength: 50, gridColumns: 6, gridSmColumns: 12 }
+  ];
+
+  constructor(public poNotification: PoNotificationService) { }
 
   ngOnInit() {
   }
