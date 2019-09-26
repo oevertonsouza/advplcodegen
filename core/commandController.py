@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import sys, os, settings
-from advplcodegen.core import managedb, codeGenController, project, poProject, entityController
+from core import managedb, codeGenController, project, poProject, entityController
 
 class ComandsController:
     
@@ -55,6 +55,13 @@ class ComandsController:
         if command == 'PO-BUILD':
             self.poProject.createDir()
             self.codeGen.PoBuild()
+            return            
+        if command == 'PO-START':
+            self.codeGen.PoStart()
+            return            
+        if command == 'PO-SERVE':
+            self.codeGen.PoServe()            
+            return
         if command == 'TESTEFUN':
             print("TESTE")
             return

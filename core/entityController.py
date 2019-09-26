@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys, os, csv, re
-from advplcodegen import settings
-from advplcodegen.core import managedb, storage
+import settings
+from core import managedb, storage
 from pathlib import Path
 
 class entityController:
@@ -56,11 +56,11 @@ class entityController:
         stg = storage.Storage()
 
         if self.entityExist():
-            print('Entity '+ self.entity + ' already added! Execute the command #advplcodegen.py list to show the entities added ')
+            print('Entity '+ self.entity + ' already added! Execute the command #.py list to show the entities added ')
             return
         
         if self.nameExist():
-            print('Alias '+ self.name + ' already added! Execute command #advplcodegen.py list to check api added.')
+            print('Alias '+ self.name + ' already added! Execute command #.py list to check api added.')
             return
 
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE,  "storage.entity")

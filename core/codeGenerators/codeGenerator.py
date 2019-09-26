@@ -1,7 +1,7 @@
 # -*- coding: cp1252 -*-
 import sys, os, settings, csv, shutil
-from advplcodegen import settings
-from advplcodegen.core import managedb, commandController, codeGenController
+import settings
+from core import managedb, commandController, codeGenController
 from string import Template
 
 
@@ -49,7 +49,6 @@ class codeGenerator():
         fileIn = open(os.path.join(self.templatePath, self.templateFile))   
         temp = Template(fileIn.read())
         result = temp.substitute(variables)
-
         f = open(os.path.join(self.srcPath, self.fileOut) , "w+")
         f.write(result)
         f.close()

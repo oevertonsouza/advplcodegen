@@ -5,8 +5,8 @@ import re
 import sys
 from pathlib import Path
 
-from advplcodegen import settings
-from advplcodegen.core.codeGenerators import (
+import settings
+from core.codeGenerators import (
                 ApiCodeGenerator, CollectionCodeGenerator,
                 CommandCodeGenerator, DaoCodeGenerator, DocApiCodeGenerator,
                 DocApiSchemaCodeGenerator, MapperCodeGenerator,
@@ -14,11 +14,11 @@ from advplcodegen.core.codeGenerators import (
                 TestGroupCodeGenerator, TestSuiteCodeGenerator,
                 ValidateCodeGenerator, entityCodeGenerator
             )
-from advplcodegen.core.codeGenerators.portinari import (
+from core.codeGenerators.portinari import (
                 AppComponentTsGenerator,AppRoutingModuleTsGenerator,
-                DefaultComponentHtmlGenerator
+                DefaultComponentHtmlGenerator, PackageJsonGenerator
             )
-from advplcodegen.core import storage
+from core import storage
 
 
 class codeGenController:
@@ -89,6 +89,36 @@ class codeGenController:
                         generator.setNamePortuguese(entity[4])
                         generator.build()
         return
+
+    def PoStart(self):
+        
+        print('Instalando Angular')
+        os.system('npm uninstall -g @angular/cli')
+        os.system('npm cache clean --force')
+        os.system('npm i -g @angular/cli')
+
+        print('\nInstalando o projeto my-po-project')
+        os.system('ng new my-po-project --skipInstall --interactive=false')
+
+        print('\nDependencias do package.json corrigidas.')
+        PackageJson = PackageJsonGenerator.PackageJsonGenerator()
+        PackageJson.setFileOut()
+        PackageJson.build()
+
+        print('\nInstalando dependencias')
+        os.system('cd '+ settings.PATH_PO +' & npm install')
+
+        print('\nAdiconando o pacote @portinari/portinari-ui')
+        os.system('cd '+ settings.PATH_PO +' & ng add @portinari/portinari-ui --defaults=true')
+
+        print('\nInicializando o projeto')
+        os.system('cd '+ settings.PATH_PO +' & ng serve -o')
+
+        return
+    
+    def PoServe(self):
+        print('\nInicializando o projeto')
+        os.system('cd '+ settings.PATH_PO +' & ng serve -o')
 
     def finishApi(self):
         ApiCodeGen = ApiCodeGenerator.ApiCodeGenerator()

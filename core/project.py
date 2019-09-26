@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys, os, csv, shutil
-from advplcodegen import settings
-from advplcodegen.core import managedb, storage
+import settings
+from core import managedb, storage
 from pathlib import Path
 from string import Template
 

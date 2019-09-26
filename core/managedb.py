@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
 import pymssql
-from advplcodegen import settings
+import settings
 
 class ManagementDb:
 

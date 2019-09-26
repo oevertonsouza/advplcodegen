@@ -1,7 +1,6 @@
-# -*- encoding: utf-8 -*-
 import sys, os
-from advplcodegen import settings
-from advplcodegen import managedb, commandController
+import settings
+from core import managedb, commandController
 
 def runCommand(run):
     comandsController = commandController.ComandsController()

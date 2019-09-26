@@ -1,7 +1,7 @@
 # -*- coding: cp1252 -*-
 import sys, os, csv, shutil
-from advplcodegen import settings
-from codeGenerator import codeGenerator
+import settings
+from core.codeGenerators.codeGenerator import codeGenerator
 from string import Template
 
 class TestCaseCodeGenerator(codeGenerator):
