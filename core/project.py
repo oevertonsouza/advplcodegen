@@ -53,5 +53,5 @@ class project:
             f = open(os.path.join(settings.PATH_SRC_LIB, self.prefix+file[0]+'.prw' ) , "w+")
             f.write(result)
             f.close()
-            
+        
         return

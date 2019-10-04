@@ -1,12 +1,15 @@
-<div class="po-wrapper">
-  <po-toolbar p-title="Frame Work ADVPL"></po-toolbar>
-
-  <po-menu [p-menus]="menus"></po-menu>
-
-  <po-page-default p-title="${apiName}">
-    <po-dynamic-form #dynamicForm
-        [p-fields]="fields"
-        [p-value]="${jsonName}">
-    </po-dynamic-form>
-  </po-page-default>
-</div>
+<po-page-default p-title="${apiName}">
+  <po-dynamic-form #dynamicForm
+      [p-fields]="fields"
+      [p-value]="${jsonName}">
+  </po-dynamic-form>
+  <br>
+  <div class="po-row">
+      <po-button
+          class="po-md-3"
+          p-label="Salvar"
+          [p-disabled]="dynamicForm?.form.invalid"
+          (p-click)="poNotification.success('Data saved successfully!'); dynamicForm.form.reset()">
+      </po-button>
+  </div>
+</po-page-default>

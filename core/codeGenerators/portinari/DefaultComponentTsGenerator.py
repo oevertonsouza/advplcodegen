@@ -17,16 +17,23 @@ class DefaultComponentTsGenerator(codeGenerator):
         self.fileOut = ""
     
     def getVariables(self,storagePathFile):
+        fieldsDetails = ''
         sufixFileName = '-dynamic-form.component.ts'
         componentName = self.namePortuguese.replace(" ","").lower()
         className = self.namePortuguese.title().replace(" ","")
         jsonName = className[0].lower() + className[1:]
         self.fileOut = componentName + sufixFileName
         self.srcPath = os.path.join(settings.PATH_PO_SRC_APP,self.namePortuguese.replace(" ","").lower())
+
+        with open(storagePathFile) as datafile:
+            columnInfos = csv.reader(datafile, delimiter=';')
+            for columnInfo in columnInfos:
+                fieldsDetails += "    { property: '"+ columnInfo[6] +"', divider: '', required: true, minLength: 4, maxLength: 50, gridColumns: 6, gridSmColumns: 12 },\n"
         
         variables = {
                 'componentName' : componentName,
                 'jsonName' : jsonName,
-                'className' : className
+                'className' : className,
+                'fieldsDetails' : fieldsDetails
             }
         return variables

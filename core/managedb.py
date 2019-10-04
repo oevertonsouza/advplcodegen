@@ -99,8 +99,8 @@ class ManagementDb:
         conn = self.conn()
 
         query = (
-                    " SELECT X3_CAMPO"
-                    "     ,X3_TITENG "
+                    " SELECT X3_CAMPO "
+                    "     ,X3_TITENG  "
                     "     ,X3_DESCENG "
                     "     ,X3_TIPO "
                     "     ,X3_TAMANHO "

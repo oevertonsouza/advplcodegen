@@ -4,31 +4,39 @@ import settings
 from core.codeGenerators.codeGenerator import codeGenerator
 from string import Template
 
-class AppComponentTsGenerator(codeGenerator):
+class AppModuleTsGenerator(codeGenerator):
 
     def __init__ (self, entity=None, name=None, alias=None, shortName=None):
         super().__init__(entity=None, name=None, alias=None, shortName=None)
-        self.templateFile = 'app.component.ts.template' 
+        self.templateFile = 'app.module.ts.template' 
         self.templatePath = settings.PATH_TEMPLATE_PO
         self.srcPath = settings.PATH_PO_SRC_APP
         return
 
     def setFileOut(self):
-        self.fileOut = "app.component.ts"
+        self.fileOut = "app.module.ts"
     
     def getVariables(self,storagePathFile):
-        linkName = ""
-        menuName = ''
-        menus = ''
+
+        declarations = []
+        routeName = ''
+        componentName =''
+        imports = '' 
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  "storage.entity")
+
         with open(storagePathFile) as datafile:
             columnInfos = csv.reader(datafile, delimiter=';')
             for columnInfo in columnInfos:
-                menuName = columnInfo[4] if len(columnInfo[4]) > 0 else 'Home'
-                linkName = menuName.replace(" ","").lower()
-                menus += "    { label: '"+ menuName + "', link: '"+ linkName +"'},\n"
+
+                componentName = columnInfo[4].replace(" ","") if len(columnInfo[4]) > 0 else 'Home'
+                routeName = componentName.lower() 
+                declarations.append('    '+componentName + 'Component')
+                if componentName != 'Home':
+                    imports += "import { "+ componentName + 'Component'" } from './"+ routeName +"/"+ routeName +"-dynamic-form.component';\n"
 
         variables = { 
-                    'menus': menus,
+                    'imports': imports,
+                    'declarations' : ',\n'.join(declarations)
                 }
         return variables
+

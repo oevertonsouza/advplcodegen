@@ -17,7 +17,8 @@ from core.codeGenerators import (
 from core.codeGenerators.portinari import (
                 AppComponentTsGenerator,AppRoutingModuleTsGenerator,
                 DefaultComponentHtmlGenerator, PackageJsonGenerator,
-                DefaultComponentTsGenerator
+                DefaultComponentTsGenerator, AppModuleTsGenerator
+                #DefaultModuleTsGenerator
             )
 from core import storage
 
@@ -51,6 +52,8 @@ class codeGenController:
         generators.append(AppRoutingModuleTsGenerator.AppRoutingModuleTsGenerator())
         generators.append(DefaultComponentHtmlGenerator.DefaultComponentHtmlGenerator())
         generators.append(DefaultComponentTsGenerator.DefaultComponentTsGenerator())
+        generators.append(AppModuleTsGenerator.AppModuleTsGenerator())
+        #generators.append(DefaultModuleTsGenerator.DefaultModuleTsGenerator())
         return generators
 
     def build(self):
@@ -84,20 +87,21 @@ class codeGenController:
             with open(storagePathFile) as datafile:
                 data = csv.reader(datafile, delimiter=';')
                 for entity in data:
-                    for generator in generators:  
-                        generator.setEntity(entity[0])
-                        generator.setName(entity[1])
-                        generator.setShortName(entity[3])
-                        generator.setNamePortuguese(entity[4])
-                        generator.build()
+                    if len(entity) > 0:
+                        for generator in generators:
+                            generator.setEntity(entity[0])
+                            generator.setName(entity[1])
+                            generator.setShortName(entity[3])
+                            generator.setNamePortuguese(entity[4])
+                            generator.build()
         return
 
     def PoStart(self):
         
-        print('Instalando Angular')
-        os.system('npm uninstall -g @angular/cli')
-        os.system('npm cache clean --force')
-        os.system('npm i -g @angular/cli')
+        #print('Instalando Angular')
+        #os.system('npm uninstall -g @angular/cli')
+        #os.system('npm cache clean --force')
+        #os.system('npm i -g @angular/cli')
 
         print('\nInstalando o projeto my-po-project')
         os.system('ng new my-po-project --skipInstall --interactive=false')
@@ -114,7 +118,7 @@ class codeGenController:
         os.system('cd '+ settings.PATH_PO +' & ng add @portinari/portinari-ui --defaults=true')
 
         print('\nInicializando o projeto')
-        os.system('cd '+ settings.PATH_PO +' & ng serve -o')
+        os.system('cd '+ settings.PATH_PO +' & ng serve -o --liveReload=true')
 
         return
     
