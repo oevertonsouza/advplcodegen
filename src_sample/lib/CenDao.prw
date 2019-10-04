@@ -362,9 +362,10 @@ Method getFilters() Class CenDao
     Local xValue  := ""
     Local nField := 0
     Local nLen   := Len(self:aFields)
-
+	Local cAliasFilial := IIf(SubStr(self:cAlias,1,1) == 'S',SubStr(self:cAlias,2,2), self:cAlias)
+	
     cFilter += " WHERE "
-    cFilter += " "+ self:cAlias + "_FILIAL = '" + xFilial( self:cAlias ) + "' "
+    cFilter += " "+ cAliasFilial + "_FILIAL = '" + xFilial( self:cAlias ) + "' "
     
     For nField := 1 to nLen
         xValue := self:getValue(self:aFields[nField][JSONFIELD])

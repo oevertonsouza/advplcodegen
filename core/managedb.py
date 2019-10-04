@@ -31,7 +31,7 @@ class ManagementDb:
 
     #Retorna o tipo da coluna no banco de dados
     def getColumnInfo(self, entity):
-
+        alias = entity[1:3] if entity[:1] == "S" else entity[:3];
         conn = self.conn()
 
         query = (
@@ -76,7 +76,7 @@ class ManagementDb:
                     "   TABLE_NAME = '" + entity + "'   "
                     "   ) INFO  "
                     "   where   "
-                    "   	COLUMN_NAME not in ('R_E_C_N_O_', 'D_E_L_E_T_','R_E_C_D_E_L_','" + entity[:3] + "_FILIAL')"
+                    "   	COLUMN_NAME not in ('R_E_C_N_O_', 'D_E_L_E_T_','R_E_C_D_E_L_','" + alias + "_FILIAL')"
                     "   group by    "
                     "   	COLUMN_NAME,    "
                     "   	DATA_TYPE,  "
