@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-import sys, os, settings, csv, re
+import sys, os, csv, shutil
+import settings
 from core import managedb, storage
 from pathlib import Path
 from string import Template
@@ -52,5 +53,5 @@ class project:
             f = open(os.path.join(settings.PATH_SRC_LIB, self.prefix+file[0]+'.prw' ) , "w+")
             f.write(result)
             f.close()
-            
+        
         return

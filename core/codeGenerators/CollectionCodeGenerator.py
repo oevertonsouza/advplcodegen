@@ -1,5 +1,6 @@
 # -*- coding: cp1252 -*-
-import sys, os, settings, csv, shutil
+import sys, os, csv, shutil
+import settings
 from string import Template
 from core.codeGenerators.codeGenerator import codeGenerator
 

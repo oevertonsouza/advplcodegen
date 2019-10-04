@@ -222,10 +222,12 @@ Method procGet(nType) Class ${prefix}Request
             Endif
             oEntity:destroy()
         Else
-            self:nFault       := 404
-            self:nStatus      := 404
-            self:cFaultDesc   := "Operação não pode ser realizada."
-            self:cFaultDetail := "Registro não encontrado."
+            If nType == ALL
+                self:oRespBody["hasNext"] := self:oCollection:hasNext()    
+            Else
+                self:oRespBody := JsonObject():New()
+            EndIf
+            self:cResponse := self:oRespBody:toJson()
         Endif        
     Else
         self:nFault       := 404
@@ -398,6 +400,7 @@ Method procPut(oCmd) Class ${prefix}Request
         self:buscar(SINGLE)
         If self:lSuccess
             If self:oValidador:validate(self:oCollection) //Validate
+                self:oCollection:mapDaoJson(self:jRequest)
                 If oCmd:execute()
                     self:nStatus := 200
                     If self:buscar(SINGLE)

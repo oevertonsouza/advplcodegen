@@ -8,14 +8,14 @@ O propósito desse projeto é utilizar classes abstratas que possuam métodos qu
 
 * Python 3x 
 * 1 Sqlserver 2012 
-* 2 Protheus 12.1.17
+* 2 Protheus ^12.1.17
 
 # Pré-requisitos
 
 * Python 3 instalado (https://www.python.org/downloads/)
 * Pip instalado - Execute o arquivo get-pip.py
 * Biblioteca PyMsSql instalada - pip install pymssql
-* Base de dados e ambiente de desenvolvimento (ADVPL) protheus configurados.
+* Base de dados e ambiente de desenvolvimento (ADVPL) protheus configurados "Melhor uso com o dicionario Protheus no banco de dados".
 
 # Configuração de Ambiente
 
@@ -188,6 +188,8 @@ Após a execução desse comando será criando na arvore do seu projeto os fonte
 <br>
 
 ![Arquivos Gerados](https://raw.githubusercontent.com/oevertonsouza/advplcodegen/master/docImg/fontesgerados.png)
+
+<br>É possível encontrar os exemplos de fontes gerados na pasta <b>/src_samples</b> do projeto padrão.
 
 <br>
 Compile seus fontes e teste sua API usando Postman ou qualquer outro software de requisições HTTP rest.

@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
-import pymssql, settings
+import sys
+import pymssql
+import settings
 
 class ManagementDb:
 
-    #gera uma conexão com o banco
+    #gera uma conexï¿½o com o banco
     def conn(self):
         conn = pymssql.connect(
             server=settings.DATABASES['default']['HOST'], 
@@ -13,7 +15,7 @@ class ManagementDb:
         )
         return conn    
 
-    #Testa uma conexão com o banco executando uma query simples
+    #Testa uma conexï¿½o com o banco executando uma query simples
     def testeConnect(self):
         
         conn = self.conn()
@@ -97,8 +99,8 @@ class ManagementDb:
         conn = self.conn()
 
         query = (
-                    " SELECT X3_CAMPO"
-                    "     ,X3_TITENG "
+                    " SELECT X3_CAMPO "
+                    "     ,X3_TITENG  "
                     "     ,X3_DESCENG "
                     "     ,X3_TIPO "
                     "     ,X3_TAMANHO "

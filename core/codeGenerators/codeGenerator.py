@@ -1,5 +1,6 @@
 # -*- coding: cp1252 -*-
 import sys, os, settings, csv, shutil
+import settings
 from core import managedb, commandController, codeGenController
 from string import Template
 
@@ -18,12 +19,16 @@ class codeGenerator():
     fileOut = ''
     srcPath = ''
 
-    def __init__ (self, entity=None, name=None, alias=None, shortName=None):
-        self.entity = entity, 
+    def __init__ (self, entity=None, name=None, alias=None, shortName=None, encoding=None):
+        self.entity = entity,
         self.shortName = shortName,
         self.name = name,
         self.alias = alias,
         self.templatePath = settings.PATH_TEMPLATE
+        return
+
+    def setEncode(self, encoding):
+        print(encoding)
         return
 
     def setEntity(self, entity):
@@ -47,8 +52,7 @@ class codeGenerator():
         fileIn = open(os.path.join(self.templatePath, self.templateFile))   
         temp = Template(fileIn.read())
         result = temp.substitute(variables)
-
-        f = open(os.path.join(self.srcPath, self.fileOut) , "w+")
+        f = open(os.path.join(self.srcPath, self.fileOut) , "w+", encoding="utf-8")
         f.write(result)
         f.close()
         return

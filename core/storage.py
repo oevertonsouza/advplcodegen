@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-import sys, os, settings, csv, re
+import sys, os, csv, re
+import settings
 from core import managedb
 from pathlib import Path
 

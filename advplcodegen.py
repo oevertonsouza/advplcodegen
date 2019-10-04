@@ -1,5 +1,5 @@
-# -*- encoding: utf-8 -*-
-import sys, os, settings
+import sys, os
+import settings
 from core import managedb, commandController
 
 def runCommand(run):

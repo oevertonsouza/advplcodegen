@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import sys, os, settings
-from core import managedb, codeGenController, project, entityController
+from core import managedb, codeGenController, project, poProject, entityController
 
 class ComandsController:
     
@@ -9,6 +9,7 @@ class ComandsController:
         self.runOk = False
         self.codeGen = codeGenController.codeGenController()
         self.project = project.project()
+        self.poProject = poProject.poProject()
         self.entities = entityController.entityController()
         return
 
@@ -50,6 +51,16 @@ class ComandsController:
         if command == 'BUILD':
             self.project.createDir()
             self.codeGen.build()
+            return
+        if command == 'PO-BUILD':
+            self.poProject.createDir()
+            self.codeGen.PoBuild()
+            return            
+        if command == 'PO-START':
+            self.codeGen.PoStart()
+            return            
+        if command == 'PO-SERVE':
+            self.codeGen.PoServe()            
             return
         if command == 'TESTEFUN':
             print("TESTE")
