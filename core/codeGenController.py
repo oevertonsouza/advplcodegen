@@ -6,13 +6,14 @@ import sys
 from pathlib import Path
 
 import settings
-from core.codeGenerators import (
+from core.codeGenerators.backend import (
                 ApiCodeGenerator, CollectionCodeGenerator,
                 CommandCodeGenerator, DaoCodeGenerator, DocApiCodeGenerator,
                 DocApiSchemaCodeGenerator, MapperCodeGenerator,
-                RequestCodeGenerator, TestCaseCodeGenerator,
-                TestGroupCodeGenerator, TestSuiteCodeGenerator,
-                ValidateCodeGenerator, entityCodeGenerator
+                RequestCodeGenerator, ValidateCodeGenerator, entityCodeGenerator
+            )
+from core.codeGenerators.testes import (
+                TestCaseCodeGenerator, TestGroupCodeGenerator, TestSuiteCodeGenerator
             )
 from core.codeGenerators.portinari import (
                 AppComponentTsGenerator,AppRoutingModuleTsGenerator,
@@ -98,10 +99,10 @@ class codeGenController:
 
     def PoStart(self):
         
-        #print('Instalando Angular')
-        #os.system('npm uninstall -g @angular/cli')
-        #os.system('npm cache clean --force')
-        #os.system('npm i -g @angular/cli')
+        print('Instalando Angular')
+        os.system('npm uninstall -g @angular/cli')
+        os.system('npm cache clean --force')
+        os.system('npm i -g @angular/cli')
 
         print('\nInstalando o projeto my-po-project')
         os.system('ng new my-po-project --skipInstall --interactive=false')

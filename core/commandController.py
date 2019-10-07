@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys, os, settings
 from core import managedb, codeGenController, project, poProject, entityController
+from core.entities import aliasEntity
 
 class ComandsController:
     
@@ -25,17 +26,14 @@ class ComandsController:
             self.project.startProject()
             return
         if command == 'ADDENTITY':
-            entity = run[2] if len(run) > 2 else ''
+            table = run[2] if len(run) > 2 else ''
             keyColumn = run[3] if len(run) > 3 else ''
             shortName = run[4] if len(run) > 4 else ''
             name = run[5] if len(run) > 5 else ''
             namePortuguese = run[6] if len(run) > 6 else ''
-            self.entities.setEntity(entity)
-            self.entities.setKeyColumn(keyColumn)
-            self.entities.setShortName(shortName)
-            self.entities.setName(name)
-            self.entities.setNamePortuguese(namePortuguese)
-            self.entities.addEntity()
+            entity = aliasEntity(table, name, keyColumn, namePortuguese, shortName)
+            self.entities.addEntity(entity)
+            
             return
         if command == 'ADDENTITIES':
             file = run[2] if len(run) > 2 else ''

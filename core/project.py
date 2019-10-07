@@ -4,6 +4,7 @@ import settings
 from core import managedb, storage
 from pathlib import Path
 from string import Template
+from core.daos import model
 
 class project:
     prefix  = settings.PROTHEUS_ENVIORMENT['default']['PREFIX']
@@ -13,6 +14,7 @@ class project:
 
     #Create project folders 
     def startProject(self):
+        model.CreateTables()
         self.createDir()
 
     def createDir(self):

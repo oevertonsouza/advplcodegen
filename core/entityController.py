@@ -3,6 +3,9 @@ import sys, os, csv, re
 import settings
 from core import managedb, storage
 from pathlib import Path
+from core.daos.model import Entity, Column
+from core.entities import aliasEntity
+import peewee
 
 class entityController:
 
@@ -13,72 +16,27 @@ class entityController:
         self.keyColumn = keyColumn
         return
 
-    def setEntity(self, entity):
-        self.entity = entity + settings.PROTHEUS_ENVIORMENT['default']['COMPANY'] + "0"
-        return
-
-    def setShortName(self, shortName):
-        
-        self.shortName = shortName.title() if shortName.strip() != "" else shortName[:4]
-        return
-
-    def setName(self, name):
-        
-        self.name = name.title()
-        if settings.PROTHEUS_ENVIORMENT['default']['DICTIONARY_IN_DATABASE']:
-            mdb = managedb.ManagementDb()
-            tableList = mdb.getTable(self.entity)
-            if len(tableList) > 0 and tableList[0][0].strip() != '':
-                self.name = tableList[0][0].strip().title()
-                self.name = re.sub('[^A-Za-z0-9 ]+', '', self.name)
-                self.name = self.name.replace("  "," ")
-
-        return
-
-    def setNamePortuguese(self, namePortuguese):
-        
-        self.namePortuguese = namePortuguese.title()
-        if settings.PROTHEUS_ENVIORMENT['default']['DICTIONARY_IN_DATABASE']:
-            mdb = managedb.ManagementDb()
-            tableList = mdb.getTable(self.entity)
-            if len(tableList) > 0 and tableList[0][1].strip() != '':
-                self.namePortuguese = tableList[0][1].strip().title()
-                self.namePortuguese = re.sub('[^A-Za-z0-9 ]+', '', self.namePortuguese)
-                self.namePortuguese = self.namePortuguese.replace("  "," ")
-
-        return
-
-    def setKeyColumn(self, keyColumn):
-        self.keyColumn = keyColumn
-        return
-
-    def addEntity(self):
+    def addEntity(self, entity):
         stg = storage.Storage()
 
-        if self.entityExist():
-            print('Entity '+ self.entity + ' already added! Execute the command #.py list to show the entities added ')
+        if self.entityExist(entity):
+            print('Entity '+ entity.tableName + ' already added! Execute the command #.py list to show the entities added ')
             return
         
-        if self.nameExist():
-            print('Alias '+ self.name + ' already added! Execute command #.py list to check api added.')
+        if self.nameExist(entity.name):
+            print('Alias '+ entity.name + ' already added! Execute command #.py list to check api added.')
             return
 
-        storagePathFile = os.path.join(settings.PATH_FILESTORAGE,  "storage.entity")
-
-        dataStorage = self.entity+';'+ self.name +';'+self.keyColumn+';'+self.shortName+';'+self.namePortuguese+'\n'
-        exists = os.path.isfile(storagePathFile) 
-
-        if exists:
-            with open(storagePathFile, 'a') as file:
-                file.write(dataStorage)
-                file.close()
-        else:
-            f = open(storagePathFile , "w+")
-            f.write(dataStorage)
-            f.close()
-
-        stg.genColumnStorage(self.entity, self.keyColumn)
-        print('Entity '+ self.entity + ' successfully added!')
+        try:
+            new_entity = Entity.create(name = entity.name,
+                    table = entity.tableName,
+                    shortName = entity.shortName,
+                    namePortuguese = entity.namePortuguese,
+                    keyColumn = entity.keyColumn)
+        except peewee.IntegrityError:
+            new_entity = Entity.get(table = entity.tableName)
+        stg.genColumnStorage(new_entity)
+        print('Entity '+ entity.tableName + ' successfully added!')
 
         return
 
@@ -87,18 +45,13 @@ class entityController:
         with open(file) as datafile:
             columnInfo = csv.reader(datafile, delimiter=';')
             for column in columnInfo:
-
                 entity = column[0] if len(column) > 0 else ''
                 keyColumn = column[1] if len(column) > 1 else ''
                 shortName = column[2] if len(column) > 2 else ''
                 name = column[3] if len(column) > 3 else ''
                 namePortuguese = column[4] if len(column) > 4 else ''
-                self.setEntity(entity)
-                self.setKeyColumn(keyColumn)
-                self.setName(name)
-                self.setShortName(shortName)
-                self.setNamePortuguese(namePortuguese)
-                self.addEntity()
+                entity = aliasEntity.AliasEntity(entity, name, keyColumn, namePortuguese, shortName)
+                self.addEntity(entity)
 
         return
 
@@ -118,7 +71,7 @@ class entityController:
             print("No entities found!")
         return
 
-    def entityExist(self):
+    def entityExist(self, entity):
 
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  "storage.entity")
         exists = os.path.isfile(storagePathFile) 
@@ -127,13 +80,13 @@ class entityController:
             with open(storagePathFile) as datafile:
                 data = csv.reader(datafile, delimiter=';')
                 for row in data:
-                    if len(row) > 0 and row[0] == self.entity:
+                    if len(row) > 0 and row[0] == entity.tableName:
                         return True
         else:
             return False
         return False
 
-    def nameExist(self):
+    def nameExist(self,name):
 
         storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  "storage.entity")
         exists = os.path.isfile(storagePathFile) 
@@ -143,7 +96,7 @@ class entityController:
                 data = csv.reader(datafile, delimiter=';')
                 for row in data:
                     if len(row) > 0:
-                        return row[1] == self.name
+                        return row[1] == name
         else:
             return False
         return False

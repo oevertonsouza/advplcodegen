@@ -3,6 +3,8 @@ import sys, os, csv, re
 import settings
 from core import managedb
 from pathlib import Path
+import peewee
+from core.daos.model import Entity, Column
 
 class Storage:
 
@@ -12,46 +14,44 @@ class Storage:
         return
 
     #Gera as colunas no arquivo .storage, para usar no build
-    def genColumnStorage(self, entity, keyParam):
-        columnList = []
-        f = open(os.path.join(settings.PATH_FILESTORAGE , entity + ".columns"), "w+")
+    def genColumnStorage(self, entity):
         mdb = managedb.ManagementDb()
-        columnInfo = mdb.getColumnInfo(entity)
-        if settings.PROTHEUS_ENVIORMENT['default']['DICTIONARY_IN_DATABASE']:
-            columnList = mdb.getColumnDesc(entity)
-        is_indice = ''
-        dataType = ''
-        is_keyPathParam = ''
-    
-        for column in columnInfo:
-            name = column[0].replace("_", "").lower()
-            length = str(column[2])
-            is_indice = "1" if column[3] == 2 else "0"
-            is_keyPathParam = "1" if column[0] == keyParam else "0"
-            dataType = "string" if column[1] == "varchar" else column[1]
-            desc = 'Descricao do campo'
-            opcoes = ""
-            varName = "x" + column[0].replace("_", "").lower()
-            for field in columnList:
-                if column[0].strip() in field[0]:
-                    name = re.sub('[^A-Za-z0-9]+', '', field[2].title())
-                    name = name[0].lower() + name[1:]
-                    desc = field[7].strip()
-                    opcoes = field[6].strip().replace(";",",")
-                    if field[3] == 'C':
-                        dataType = "string"
-                    elif field[3] == 'D':
-                        dataType = "date"
-                    elif field[3] == 'N':
-                        dataType = "float"
-                        length = str(int(field[4]))
-                    varName = field[3].lower() + re.sub('[^A-Za-z0-9]+', '', field[1].title())
-            f.write( column[0]+';'+name+';'+dataType+';'+length+';'+is_indice+';'+is_keyPathParam+';'+desc+";"+varName+";"+opcoes+';\n')
         
-        f.close()
-    
+        tableInfo = mdb.getTableInfo(entity.table)
+        uniqueColumns = tableInfo[0][2].strip().split('+')
+        columnList = mdb.getColumnDesc(entity.table)
+       
+        for field in columnList:
+            dbField = field[0]
+            is_indice = dbField in uniqueColumns
+            is_keyPathParam = dbField == entity.keyColumn 
+            name = re.sub('[^A-Za-z0-9]+', '', field[2].title())
+            name = name[0].lower() + name[1:]
+            desc = field[7].strip()
+            opcoes = field[6].strip().replace(";",",")
+            length = str(field[4])
+            if field[3] == 'C':
+                dataType = "string"
+            elif field[3] == 'D':
+                dataType = "date"
+            elif field[3] == 'N':
+                dataType = "float"
+                length = str(int(field[4]))
+            else:  
+                dataType = "string"
+            varName = field[3].lower() + re.sub('[^A-Za-z0-9]+', '', field[1].title())
+            
+            
+            new_column = Column.create( entity = entity,
+                                dbField = dbField,
+                                name = name,
+                                dataType = dataType,
+                                length = length,
+                                is_indice = is_indice,
+                                is_keyPathParam = is_keyPathParam,
+                                desc = desc,
+                                variabelName = varName,
+                                options = opcoes)
+
         return
-    
-    def varPrefix(self, dataType):
-        prefix = ""
-        return prefix
+ 
