@@ -6,8 +6,8 @@ from string import Template
 
 class PackageJsonGenerator(codeGenerator):
 
-    def __init__ (self, entity=None, name=None, alias=None, shortName=None):
-        super().__init__(entity=None, name=None, alias=None, shortName=None)
+    def __init__ (self, entity=None):
+        super().__init__(entity=None)
         self.templateFile = 'package.json.template'
         self.templatePath = settings.PATH_TEMPLATE_PO
         self.srcPath = settings.PATH_PO
@@ -16,7 +16,7 @@ class PackageJsonGenerator(codeGenerator):
     def setFileOut(self):
         self.fileOut = "package.json"
     
-    def getVariables(self,entity):
+    def getVariables(self):
         dependencies = (
             '  "dependencies": {'
             '    "@angular/animations": "~8.0.0",'

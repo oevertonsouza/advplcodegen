@@ -3,29 +3,28 @@ import sys, os, csv, shutil
 import settings
 from core.codeGenerators.codeGenerator import codeGenerator
 from string import Template
+from core.daos.model import Entity, Column
 
 class MapperCodeGenerator(codeGenerator):
 
-    def __init__ (self, entity=None, name=None, alias=None, shortName=None):
-        super().__init__(entity=None, name=None, alias=None, shortName=None)
+    def __init__ (self, entity=None):
+        super().__init__(entity=None)
         self.templateFile = 'Mapper.template' 
         self.srcPath = settings.PATH_SRC_MAPPER
         return
 
     def setFileOut(self):
-        self.fileOut = self.prefix+"Mpr"+ self.shortName + ".prw"
+        self.fileOut = self.prefix+"Mpr"+ self.entity.shortName + ".prw"
     
-    def getVariables(self,entity):
+    def getVariables(self):
         mapper = ''
         
-        with open(storagePathFile) as datafile:
-            columnInfo = csv.reader(datafile, delimiter=';')
-            for column in columnInfo:
-                mapper += '    aAdd(self:aFields,{"'+ column[0] +'" ,"'+ column[1] +'"})\n'
-            
+        for column in Column.select().join(Entity).where(Entity.table == self.entity.table):
+            mapper += '    aAdd(self:aFields,{"'+ column.dbField +'" ,"'+ column.name +'"})\n'
+        
             variables = { 
-                    'className': entity.shortName, 
-                    'entity' : entity.name,
+                    'className': self.entity.shortName, 
+                    'entityName' : self.entity.name,
                     'mapper' : mapper,
                     'prefix' : self.prefix,
                 }

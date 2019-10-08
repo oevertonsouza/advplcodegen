@@ -3,89 +3,73 @@ import sys, os, csv, shutil
 import settings
 from core.codeGenerators.codeGenerator import codeGenerator
 from string import Template
+from core.daos.model import Entity, Column
 
 class DocApiCodeGenerator(codeGenerator):
 
-    def __init__ (self, entity=None, name=None, alias=None, shortName=None):
-        super().__init__(entity=None, name=None, alias=None, shortName=None)
+    def __init__ (self, entity=None):
+        super().__init__(entity=None)
         self.templateFile = 'docApi.template' 
         self.templatePath = settings.PATH_TEMPLATE_DOCS
         self.srcPath = settings.PATH_SRC_DOC_API
         return
 
     def setFileOut(self):
-        self.fileOut = self.name.title().replace(" ","")+"_v1_100.json"
+        self.fileOut = self.entity.name.title().replace(" ","")+"_v1_100.json"
     
-    def getVariables(self, storagePathFile):
+    def getVariables(self):
         pathParam = ''
         queryParam = ''
         parameters = ''
         keyParameters = ''
         keyPath = ''
-        abreviate = self.shortName
+        abreviate = self.entity.shortName
+        for column in Column.select().join(Entity).where(Entity.table == self.entity.table):
+            parameters += '                    {\n'
+            parameters += '                        "$ref": "#/components/parameters/'+column.name+'Param"\n'
+            parameters += '                    },\n'    
+            
+            if column.is_indice :
+                keyParameters += '                    {\n'
+                keyParameters += '                        "$ref": "#/components/parameters/'+column.name+'Param"\n'
+                keyParameters += '                    },\n'
 
-        with open(storagePathFile) as datafile:
-            columnInfo = csv.reader(datafile, delimiter=';')
-            for column in columnInfo:
-                parameters += '                    {\n'
-                parameters += '                        "$ref": "#/components/parameters/'+column[1]+'Param"\n'
-                parameters += '                    },\n'    
-                
-                if column[4] == "1" :
-                    keyParameters += '                    {\n'
-                    keyParameters += '                        "$ref": "#/components/parameters/'+column[1]+'Param"\n'
-                    keyParameters += '                    },\n'
-
-                if column[5] == "1":
-                    keyPath = column[1]
-                    pathParam = (
-                                    '           "'+column[1]+'Param": {\n'
-                                    '               "name": "'+column[1]+'",\n'
-                                    '               "in": "path",\n'
-                                    '               "description": "'+column[6]+'",\n'
-                                    '               "required": true,\n'
+            if column.is_keyPathParam:
+                keyPath = column.name
+                pathParam = (
+                            '           "'+column.name+'Param": {\n'
+                            '               "name": "'+column.name+'",\n'
+                            '               "in": "path",\n'
+                            '               "description": "'+column.desc+'",\n'
+                            '               "required": true,\n'
+                            '               "schema": {\n'
+                            '		            "type": "string",\n'
+                            '	                "format": "string"\n'
+                            '               }\n'
+                            '           },\n'
+                )
+            else:
+                    queryParam += (
+                                    '           "'+column.name+'Param": {\n'
+                                    '               "name": "'+column.name+'",\n'
+                                    '               "in": "query",\n'
+                                    '               "description": "'+column.desc+'",\n'
+                                    '               "required": ' + 'true' if column.is_indice else 'false' +  ',\n'
                                     '               "schema": {\n'
                                     '		            "type": "string",\n'
                                     '	                "format": "string"\n'
                                     '               }\n'
                                     '           },\n'
                     )
-                else :
-                    if column[4] == "1":
-                        queryParam += (
-                                        '           "'+column[1]+'Param": {\n'
-                                        '               "name": "'+column[1]+'",\n'
-                                        '               "in": "query",\n'
-                                        '               "description": "'+column[6]+'",\n'
-                                        '               "required": true,\n'
-                                        '               "schema": {\n'
-                                        '		            "type": "string",\n'
-                                        '	                "format": "string"\n'
-                                        '               }\n'
-                                        '           },\n'
-                        )
-                    else: 
-                        queryParam += (
-                                        '           "'+column[1]+'Param": {\n'
-                                        '               "name": "'+column[1]+'",\n'
-                                        '               "in": "query",\n'
-                                        '               "description": "'+column[6]+'",\n'
-                                        '               "required": false,\n'
-                                        '               "schema": {\n'
-                                        '		            "type": "string",\n'
-                                        '	                "format": "string"\n'
-                                        '               }\n'
-                                        '           },\n'
-                        )
-
-            classNameTitle = self.name.title().replace(" ","")
+            
+            classNameTitle = self.entity.name.title().replace(" ","")
             descriptionPath = classNameTitle[0].lower() + classNameTitle[1:]
             variables = { 
-                    'className': self.name,
-                    'classNamePortuguese': self.namePortuguese,
+                    'className': self.entity.name,
+                    'classNamePortuguese': self.entity.namePortuguese,
                     'classNameTitle': classNameTitle,
                     'descriptionPath': descriptionPath,
-                    'entity' : entity.name,
+                    'entityName' : self.entity.name,
                     'product' : self.product,
                     'productDescription' : self.productDescription,
                     'contact' : self.contact,
@@ -93,7 +77,7 @@ class DocApiCodeGenerator(codeGenerator):
                     'pathParam' : pathParam,
                     'parameters' : parameters[:-2],
                     'queryParam' : queryParam[:-3]+"}",
-                    'classNameLower' : self.name.lower(),
+                    'classNameLower' : self.entity.name.lower(),
                     'keyParameters' : keyParameters[:-2],
                     'keyPath' : keyPath,
                     'abreviate' : abreviate,

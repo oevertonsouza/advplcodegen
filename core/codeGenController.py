@@ -30,18 +30,18 @@ class codeGenController:
 
     def getGenerators(self):
         generators = []
-        # generators.append(entityCodeGenerator.entityCodeGenerator())
-        # generators.append(DaoCodeGenerator.DaoCodeGenerator())
-        # generators.append(CollectionCodeGenerator.CollectionCodeGenerator())
-        # generators.append(TestCaseCodeGenerator.TestCaseCodeGenerator())
-        # generators.append(TestGroupCodeGenerator.TestGroupCodeGenerator())
-        # generators.append(TestSuiteCodeGenerator.TestSuiteCodeGenerator())
-        # generators.append(MapperCodeGenerator.MapperCodeGenerator())
-        # generators.append(RequestCodeGenerator.RequestCodeGenerator())
-        # generators.append(CommandCodeGenerator.CommandCodeGenerator())
-        # generators.append(ValidateCodeGenerator.ValidateCodeGenerator())
-        # generators.append(DocApiSchemaCodeGenerator.DocApiSchemaCodeGenerator())
-        # generators.append(DocApiCodeGenerator.DocApiCodeGenerator())
+        generators.append(entityCodeGenerator.entityCodeGenerator())
+        generators.append(DaoCodeGenerator.DaoCodeGenerator())
+        generators.append(CollectionCodeGenerator.CollectionCodeGenerator())
+        generators.append(TestCaseCodeGenerator.TestCaseCodeGenerator())
+        generators.append(TestGroupCodeGenerator.TestGroupCodeGenerator())
+        generators.append(TestSuiteCodeGenerator.TestSuiteCodeGenerator())
+        generators.append(MapperCodeGenerator.MapperCodeGenerator())
+        generators.append(RequestCodeGenerator.RequestCodeGenerator())
+        generators.append(CommandCodeGenerator.CommandCodeGenerator())
+        generators.append(ValidateCodeGenerator.ValidateCodeGenerator())
+        generators.append(DocApiSchemaCodeGenerator.DocApiSchemaCodeGenerator())
+        generators.append(DocApiCodeGenerator.DocApiCodeGenerator())
         generators.append(ApiCodeGenerator.ApiCodeGenerator())
 
         return generators
@@ -61,8 +61,9 @@ class codeGenController:
         generators = self.getGenerators()
         for entity in Entity.select():
             for generator in generators:
-                entity = aliasEntity.AliasEntity(entity.table, entity.name, entity.keyColumn, entity.namePortuguese, entity.shortName)
-                generator.build(entity)
+                new_entity = aliasEntity.AliasEntity(entity.table, entity.name, entity.keyColumn, entity.namePortuguese, entity.shortName)
+                generator.setEntity(new_entity)
+                generator.build()
 
         self.finishApi()
         return

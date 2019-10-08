@@ -1,5 +1,5 @@
     
-    // Metodos da entidade ${entity} - ${description}
+    // Metodos da entidade ${table} - ${description}
     WSMETHOD GET ${classNameAbreviate}Collection DESCRIPTION "${description} - Get Collection" ;
     WSsyntax "{version}/${descriptionPath}" ;
     PATH "{version}/${descriptionPath}" PRODUCES APPLICATION_JSON

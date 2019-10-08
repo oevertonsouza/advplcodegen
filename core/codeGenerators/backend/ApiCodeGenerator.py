@@ -12,8 +12,8 @@ from core.codeGenerators.codeGenerator import codeGenerator
 
 class ApiCodeGenerator(codeGenerator):
 
-    def __init__ (self, entity=None, name=None, alias=None, shortName=None):
-        super().__init__(entity=None, name=None, alias=None, shortName=None)
+    def __init__ (self, entity=None):
+        super().__init__(entity=None)
         self.templateFile = 'Entity.template' 
         self.srcPath = settings.PATH_SRC_API
         return
@@ -21,7 +21,7 @@ class ApiCodeGenerator(codeGenerator):
     def setFileOut(self):
         self.fileOut = self.prefix+"Rest"+ self.segment +".prw"
     
-    def getVariables(self,entity):
+    def getVariables(self):
         wsDataKeys = ''
         wsDataNoKeys = ''
         defaultVarsNoKey = ''
@@ -31,7 +31,7 @@ class ApiCodeGenerator(codeGenerator):
         keyVarsNoKeyPath = []
         keyPath = ''
 
-        for column in Column.select().join(Entity).where(Entity.table == entity.table):
+        for column in Column.select().join(Entity).where(Entity.table == self.entity.table):
 
             if not column.name in self.columnsToAdd:
                 self.columnsToAdd.append(column.name)
@@ -49,15 +49,16 @@ class ApiCodeGenerator(codeGenerator):
                 keyPath = column.name
         if len(keyVarsNoKeyPath) > 0:
             keyVarsNoKeyPath.remove('    '+keyPath)
-            descriptionPath = entity.name.title().replace(" ","")
+            descriptionPath = self.entity.name.title().replace(" ","")
             descriptionPath = descriptionPath[0].lower() + descriptionPath[1:]
             variables = {
-                    'classNameAbreviate': entity.shortName,
-                    'description': entity.name.title(),
+                    'classNameAbreviate': self.entity.shortName,
+                    'description': self.entity.name.title(),
                     'descriptionPath': descriptionPath,
-                    'className': entity.shortName,
-                    'classNameLower' : entity.shortName.lower(),
-                    'entity' : entity.name,
+                    'className': self.entity.shortName,
+                    'classNameLower' : self.entity.shortName.lower(),
+                    'table' : self.entity.table,
+                    'entityName' : self.entity.name,
                     'prefix' : self.prefix,
                     'segment' : self.segment,
                     'wsDataKeys' : wsDataKeys,
@@ -72,20 +73,20 @@ class ApiCodeGenerator(codeGenerator):
 
         return variables
 
-    def build(self,entity):
-        variables = self.getVariables(entity)
+    def build(self):
+        variables = self.getVariables()
         self.makeTempFile(variables,'Api.Header',"")
-        self.makeTempFile(variables,'Api.Header.WsData',entity.table)
-        self.makeTempFile(variables,'Api.Header.Methods',entity.table)
+        self.makeTempFile(variables,'Api.Header.WsData',self.entity.table)
+        self.makeTempFile(variables,'Api.Header.Methods',self.entity.table)
         #footer
-        self.makeTempFile(variables,'Api.Body',entity.table)
+        self.makeTempFile(variables,'Api.Body',self.entity.table)
         return
 
-    def makeTempFile(self, variables, file, entity):
+    def makeTempFile(self, variables, file, table):
         fileIn = open(os.path.join(settings.PATH_TEMPLATE, file+'.template'))
         temp = Template(fileIn.read())
         result = temp.substitute(variables)
-        f = open(os.path.join(settings.PATH_TEMP, file + entity + ".tmp") , "w+")
+        f = open(os.path.join(settings.PATH_TEMP, file + table + ".tmp") , "w+")
         f.write(result)
         f.close()
     

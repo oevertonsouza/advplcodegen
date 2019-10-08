@@ -6,8 +6,8 @@ from string import Template
 
 class DefaultComponentTsGenerator(codeGenerator):
 
-    def __init__ (self, entity=None, name=None, alias=None, shortName=None):
-        super().__init__(entity=None, name=None, alias=None, shortName=None)
+    def __init__ (self, entity=None):
+        super().__init__(entity=None)
         self.templateFile = 'default.component.ts.template'
         self.templatePath = settings.PATH_TEMPLATE_PO
         self.srcPath = settings.PATH_PO_SRC_APP
@@ -16,7 +16,7 @@ class DefaultComponentTsGenerator(codeGenerator):
     def setFileOut(self):
         self.fileOut = ""
     
-    def getVariables(self,entity):
+    def getVariables(self):
         fieldsDetails = ''
         sufixFileName = '-dynamic-form.component.ts'
         componentName = self.namePortuguese.replace(" ","").lower()

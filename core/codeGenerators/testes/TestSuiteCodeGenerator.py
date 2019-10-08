@@ -3,22 +3,23 @@ import sys, os, csv, shutil
 import settings
 from core.codeGenerators.codeGenerator import codeGenerator
 from string import Template
+from core.daos.model import Entity, Column
 
 class TestSuiteCodeGenerator(codeGenerator):
 
-    def __init__ (self, entity=None, name=None, alias=None, shortName=None):
-        super().__init__(entity=None, name=None, alias=None, shortName=None)
+    def __init__ (self, entity=None):
+        super().__init__(entity=None)
         self.templateFile = 'TestSuite.template' 
         self.srcPath = settings.PATH_SRC_TEST_SUITE
         return
 
     def setFileOut(self):
-        self.fileOut = self.prefix+self.shortName + "TestSuite.prw"
+        self.fileOut = self.prefix+self.entity.shortName + "TestSuite.prw"
     
-    def getVariables(self,entity):
+    def getVariables(self):
         variables = { 
-                'className': entity.shortName, 
-                'entity' : entity.name,
+                'className': self.entity.shortName, 
+                'entityName' : self.entity.name,
                 'company' : self.company,
                 'filial' : self.filial,
                 'prefix' : self.prefix,

@@ -19,33 +19,14 @@ class codeGenerator():
     fileOut = ''
     srcPath = ''
 
-    def __init__ (self, entity=None, name=None, alias=None, shortName=None, encoding=None):
-        self.entity = entity,
-        self.shortName = shortName,
-        self.name = name,
-        self.alias = alias,
+    def __init__ (self, entity=None):
+        self.entity = entity
         self.templatePath = settings.PATH_TEMPLATE
-        return
-
-    def setEncode(self, encoding):
-        print(encoding)
         return
 
     def setEntity(self, entity):
         self.entity = entity
-        self.alias = entity[:3]
-        return
-
-    def setShortName(self, shortName):
-        self.shortName = shortName
-        return
-
-    def setName(self, name):
-        self.name = name
-        return
-
-    def setNamePortuguese(self, namePortuguese):
-        self.namePortuguese = namePortuguese
+        self.alias = entity.table[:3]
         return
     
     def writeFile(self, variables):
@@ -57,13 +38,18 @@ class codeGenerator():
         f.close()
         return
     
-    def getVariables(self,entity):
-        return('','')
+    def getVariables(self):
+        variables = {
+                'className': self.entity.shortName,                     
+                'entity' : self.entity.name,
+                'prefix' : self.prefix,
+                }
+        return variables
         
     def setFileOut(self):
         return
 
-    def build(self, entity):
+    def build(self):
         self.setFileOut()
-        self.writeFile(self.getVariables(entity))
+        self.writeFile(self.getVariables())
         return

@@ -6,8 +6,8 @@ from string import Template
 
 class AppModuleTsGenerator(codeGenerator):
 
-    def __init__ (self, entity=None, name=None, alias=None, shortName=None):
-        super().__init__(entity=None, name=None, alias=None, shortName=None)
+    def __init__ (self, entity=None):
+        super().__init__(entity=None)
         self.templateFile = 'app.module.ts.template' 
         self.templatePath = settings.PATH_TEMPLATE_PO
         self.srcPath = settings.PATH_PO_SRC_APP
@@ -16,7 +16,7 @@ class AppModuleTsGenerator(codeGenerator):
     def setFileOut(self):
         self.fileOut = "app.module.ts"
     
-    def getVariables(self,entity):
+    def getVariables(self):
 
         declarations = []
         routeName = ''

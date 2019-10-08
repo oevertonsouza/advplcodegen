@@ -3,34 +3,34 @@ import sys, os, csv, shutil
 import settings
 from core.codeGenerators.codeGenerator import codeGenerator
 from string import Template
+from core.daos.model import Entity, Column
 
 class RequestCodeGenerator(codeGenerator):
 
-    def __init__ (self, entity=None, name=None, alias=None, shortName=None):
-        super().__init__(entity=None, name=None, alias=None, shortName=None)
+    def __init__ (self, entity=None):
+        super().__init__(entity=None)
         self.templateFile = 'Request.template' 
         self.srcPath = settings.PATH_SRC_REQUEST
         return
 
     def setFileOut(self):
-        self.fileOut = self.prefix+"Req"+ self.shortName +".prw"
+        self.fileOut = self.prefix+"Req"+ self.entity.shortName +".prw"
     
-    def getVariables(self,entity):
+    def getVariables(self):
         applyFilterAll = ''
         applyFilterSingle = ''
         prepFilter = ''
-        with open(storagePathFile) as datafile:
-            columnInfo = csv.reader(datafile, delimiter=';')
-            for column in columnInfo:
-                applyFilterAll += ''.rjust(12)+'self:oCollection:setValue("'+ column[1] +'",self:oRest:'+ column[1] +')\n'
-                
-                if column[4] == "1" :
-                    applyFilterSingle += ''.rjust(12)+'self:oCollection:setValue("'+ column[1] +'",self:oRest:'+ column[1] +')\n'
-                    prepFilter += ''.rjust(4)+'self:oCollection:setValue("'+ column[1] +'", self:oRest:'+ column[1] +')\n'
+        
+        for column in Column.select().join(Entity).where(Entity.table == self.entity.table):
+            applyFilterAll += ''.rjust(12)+'self:oCollection:setValue("'+ column.name +'",self:oRest:'+ column.name +')\n'
+            
+            if column.is_indice :
+                applyFilterSingle += ''.rjust(12)+'self:oCollection:setValue("'+ column.name +'",self:oRest:'+ column.name +')\n'
+                prepFilter += ''.rjust(4)+'self:oCollection:setValue("'+ column.name +'", self:oRest:'+ column.name +')\n'
 
         variables = {
-                'className': entity.shortName,                     
-                'entity' : entity.name,
+                'className': self.entity.shortName,                     
+                'entityName' : self.entity.name,
                 'prefix' : self.prefix,
                 'applyFilterAll' : applyFilterAll,
                 'applyFilterSingle' : applyFilterSingle,
