@@ -16,7 +16,7 @@ class AppRoutingModuleTsGenerator(codeGenerator):
     def setFileOut(self):
         self.fileOut = "app-routing.module.ts"
     
-    def getVariables(self,storagePathFile):
+    def getVariables(self,entity):
         routeName = ''
         componentName = ''
         imports = '' 

@@ -16,7 +16,7 @@ class DefaultComponentTsGenerator(codeGenerator):
     def setFileOut(self):
         self.fileOut = ""
     
-    def getVariables(self,storagePathFile):
+    def getVariables(self,entity):
         fieldsDetails = ''
         sufixFileName = '-dynamic-form.component.ts'
         componentName = self.namePortuguese.replace(" ","").lower()

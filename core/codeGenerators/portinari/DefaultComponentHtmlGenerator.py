@@ -16,7 +16,7 @@ class DefaultComponentHtmlGenerator(codeGenerator):
     def setFileOut(self):
         self.fileOut = ""
     
-    def getVariables(self,storagePathFile):
+    def getVariables(self,entity):
         
         sufixFileName = '-dynamic-form.component.html'
         componentName = self.namePortuguese.replace(" ","").lower()

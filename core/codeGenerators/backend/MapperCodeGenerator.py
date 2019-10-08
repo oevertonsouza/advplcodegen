@@ -15,7 +15,7 @@ class MapperCodeGenerator(codeGenerator):
     def setFileOut(self):
         self.fileOut = self.prefix+"Mpr"+ self.shortName + ".prw"
     
-    def getVariables(self,storagePathFile):
+    def getVariables(self,entity):
         mapper = ''
         
         with open(storagePathFile) as datafile:
@@ -24,8 +24,8 @@ class MapperCodeGenerator(codeGenerator):
                 mapper += '    aAdd(self:aFields,{"'+ column[0] +'" ,"'+ column[1] +'"})\n'
             
             variables = { 
-                    'className': self.shortName, 
-                    'entity' : self.entity,
+                    'className': entity.shortName, 
+                    'entity' : entity.name,
                     'mapper' : mapper,
                     'prefix' : self.prefix,
                 }

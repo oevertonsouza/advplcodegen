@@ -17,27 +17,89 @@ class entityController:
         return
 
     def addEntity(self, entity):
-        stg = storage.Storage()
+        mdb = managedb.ManagementDb()
+        tableInfo = mdb.getTableInfo(entity.table)
+        if len(tableInfo) > 0:
+            entity.name = tableInfo[0][0]
+            entity.namePortuguese = tableInfo[0][1]
+        new_entity = self.saveEntity(entity)
+        self.saveColumns(new_entity)
+        return
 
-        if self.entityExist(entity):
-            print('Entity '+ entity.tableName + ' already added! Execute the command #.py list to show the entities added ')
-            return
-        
-        if self.nameExist(entity.name):
-            print('Alias '+ entity.name + ' already added! Execute command #.py list to check api added.')
-            return
-
+    def saveEntity(self, entity):
         try:
             new_entity = Entity.create(name = entity.name,
                     table = entity.tableName,
                     shortName = entity.shortName,
                     namePortuguese = entity.namePortuguese,
                     keyColumn = entity.keyColumn)
+            operationMessage = 'added'
         except peewee.IntegrityError:
             new_entity = Entity.get(table = entity.tableName)
-        stg.genColumnStorage(new_entity)
-        print('Entity '+ entity.tableName + ' successfully added!')
+            new_entity.name = entity.name
+            new_entity.table = entity.tableName
+            new_entity.shortName = entity.shortName
+            new_entity.namePortuguese = entity.namePortuguese
+            new_entity.keyColumn = entity.keyColumn
+            new_entity.save()
+            operationMessage = 'updated'
+        print('Entity '+ entity.tableName + ' successfully ' + operationMessage + '!')
+        return new_entity
 
+    def saveColumns(self, entity):
+        mdb = managedb.ManagementDb()
+        tableInfo = mdb.getTableInfo(entity.table)
+        uniqueColumns = tableInfo[0][2].strip().split('+')
+        columnList = mdb.getColumnDesc(entity.table)
+       
+        for field in columnList:
+            is_indice = field[0] in uniqueColumns
+            is_keyPathParam = field[0] == entity.keyColumn 
+            name = re.sub('[^A-Za-z0-9]+', '', field[2].title())
+            name = name[0].lower() + name[1:]
+            desc = field[7].strip()
+            opcoes = field[6].strip().replace(";",",")
+            length = str(field[4])
+            if field[3] == 'C':
+                dataType = "string"
+            elif field[3] == 'D':
+                dataType = "date"
+            elif field[3] == 'N':
+                dataType = "float"
+                length = str(int(field[4]))
+            else:  
+                dataType = "string"
+            varName = field[3].lower() + re.sub('[^A-Za-z0-9]+', '', field[1].title())
+            try:
+                new_column = Column.create( entity = entity,
+                            dbField = field[0],
+                            name = name,
+                            dataType = dataType,
+                            length = length,
+                            is_indice = is_indice,
+                            is_required = False,
+                            is_keyPathParam = is_keyPathParam,
+                            desc = desc,
+                            variabelName = varName,
+                            options = opcoes)
+            except peewee.IntegrityError:
+                new_column = Column.get(Column.dbField == field[0])
+                new_column.entity = entity
+                new_column.dbField = field[0]
+                new_column.name = name
+                new_column.dataType = dataType
+                new_column.length = length
+                new_column.is_indice = is_indice
+                new_column.is_keyPathParam = is_keyPathParam
+                new_column.is_required = is_indice
+                new_column.desc = desc
+                new_column.variabelName = varName
+                new_column.options = opcoes
+                new_column.save()
+        if len(columnList) > 0:
+            print('Entity '+ entity.table + ', columns saved!')
+        else:
+            print('Entity '+ entity.table + ' without columns in database!')
         return
 
     def addEntities(self,file):
@@ -57,46 +119,7 @@ class entityController:
 
     #List Entity
     def list(self):
-
-        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  "storage.entity")
-        exists = os.path.isfile(storagePathFile)
-
-        if exists:
-            with open(storagePathFile) as datafile:
-                data = csv.reader(datafile, delimiter=';')
-                print("Your entities added")
-                for row in data:
-                    print('Entity ' + row[0] + ' - Alias Name '+ row[1])
-        else:
-            print("No entities found!")
+        
+        for entity in Entity.select():
+            print('Entity ' + entity.table + ' - Alias Name '+ entity.name)
         return
-
-    def entityExist(self, entity):
-
-        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  "storage.entity")
-        exists = os.path.isfile(storagePathFile) 
-
-        if exists:
-            with open(storagePathFile) as datafile:
-                data = csv.reader(datafile, delimiter=';')
-                for row in data:
-                    if len(row) > 0 and row[0] == entity.tableName:
-                        return True
-        else:
-            return False
-        return False
-
-    def nameExist(self,name):
-
-        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  "storage.entity")
-        exists = os.path.isfile(storagePathFile) 
-
-        if exists:
-            with open(storagePathFile) as datafile:
-                data = csv.reader(datafile, delimiter=';')
-                for row in data:
-                    if len(row) > 0:
-                        return row[1] == name
-        else:
-            return False
-        return False

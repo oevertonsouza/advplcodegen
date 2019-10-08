@@ -17,8 +17,8 @@ class ValidateCodeGenerator(codeGenerator):
     
     def getVariables(self, storagePathFile):
         variables = {
-                'className': self.shortName,
-                'entity' : self.entity,                    
+                'className': entity.shortName,
+                'entity' : entity.name,                    
                 'prefix' : self.prefix,
             }
         return variables

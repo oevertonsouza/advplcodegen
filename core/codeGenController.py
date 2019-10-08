@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-import csv
-import os
-import re
-import sys
+import csv,os,re,sys
 from pathlib import Path
+from core.entities import aliasEntity
+from core.daos.model import Entity
 
 import settings
 from core.codeGenerators.backend import (
@@ -31,18 +30,18 @@ class codeGenController:
 
     def getGenerators(self):
         generators = []
-        generators.append(entityCodeGenerator.entityCodeGenerator())
-        generators.append(DaoCodeGenerator.DaoCodeGenerator())
-        generators.append(CollectionCodeGenerator.CollectionCodeGenerator())
-        generators.append(TestCaseCodeGenerator.TestCaseCodeGenerator())
-        generators.append(TestGroupCodeGenerator.TestGroupCodeGenerator())
-        generators.append(TestSuiteCodeGenerator.TestSuiteCodeGenerator())
-        generators.append(MapperCodeGenerator.MapperCodeGenerator())
-        generators.append(RequestCodeGenerator.RequestCodeGenerator())
-        generators.append(CommandCodeGenerator.CommandCodeGenerator())
-        generators.append(ValidateCodeGenerator.ValidateCodeGenerator())
-        generators.append(DocApiSchemaCodeGenerator.DocApiSchemaCodeGenerator())
-        generators.append(DocApiCodeGenerator.DocApiCodeGenerator())
+        # generators.append(entityCodeGenerator.entityCodeGenerator())
+        # generators.append(DaoCodeGenerator.DaoCodeGenerator())
+        # generators.append(CollectionCodeGenerator.CollectionCodeGenerator())
+        # generators.append(TestCaseCodeGenerator.TestCaseCodeGenerator())
+        # generators.append(TestGroupCodeGenerator.TestGroupCodeGenerator())
+        # generators.append(TestSuiteCodeGenerator.TestSuiteCodeGenerator())
+        # generators.append(MapperCodeGenerator.MapperCodeGenerator())
+        # generators.append(RequestCodeGenerator.RequestCodeGenerator())
+        # generators.append(CommandCodeGenerator.CommandCodeGenerator())
+        # generators.append(ValidateCodeGenerator.ValidateCodeGenerator())
+        # generators.append(DocApiSchemaCodeGenerator.DocApiSchemaCodeGenerator())
+        # generators.append(DocApiCodeGenerator.DocApiCodeGenerator())
         generators.append(ApiCodeGenerator.ApiCodeGenerator())
 
         return generators
@@ -59,23 +58,13 @@ class codeGenController:
 
     def build(self):
 
-        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  "storage.entity")
-        exists = os.path.isfile(storagePathFile) 
+        generators = self.getGenerators()
+        for entity in Entity.select():
+            for generator in generators:
+                entity = aliasEntity.AliasEntity(entity.table, entity.name, entity.keyColumn, entity.namePortuguese, entity.shortName)
+                generator.build(entity)
 
-        if exists:
-            generators = self.getGenerators()
-            with open(storagePathFile) as datafile:
-                data = csv.reader(datafile, delimiter=';')
-                for entity in data:
-                    if len(entity) > 0:
-                        for generator in generators:
-                            generator.setEntity(entity[0])
-                            generator.setName(entity[1])
-                            generator.setShortName(entity[3])
-                            generator.setNamePortuguese(entity[4])
-                            generator.build()
-
-            self.finishApi()
+        self.finishApi()
         return
 
     def PoBuild(self):

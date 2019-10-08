@@ -15,6 +15,7 @@ O propósito desse projeto é utilizar classes abstratas que possuam métodos qu
 * Python 3 instalado (https://www.python.org/downloads/)
 * Pip instalado - Execute o arquivo get-pip.py
 * Biblioteca PyMsSql instalada - pip install pymssql
+* Biblioteca PeeWee instalada - pip install peewee
 * Base de dados e ambiente de desenvolvimento (ADVPL) protheus configurados "Melhor uso com o dicionario Protheus no banco de dados".
 
 # Configuração de Ambiente

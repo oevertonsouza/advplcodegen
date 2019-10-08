@@ -15,7 +15,7 @@ class RequestCodeGenerator(codeGenerator):
     def setFileOut(self):
         self.fileOut = self.prefix+"Req"+ self.shortName +".prw"
     
-    def getVariables(self,storagePathFile):
+    def getVariables(self,entity):
         applyFilterAll = ''
         applyFilterSingle = ''
         prepFilter = ''
@@ -29,8 +29,8 @@ class RequestCodeGenerator(codeGenerator):
                     prepFilter += ''.rjust(4)+'self:oCollection:setValue("'+ column[1] +'", self:oRest:'+ column[1] +')\n'
 
         variables = {
-                'className': self.shortName,                     
-                'entity' : self.entity,
+                'className': entity.shortName,                     
+                'entity' : entity.name,
                 'prefix' : self.prefix,
                 'applyFilterAll' : applyFilterAll,
                 'applyFilterSingle' : applyFilterSingle,

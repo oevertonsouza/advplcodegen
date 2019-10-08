@@ -15,10 +15,10 @@ class CommandCodeGenerator(codeGenerator):
     def setFileOut(self):
         self.fileOut = self.prefix+"Cmd"+ self.shortName +".prw"
     
-    def getVariables(self,storagePathFile):
+    def getVariables(self,entity):
         variables = {
-                'className': self.shortName,                     
-                'entity' : self.entity,
+                'className': entity.shortName,                     
+                'entity' : entity.name,
                 'prefix' : self.prefix,
                 }
         return variables

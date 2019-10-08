@@ -15,10 +15,10 @@ class TestSuiteCodeGenerator(codeGenerator):
     def setFileOut(self):
         self.fileOut = self.prefix+self.shortName + "TestSuite.prw"
     
-    def getVariables(self,storagePathFile):
+    def getVariables(self,entity):
         variables = { 
-                'className': self.shortName, 
-                'entity' : self.entity,
+                'className': entity.shortName, 
+                'entity' : entity.name,
                 'company' : self.company,
                 'filial' : self.filial,
                 'prefix' : self.prefix,

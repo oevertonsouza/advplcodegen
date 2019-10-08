@@ -17,7 +17,7 @@ def CreateTables():
 class Entity(peewee.Model):
     
     name = peewee.CharField(unique=True)
-    table = peewee.CharField()
+    table = peewee.CharField(unique=True)
     shortName = peewee.CharField()
     namePortuguese = peewee.CharField()
     keyColumn = peewee.CharField()
@@ -30,12 +30,13 @@ class Column(peewee.Model):
 
     entity = peewee.ForeignKeyField(Entity)
 
-    dbField = peewee.CharField()
+    dbField = peewee.CharField(unique=True)
     name = peewee.CharField()
     dataType = peewee.CharField()
     length = peewee.IntegerField()
     is_indice = peewee.BooleanField()
     is_keyPathParam = peewee.BooleanField()
+    is_required = peewee.BooleanField()
     desc = peewee.CharField()
     variabelName = peewee.CharField()
     options = peewee.CharField()
@@ -44,4 +45,4 @@ class Column(peewee.Model):
         database = database
  
 if __name__ == "__main__":
-    Model.CreateTables()
+    CreateTables()

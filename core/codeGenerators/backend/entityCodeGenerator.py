@@ -15,7 +15,7 @@ class entityCodeGenerator(codeGenerator):
     def setFileOut(self):
         self.fileOut = self.prefix+self.shortName + ".prw"
     
-    def getVariables(self,storagePathFile):
+    def getVariables(self,entity):
         serialize = ''
         fields    = ''
         with open(storagePathFile) as datafile:
@@ -25,11 +25,11 @@ class entityCodeGenerator(codeGenerator):
                 fields      += '    self:oFields:push({"'+column[1]+'", self:getValue("'+column[1] +'")}) /* Column '+ column[0] +' */ \n'
                 
             variables = { 
-                    'className': self.shortName, 
+                    'className': entity.shortName, 
                     'description': self.name, 
                     'serialize' : serialize,
                     'fields' : fields,
-                    'entity' : self.entity,
+                    'entity' : entity.name,
                     'prefix' : self.prefix,
                 }
         return variables

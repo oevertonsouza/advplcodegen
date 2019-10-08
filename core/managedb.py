@@ -5,7 +5,7 @@ import settings
 
 class ManagementDb:
 
-    #gera uma conex�o com o banco
+    #gera uma conexao com o banco
     def conn(self):
         conn = pymssql.connect(
             server=settings.DATABASES['default']['HOST'], 
@@ -15,7 +15,7 @@ class ManagementDb:
         )
         return conn    
 
-    #Testa uma conex�o com o banco executando uma query simples
+    #Testa uma conexao com o banco executando uma query simples
     def testeConnect(self):
         
         conn = self.conn()
@@ -62,15 +62,12 @@ class ManagementDb:
     def getTableInfo(self, tableName):
 
         conn = self.conn()
-
         query = (
                     " SELECT X2_NOMEENG, X2_NOME, X2_UNICO "
                     " FROM SX2" + settings.PROTHEUS_ENVIORMENT['default']['COMPANY'] + "0 "
                     " WHERE 1=1 "
                     "   AND X2_CHAVE = '"+ tableName[:3] +"' "
-                    "   AND D_E_L_E_T_ = ' '"
-                )
-
+                    "   AND D_E_L_E_T_ = ' '")
         cursor = conn.cursor()
         cursor.execute(query)
         result = cursor.fetchall()

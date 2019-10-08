@@ -85,7 +85,7 @@ class DocApiCodeGenerator(codeGenerator):
                     'classNamePortuguese': self.namePortuguese,
                     'classNameTitle': classNameTitle,
                     'descriptionPath': descriptionPath,
-                    'entity' : self.entity,
+                    'entity' : entity.name,
                     'product' : self.product,
                     'productDescription' : self.productDescription,
                     'contact' : self.contact,

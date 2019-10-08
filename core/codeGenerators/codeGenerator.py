@@ -57,17 +57,13 @@ class codeGenerator():
         f.close()
         return
     
-    def getVariables(self,storagePathFile):
+    def getVariables(self,entity):
         return('','')
         
     def setFileOut(self):
         return
 
-    def build(self):
+    def build(self, entity):
         self.setFileOut()
-        storagePathFile = os.path.join(settings.PATH_FILESTORAGE, self.entity + ".columns")
-        exists = os.path.isfile(storagePathFile)
-        if exists:
-            variables = self.getVariables(storagePathFile)
-            self.writeFile(variables)
+        self.writeFile(self.getVariables(entity))
         return

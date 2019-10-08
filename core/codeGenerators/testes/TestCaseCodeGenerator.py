@@ -15,7 +15,7 @@ class TestCaseCodeGenerator(codeGenerator):
     def setFileOut(self):
         self.fileOut = self.prefix+self.shortName + "TestCase.prw"
     
-    def getVariables(self,storagePathFile):
+    def getVariables(self,entity):
         keyCollumn = ''
         compare = ''
         compareAll = ''
@@ -67,8 +67,8 @@ class TestCaseCodeGenerator(codeGenerator):
             body = ',\' +;\n'.join(body)
             variables = {
                     'descriptionPath': descriptionPath, 
-                    'className': self.shortName, 
-                    'entity' : self.entity,
+                    'className': entity.shortName, 
+                    'entity' : entity.name,
                     'alias' : self.alias,
                     'prefix' : self.prefix,
                     'compare' : compare,

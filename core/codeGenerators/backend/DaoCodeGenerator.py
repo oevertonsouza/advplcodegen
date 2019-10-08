@@ -15,7 +15,7 @@ class DaoCodeGenerator(codeGenerator):
     def setFileOut(self):
         self.fileOut = self.prefix+"Dao"+ self.shortName + ".prw"
     
-    def getVariables(self,storagePathFile):
+    def getVariables(self,entity):
         commitKey = ''
         commitNoKey = ''
         bscChaPrim = ''
@@ -37,9 +37,9 @@ class DaoCodeGenerator(codeGenerator):
                     commitNoKey += ''.rjust(8)+self.alias+'->'+column[0]+' := _Super:normalizeType('+ self.alias +'->'+ column[0] +',self:getValue("'+ column[1] +'")) /* Column '+ column[0] +' */\n'
                     
             variables = { 
-                    'className': self.shortName,
+                    'className': entity.shortName,
                     'alias': self.alias,
-                    'entity' : self.entity,
+                    'entity' : entity.name,
                     'commitKey' : commitKey,
                     'commitNoKey' : commitNoKey,
                     'loadOrder' : loadOrder,

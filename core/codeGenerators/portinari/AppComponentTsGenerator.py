@@ -16,7 +16,7 @@ class AppComponentTsGenerator(codeGenerator):
     def setFileOut(self):
         self.fileOut = "app.component.ts"
     
-    def getVariables(self,storagePathFile):
+    def getVariables(self,entity):
         linkName = ""
         menuName = ''
         menus = ''

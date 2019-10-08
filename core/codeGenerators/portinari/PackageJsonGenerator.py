@@ -16,7 +16,7 @@ class PackageJsonGenerator(codeGenerator):
     def setFileOut(self):
         self.fileOut = "package.json"
     
-    def getVariables(self,storagePathFile):
+    def getVariables(self,entity):
         dependencies = (
             '  "dependencies": {'
             '    "@angular/animations": "~8.0.0",'

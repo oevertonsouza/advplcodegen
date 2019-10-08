@@ -4,6 +4,7 @@ import os
 import shutil
 import sys
 from string import Template
+from core.daos.model import Entity, Column
 
 import settings
 from core.codeGenerators.codeGenerator import codeGenerator
@@ -20,7 +21,7 @@ class ApiCodeGenerator(codeGenerator):
     def setFileOut(self):
         self.fileOut = self.prefix+"Rest"+ self.segment +".prw"
     
-    def getVariables(self,storagePathFile):
+    def getVariables(self,entity):
         wsDataKeys = ''
         wsDataNoKeys = ''
         defaultVarsNoKey = ''
@@ -30,40 +31,33 @@ class ApiCodeGenerator(codeGenerator):
         keyVarsNoKeyPath = []
         keyPath = ''
 
-        with open(storagePathFile) as datafile:
-            columnsCsv = csv.reader(datafile, delimiter=';')
-            for column in columnsCsv:
+        for column in Column.select().join(Entity).where(Entity.table == entity.table):
 
-                exists = False
-                for columnAdded in self.columnsToAdd:
-                    if column[1].strip() in columnAdded:
-                        exists = True
-                        break
-                if not exists:
-                    self.columnsToAdd.append(column)
-                    wsDataNoKeys += ''.rjust(4)+'WSDATA '+ column[1] +' as STRING  OPTIONAL\n'
+            if not column.name in self.columnsToAdd:
+                self.columnsToAdd.append(column.name)
+                wsDataNoKeys += ''.rjust(4)+'WSDATA '+ column.name +' as STRING  OPTIONAL\n'
+
+            if column.is_indice :
+                defaultVarsKey  += ''.rjust(4)+'Default self:'+ column.name +' := ""\n'
+                varskey.append(''.rjust(4)+column.name)
+                keyVarsNoKeyPath.append(''.rjust(4)+column.name)
+            else:
+                defaultVarsNoKey  += ''.rjust(4)+'Default self:'+ column.name +' := ""\n'
+                varsNokey.append(''.rjust(4)+column.name)
             
-                if column[4] == "1" :
-                    defaultVarsKey  += ''.rjust(4)+'Default self:'+ column[1] +' := ""\n'
-                    varskey.append(''.rjust(4)+column[1])
-                    keyVarsNoKeyPath.append(''.rjust(4)+column[1])
-                else:
-                    defaultVarsNoKey  += ''.rjust(4)+'Default self:'+ column[1] +' := ""\n'
-                    varsNokey.append(''.rjust(4)+column[1])
-                
-                if column[5] == "1" :
-                    keyPath = column[1]
+            if column.is_keyPathParam :
+                keyPath = column.name
         if len(keyVarsNoKeyPath) > 0:
             keyVarsNoKeyPath.remove('    '+keyPath)
-            descriptionPath = self.name.title().replace(" ","")
+            descriptionPath = entity.name.title().replace(" ","")
             descriptionPath = descriptionPath[0].lower() + descriptionPath[1:]
             variables = {
-                    'classNameAbreviate': self.shortName,
-                    'description': self.name.title(),
+                    'classNameAbreviate': entity.shortName,
+                    'description': entity.name.title(),
                     'descriptionPath': descriptionPath,
-                    'className': self.shortName,
-                    'classNameLower' : self.shortName.lower(),
-                    'entity' : self.entity,
+                    'className': entity.shortName,
+                    'classNameLower' : entity.shortName.lower(),
+                    'entity' : entity.name,
                     'prefix' : self.prefix,
                     'segment' : self.segment,
                     'wsDataKeys' : wsDataKeys,
@@ -78,19 +72,13 @@ class ApiCodeGenerator(codeGenerator):
 
         return variables
 
-    def build(self):
-        storagePathFile = os.path.join(settings.PATH_FILESTORAGE, self.entity + ".columns")
-        variables = self.getVariables(storagePathFile)
-        if os.path.isfile(storagePathFile):
-            #header
-            self.makeTempFile(variables,'Api.Header',"")
-            #header.wsdata
-            self.makeTempFile(variables,'Api.Header.WsData',self.entity)
-            #header.methods
-            self.makeTempFile(variables,'Api.Header.Methods',self.entity)
-            #footer
-            #body
-            self.makeTempFile(variables,'Api.Body',self.entity)
+    def build(self,entity):
+        variables = self.getVariables(entity)
+        self.makeTempFile(variables,'Api.Header',"")
+        self.makeTempFile(variables,'Api.Header.WsData',entity.table)
+        self.makeTempFile(variables,'Api.Header.Methods',entity.table)
+        #footer
+        self.makeTempFile(variables,'Api.Body',entity.table)
         return
 
     def makeTempFile(self, variables, file, entity):

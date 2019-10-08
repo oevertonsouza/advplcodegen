@@ -16,7 +16,7 @@ class AppModuleTsGenerator(codeGenerator):
     def setFileOut(self):
         self.fileOut = "app.module.ts"
     
-    def getVariables(self,storagePathFile):
+    def getVariables(self,entity):
 
         declarations = []
         routeName = ''
