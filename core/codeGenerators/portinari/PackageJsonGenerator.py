@@ -60,5 +60,5 @@ class PackageJsonGenerator(codeGenerator):
         return variables
 
     def build(self):
-        self.writeFile(self.getVariables(''))
+        self.writeFile(self.getVariables())
         return

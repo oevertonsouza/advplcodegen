@@ -30,7 +30,7 @@ class entityController:
         try:
             new_entity = Entity.create(name = entity.name,
                     table = entity.tableName,
-                    shortName = self.entity.shortName,
+                    shortName = entity.shortName,
                     namePortuguese = entity.namePortuguese,
                     keyColumn = entity.keyColumn)
             operationMessage = 'added'
@@ -38,7 +38,7 @@ class entityController:
             new_entity = Entity.get(table = entity.tableName)
             new_entity.name = entity.name
             new_entity.table = entity.tableName
-            new_entity.shortName = self.entity.shortName
+            new_entity.shortName = entity.shortName
             new_entity.namePortuguese = entity.namePortuguese
             new_entity.keyColumn = entity.keyColumn
             new_entity.save()

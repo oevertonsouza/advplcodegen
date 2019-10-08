@@ -48,16 +48,16 @@ class codeGenController:
 
     def getPoGenerators(self):
         generators = []
-        generators.append(AppComponentTsGenerator.AppComponentTsGenerator())
-        generators.append(AppRoutingModuleTsGenerator.AppRoutingModuleTsGenerator())
         generators.append(DefaultComponentHtmlGenerator.DefaultComponentHtmlGenerator())
         generators.append(DefaultComponentTsGenerator.DefaultComponentTsGenerator())
-        generators.append(AppModuleTsGenerator.AppModuleTsGenerator())
         #generators.append(DefaultModuleTsGenerator.DefaultModuleTsGenerator())
         return generators
 
     def build(self):
 
+        AppModuleTsGenerator.AppModuleTsGenerator().build()
+        AppComponentTsGenerator.AppComponentTsGenerator().build()
+        AppRoutingModuleTsGenerator.AppRoutingModuleTsGenerator().build()
         generators = self.getGenerators()
         for entity in Entity.select():
             for generator in generators:
@@ -70,32 +70,23 @@ class codeGenController:
 
     def PoBuild(self):
 
-        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  "storage.entity")
-        exists = os.path.isfile(storagePathFile) 
-
-        if exists:
-            generators = self.getPoGenerators()
-            with open(storagePathFile) as datafile:
-                data = csv.reader(datafile, delimiter=';')
-                for entity in data:
-                    if len(entity) > 0:
-                        for generator in generators:
-                            generator.setEntity(entity[0])
-                            generator.setName(entity[1])
-                            generator.setShortName(entity[3])
-                            generator.setNamePortuguese(entity[4])
-                            generator.build()
+        generators = self.getPoGenerators()
+        for entity in Entity.select():
+            for generator in generators:
+                new_entity = aliasEntity.AliasEntity(entity.table, entity.name, entity.keyColumn, entity.namePortuguese, entity.shortName)
+                generator.setEntity(new_entity)
+                generator.build()
         return
 
     def PoStart(self):
         
-        print('Instalando Angular')
-        os.system('npm uninstall -g @angular/cli')
-        os.system('npm cache clean --force')
-        os.system('npm i -g @angular/cli')
+        # print('Instalando Angular')
+        # os.system('npm uninstall -g @angular/cli')
+        # os.system('npm cache clean --force')
+        # os.system('npm i -g @angular/cli')
 
-        print('\nInstalando o projeto my-po-project')
-        os.system('ng new my-po-project --skipInstall --interactive=false')
+        # print('\nInstalando o projeto my-po-project')
+        # os.system('ng new my-po-project --skipInstall --interactive=false')
 
         print('\nDependencias do package.json corrigidas.')
         PackageJson = PackageJsonGenerator.PackageJsonGenerator()

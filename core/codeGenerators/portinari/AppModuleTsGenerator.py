@@ -3,6 +3,7 @@ import sys, os, csv, shutil
 import settings
 from core.codeGenerators.codeGenerator import codeGenerator
 from string import Template
+from core.daos.model import Entity, Column
 
 class AppModuleTsGenerator(codeGenerator):
 
@@ -22,17 +23,13 @@ class AppModuleTsGenerator(codeGenerator):
         routeName = ''
         componentName =''
         imports = '' 
-        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  "storage.entity")
 
-        with open(storagePathFile) as datafile:
-            columnInfos = csv.reader(datafile, delimiter=';')
-            for columnInfo in columnInfos:
-
-                componentName = columnInfo[4].replace(" ","") if len(columnInfo[4]) > 0 else 'Home'
-                routeName = componentName.lower() 
-                declarations.append('    '+componentName + 'Component')
-                if componentName != 'Home':
-                    imports += "import { "+ componentName + 'Component'" } from './"+ routeName +"/"+ routeName +"-dynamic-form.component';\n"
+        for entity in Entity.select():
+            componentName = entity.namePortuguese if entity.namePortuguese != '' else 'Home'
+            routeName = componentName.lower() 
+            declarations.append('    '+componentName + 'Component')
+            if componentName != 'Home':
+                imports += "import { "+ componentName + 'Component'" } from './"+ routeName +"/"+ routeName +"-dynamic-form.component';\n"
 
         variables = { 
                     'imports': imports,

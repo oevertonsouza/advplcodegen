@@ -3,6 +3,7 @@ import sys, os, settings, csv, shutil
 import settings
 from core.codeGenerators.codeGenerator import codeGenerator
 from string import Template
+from core.daos.model import Entity, Column
 
 class AppRoutingModuleTsGenerator(codeGenerator):
 
@@ -21,15 +22,13 @@ class AppRoutingModuleTsGenerator(codeGenerator):
         componentName = ''
         imports = '' 
         routes = ''
-        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  "storage.entity")
-        with open(storagePathFile) as datafile:
-            columnInfos = csv.reader(datafile, delimiter=';')
-            for columnInfo in columnInfos:
-                componentName = columnInfo[4].replace(" ","") if len(columnInfo[4]) > 0 else 'Home'
-                routeName = componentName.lower() 
-                routes += ''.rjust(4)+"{ path: '" + routeName + "' , component: " +  componentName + 'Component' " },\n"
-                if componentName != 'Home':
-                    imports += "import { "+ componentName + 'Component'" } from './"+ routeName +"/"+ routeName +"-dynamic-form.component';\n"
+        for entity in Entity.select():
+            menuName = entity.namePortuguese if entity.namePortuguese != '' else 'Home'
+            componentName = entity.namePortuguese
+            routeName = componentName.lower() 
+            routes += ''.rjust(4)+"{ path: '" + routeName + "' , component: " +  componentName + 'Component' " },\n"
+            if componentName != 'Home':
+                imports += "import { "+ componentName + 'Component'" } from './"+ routeName +"/"+ routeName +"-dynamic-form.component';\n"
 
         variables = { 
                     'imports': imports,

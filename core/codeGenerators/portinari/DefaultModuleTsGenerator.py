@@ -18,11 +18,11 @@ class DefaultModuleTsGenerator(codeGenerator):
     
     def getVariables(self):
         sufixFileName = '-dynamic-form.module.ts'
-        componentName = self.namePortuguese.title().replace(" ","")
+        componentName = self.entity.namePortuguese.title().replace(" ","")
         componentNameLower = componentName.lower()
         
         self.fileOut = componentName.lower() + sufixFileName
-        self.srcPath = os.path.join(settings.PATH_PO_SRC_APP,self.namePortuguese.replace(" ","").lower())
+        self.srcPath = os.path.join(settings.PATH_PO_SRC_APP,self.entity.namePortuguese.replace(" ","").lower())
         
         variables = {
                 'componentName': componentName, 

@@ -5,6 +5,7 @@ from core import managedb, storage
 from pathlib import Path
 from string import Template
 from core.daos import model
+from core.daos.model import Entity, Column
 
 class poProject:
     prefix  = settings.PROTHEUS_ENVIORMENT['default']['PREFIX']
@@ -22,14 +23,13 @@ class poProject:
     def createDir(self):
         pathDir = ''
         dirName = ''                                    
-        with open(self.storagePathFile) as datafile:
-            columnInfos = csv.reader(datafile, delimiter=';')
-            for columnInfo in columnInfos:
-                dirName = columnInfo[4].replace(" ","").lower() if len(columnInfo[4]) > 0 else 'home'
-                pathDir = os.path.join(self.poSrcPath, dirName)
-                if dirName != 'home':
-                    if not os.path.isdir(pathDir): os.mkdir(pathDir)
-            return
+        
+        for entity in Entity.select():
+            dirName = entity.namePortuguese.replace(" ","").lower() if len(entity.namePortuguese) > 0 else 'home'
+            pathDir = os.path.join(self.poSrcPath, dirName)
+            if dirName != 'home':
+                if not os.path.isdir(pathDir): os.mkdir(pathDir)
+        return
 
     def copyLibs(self):
         

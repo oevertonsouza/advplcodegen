@@ -3,6 +3,7 @@ import sys, os, csv, shutil
 import settings
 from core.codeGenerators.codeGenerator import codeGenerator
 from string import Template
+from core.daos.model import Entity, Column
 
 class AppComponentTsGenerator(codeGenerator):
 
@@ -20,13 +21,11 @@ class AppComponentTsGenerator(codeGenerator):
         linkName = ""
         menuName = ''
         menus = ''
-        storagePathFile = os.path.join(settings.PATH_FILESTORAGE ,  "storage.entity")
-        with open(storagePathFile) as datafile:
-            columnInfos = csv.reader(datafile, delimiter=';')
-            for columnInfo in columnInfos:
-                menuName = columnInfo[4] if len(columnInfo[4]) > 0 else 'Home'
-                linkName = menuName.replace(" ","").lower()
-                menus += "    { label: '"+ menuName + "', link: '"+ linkName +"'},\n"
+        
+        for entity in Entity.select():
+            menuName = entity.namePortuguese if entity.namePortuguese != '' else 'Home'
+            linkName = menuName.replace(" ","").lower()
+            menus += "    { label: '"+ menuName + "', link: '"+ linkName +"'},\n"
 
         variables = { 
                     'menus': menus,

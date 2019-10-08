@@ -19,12 +19,12 @@ class DefaultComponentHtmlGenerator(codeGenerator):
     def getVariables(self):
         
         sufixFileName = '-dynamic-form.component.html'
-        componentName = self.namePortuguese.replace(" ","").lower()
-        apiName = self.namePortuguese
-        className = self.namePortuguese.title().replace(" ","")
+        componentName = self.entity.namePortuguese.replace(" ","").lower()
+        apiName = self.entity.namePortuguese
+        className = self.entity.namePortuguese.title().replace(" ","")
         jsonName = className[0].lower() + className[1:]
         self.fileOut = componentName + sufixFileName
-        self.srcPath = os.path.join(settings.PATH_PO_SRC_APP,self.namePortuguese.replace(" ","").lower())
+        self.srcPath = os.path.join(settings.PATH_PO_SRC_APP,self.entity.namePortuguese.replace(" ","").lower())
       
         variables = {
                 'apiName' : apiName,
