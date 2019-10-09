@@ -25,8 +25,8 @@ class AppModuleTsGenerator(codeGenerator):
         imports = '' 
 
         for entity in Entity.select():
-            componentName = entity.namePortuguese if entity.namePortuguese != '' else 'Home'
-            routeName = componentName.lower() 
+            componentName = entity.namePortuguese.replace(" ","") if entity.namePortuguese != '' else 'Home'
+            routeName = componentName.lower()
             declarations.append('    '+componentName + 'Component')
             if componentName != 'Home':
                 imports += "import { "+ componentName + 'Component'" } from './"+ routeName +"/"+ routeName +"-dynamic-form.component';\n"

@@ -55,13 +55,10 @@ class codeGenController:
 
     def build(self):
 
-        AppModuleTsGenerator.AppModuleTsGenerator().build()
-        AppComponentTsGenerator.AppComponentTsGenerator().build()
-        AppRoutingModuleTsGenerator.AppRoutingModuleTsGenerator().build()
         generators = self.getGenerators()
         for entity in Entity.select():
+            new_entity = aliasEntity.AliasEntity(entity.table, entity.name, entity.keyColumn, entity.namePortuguese, entity.shortName)
             for generator in generators:
-                new_entity = aliasEntity.AliasEntity(entity.table, entity.name, entity.keyColumn, entity.namePortuguese, entity.shortName)
                 generator.setEntity(new_entity)
                 generator.build()
 
@@ -71,9 +68,12 @@ class codeGenController:
     def PoBuild(self):
 
         generators = self.getPoGenerators()
+        AppModuleTsGenerator.AppModuleTsGenerator().build()
+        AppComponentTsGenerator.AppComponentTsGenerator().build()
+        AppRoutingModuleTsGenerator.AppRoutingModuleTsGenerator().build()
         for entity in Entity.select():
+            new_entity = aliasEntity.AliasEntity(entity.table, entity.name, entity.keyColumn, entity.namePortuguese, entity.shortName)
             for generator in generators:
-                new_entity = aliasEntity.AliasEntity(entity.table, entity.name, entity.keyColumn, entity.namePortuguese, entity.shortName)
                 generator.setEntity(new_entity)
                 generator.build()
         return

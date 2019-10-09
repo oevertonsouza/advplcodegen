@@ -24,7 +24,7 @@ class AppRoutingModuleTsGenerator(codeGenerator):
         routes = ''
         for entity in Entity.select():
             menuName = entity.namePortuguese if entity.namePortuguese != '' else 'Home'
-            componentName = entity.namePortuguese
+            componentName = entity.namePortuguese.replace(" ","")
             routeName = componentName.lower() 
             routes += ''.rjust(4)+"{ path: '" + routeName + "' , component: " +  componentName + 'Component' " },\n"
             if componentName != 'Home':
