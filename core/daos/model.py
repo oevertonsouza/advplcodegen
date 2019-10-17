@@ -9,7 +9,7 @@ def CreateTables():
         print ("Entity table already exists!")
 
     try:
-        Column.create_table()
+        Colunas.create_table()
     except peewee.OperationalError:
         print ("Columns table already exists!")
 
@@ -26,7 +26,7 @@ class Entity(peewee.Model):
         database = database
  
 ########################################################################
-class Column(peewee.Model):
+class Colunas(peewee.Model):
 
     entity = peewee.ForeignKeyField(Entity)
 

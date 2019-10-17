@@ -3,7 +3,7 @@ import sys, os, settings, csv, shutil
 import settings
 from core.codeGenerators.codeGenerator import codeGenerator
 from string import Template
-from core.daos.model import Entity, Column
+from core.daos.model import Entity, Colunas
 
 class AppRoutingModuleTsGenerator(codeGenerator):
 
@@ -24,14 +24,13 @@ class AppRoutingModuleTsGenerator(codeGenerator):
         routes = ''
         for entity in Entity.select():
             menuName = entity.namePortuguese if entity.namePortuguese != '' else 'Home'
-            componentName = entity.namePortuguese.replace(" ","")
+            componentName = entity.namePortuguese.title().replace(" ","")
+            componentCammelLower = componentName[:1].lower() + componentName[1:]
             routeName = componentName.lower() 
-            routes += ''.rjust(4)+"{ path: '" + routeName + "' , component: " +  componentName + 'Component' " },\n"
-            if componentName != 'Home':
-                imports += "import { "+ componentName + 'Component'" } from './"+ routeName +"/"+ routeName +"-dynamic-form.component';\n"
+            routes += ''.rjust(4)+"{ path: '" + routeName + "', loadChildren: './" + routeName + "/" + routeName + ".module#" + componentCammelLower + "Module' },\n"
+            routes += ''.rjust(4)+"{ path: '', redirectTo: '/" + routeName + "', pathMatch: 'full'},\n"
 
         variables = { 
-                    'imports': imports,
                     'routes': routes,
                 }
         return variables

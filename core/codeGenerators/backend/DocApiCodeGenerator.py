@@ -3,7 +3,7 @@ import sys, os, csv, shutil
 import settings
 from core.codeGenerators.codeGenerator import codeGenerator
 from string import Template
-from core.daos.model import Entity, Column
+from core.daos.model import Entity, Colunas
 
 class DocApiCodeGenerator(codeGenerator):
 
@@ -24,7 +24,7 @@ class DocApiCodeGenerator(codeGenerator):
         keyParameters = ''
         keyPath = ''
         abreviate = self.entity.shortName
-        for column in Column.select().join(Entity).where(Entity.table == self.entity.table):
+        for column in Colunas.select().join(Entity).where(Entity.table == self.entity.table):
             parameters += '                    {\n'
             parameters += '                        "$ref": "#/components/parameters/'+column.name+'Param"\n'
             parameters += '                    },\n'    

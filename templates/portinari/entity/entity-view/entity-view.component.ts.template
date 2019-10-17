@@ -1,0 +1,36 @@
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { SharedModule } from '../../shared/shared.module';
+import { PoPageDynamicDetailActions, PoPageDynamicEditField } from '@portinari/portinari-templates';
+
+@Component({
+  selector: 'app-${componentNameLower}-view',
+  templateUrl: './${componentNameLower}-view.component.html',
+  styleUrls: ['./${componentNameLower}-view.component.css']
+})
+export class ${componentCammelLower}ViewComponent implements OnInit {
+
+  title = 'Visualizando';
+  serviceApi = this.sharedModule.serviceUri + '/${descriptionPath}';
+
+  readonly actions: PoPageDynamicDetailActions = {
+    back: '/',
+    edit: '${componentNameLower}/edit/:id',
+    remove: '/'
+  };
+
+${optionsVariables}
+
+${fields}
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    private sharedModule: SharedModule
+    ) { }
+
+  ngOnInit() {
+    this.activatedRoute.params.subscribe(params => {
+      this.title = params.id ? `Vizualizando registro $${params.id}` : 'Visualizando';
+    });
+  }
+
+}

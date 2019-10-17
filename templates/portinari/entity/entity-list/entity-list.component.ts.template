@@ -1,0 +1,26 @@
+import { Component, OnInit } from '@angular/core';
+import { SharedModule } from '../../shared/shared.module';
+import { PoPageDynamicTableActions, PoPageDynamicTableField } from '@portinari/portinari-templates';
+
+@Component({
+  selector: 'app-${componentNameLower}-list',
+  templateUrl: './${componentNameLower}-list.component.html',
+  styleUrls: ['./${componentNameLower}-list.component.css']
+})
+export class ${componentCammelLower}ListComponent {
+  title = "Titulo"
+  serviceApi = this.sharedModule.serviceUri + '/${descriptionPath}';
+  readonly actions: PoPageDynamicTableActions = {
+    detail: '${componentNameLower}/view/:id',
+    edit: '${componentNameLower}/edit/:id',
+    new: '${componentNameLower}/new',
+    remove: true
+  };
+
+${optionsVariables}
+
+${fields}
+  constructor(
+    private sharedModule: SharedModule
+    ) { }
+}

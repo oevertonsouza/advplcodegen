@@ -3,7 +3,7 @@ import sys, os, csv, shutil
 import settings
 from core.codeGenerators.codeGenerator import codeGenerator
 from string import Template
-from core.daos.model import Entity, Column
+from core.daos.model import Entity, Colunas
 
 class DocApiSchemaCodeGenerator(codeGenerator):
 
@@ -20,7 +20,7 @@ class DocApiSchemaCodeGenerator(codeGenerator):
     def getVariables(self):
         properties = ''
 
-        for column in Column.select().join(Entity).where(Entity.table == self.entity.table):
+        for column in Colunas.select().join(Entity).where(Entity.table == self.entity.table):
             canUpdate = "false" if column.is_indice else "true"
             required = "true" if column.is_keyPathParam else "false"
             

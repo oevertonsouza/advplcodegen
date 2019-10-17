@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import csv,os,re,sys
+import csv,os,re,sys,shutil
 from pathlib import Path
 from core.entities import aliasEntity
 from core.daos.model import Entity
@@ -16,12 +16,17 @@ from core.codeGenerators.testes import (
             )
 from core.codeGenerators.portinari import (
                 AppComponentTsGenerator,AppRoutingModuleTsGenerator,
-                DefaultComponentHtmlGenerator, PackageJsonGenerator,
-                DefaultComponentTsGenerator, AppModuleTsGenerator
-                #DefaultModuleTsGenerator
+                PackageJsonGenerator,SharedModuleTsGenerator,
+                EnvironmentTsGenerator,EntityRoutingModuleTsGenerator,
+                EntityModuleTsGenerator,EntityFormComponentCSSGenerator,
+                EntityFormComponentHTMLGenerator,EntityFormComponentSpecTSGenerator,
+                EntityFormComponentTSGenerator,EntityListComponentCSSGenerator,
+                EntityListComponentHTMLGenerator,EntityListComponentSpecTSGenerator,
+                EntityListComponentTSGenerator,EntityViewComponentCSSGenerator,
+                EntityViewComponentHTMLGenerator,EntityViewComponentSpecTSGenerator,
+                EntityViewComponentTSGenerator
             )
 from core import storage
-
 
 class codeGenController:
 
@@ -48,9 +53,20 @@ class codeGenController:
 
     def getPoGenerators(self):
         generators = []
-        generators.append(DefaultComponentHtmlGenerator.DefaultComponentHtmlGenerator())
-        generators.append(DefaultComponentTsGenerator.DefaultComponentTsGenerator())
-        #generators.append(DefaultModuleTsGenerator.DefaultModuleTsGenerator())
+        generators.append(EntityRoutingModuleTsGenerator.EntityRoutingModuleTsGenerator())
+        generators.append(EntityModuleTsGenerator.EntityModuleTsGenerator())
+        generators.append(EntityFormComponentCSSGenerator.EntityFormComponentCSSGenerator())
+        generators.append(EntityFormComponentHTMLGenerator.EntityFormComponentHTMLGenerator())
+        generators.append(EntityFormComponentSpecTSGenerator.EntityFormComponentSpecTSGenerator())
+        generators.append(EntityFormComponentTSGenerator.EntityFormComponentTSGenerator())
+        generators.append(EntityListComponentCSSGenerator.EntityListComponentCSSGenerator())
+        generators.append(EntityListComponentHTMLGenerator.EntityListComponentHTMLGenerator())
+        generators.append(EntityListComponentSpecTSGenerator.EntityListComponentSpecTSGenerator())
+        generators.append(EntityListComponentTSGenerator.EntityListComponentTSGenerator())
+        generators.append(EntityViewComponentCSSGenerator.EntityViewComponentCSSGenerator())
+        generators.append(EntityViewComponentHTMLGenerator.EntityViewComponentHTMLGenerator())
+        generators.append(EntityViewComponentSpecTSGenerator.EntityViewComponentSpecTSGenerator())
+        generators.append(EntityViewComponentTSGenerator.EntityViewComponentTSGenerator())
         return generators
 
     def build(self):
@@ -68,9 +84,10 @@ class codeGenController:
     def PoBuild(self):
 
         generators = self.getPoGenerators()
-        AppModuleTsGenerator.AppModuleTsGenerator().build()
-        AppComponentTsGenerator.AppComponentTsGenerator().build()
         AppRoutingModuleTsGenerator.AppRoutingModuleTsGenerator().build()
+        AppComponentTsGenerator.AppComponentTsGenerator().build()
+        SharedModuleTsGenerator.SharedModuleTsGenerator().build()
+        EnvironmentTsGenerator.EnvironmentTsGenerator().build()
         for entity in Entity.select():
             new_entity = aliasEntity.AliasEntity(entity.table, entity.name, entity.keyColumn, entity.namePortuguese, entity.shortName)
             for generator in generators:
@@ -78,26 +95,26 @@ class codeGenController:
                 generator.build()
         return
 
-    def PoStart(self):
+    def PoInstall(self):
         
         # print('Instalando Angular')
         # os.system('npm uninstall -g @angular/cli')
         # os.system('npm cache clean --force')
         # os.system('npm i -g @angular/cli')
-
-        # print('\nInstalando o projeto my-po-project')
-        # os.system('ng new my-po-project --skipInstall --interactive=false')
-
-        print('\nDependencias do package.json corrigidas.')
-        PackageJson = PackageJsonGenerator.PackageJsonGenerator()
-        PackageJson.setFileOut()
-        PackageJson.build()
+        print('\nInstalando o projeto my-po-project')
+        os.system('ng new my-po-project --skipInstall --interactive=false')
+        
+        print('\nCopiando package.json.')
+        shutil.copy(settings.PATH_TEMPLATE_PO + '\\package.json', settings.PATH_PO_SRC_APP + '\\package.json')
 
         print('\nInstalando dependencias')
         os.system('cd '+ settings.PATH_PO +' & npm install')
 
         print('\nAdiconando o pacote @portinari/portinari-ui')
-        os.system('cd '+ settings.PATH_PO +' & ng add @portinari/portinari-ui --defaults=true')
+        os.system('cd '+ settings.PATH_PO +' & npm install @portinari/portinari-ui --defaults=true')
+
+        print('\nAdiconando o pacote @portinari/portinari-templates')
+        os.system('cd '+ settings.PATH_PO +' & npm install @portinari/portinari-templates --defaults=true')
 
         print('\nInicializando o projeto')
         os.system('cd '+ settings.PATH_PO +' & ng serve -o --liveReload=true')

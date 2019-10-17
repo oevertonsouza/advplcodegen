@@ -3,7 +3,7 @@ import sys, os, csv, re
 import settings
 from core import managedb, storage
 from pathlib import Path
-from core.daos.model import Entity, Column
+from core.daos.model import Entity, Colunas
 from core.entities import aliasEntity
 import peewee
 
@@ -71,7 +71,7 @@ class entityController:
                 dataType = "string"
             varName = field[3].lower() + re.sub('[^A-Za-z0-9]+', '', field[1].title())
             try:
-                new_column = Column.create( entity = entity,
+                new_column = Colunas.create( entity = entity,
                             dbField = field[0],
                             name = name,
                             dataType = dataType,
@@ -83,7 +83,7 @@ class entityController:
                             variabelName = varName,
                             options = opcoes)
             except peewee.IntegrityError:
-                new_column = Column.get(Column.dbField == field[0])
+                new_column = Colunas.get(Column.dbField == field[0])
                 new_column.entity = entity
                 new_column.dbField = field[0]
                 new_column.name = name

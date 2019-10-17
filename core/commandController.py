@@ -55,7 +55,8 @@ class ComandsController:
             self.codeGen.PoBuild()
             return            
         if command == 'PO-START':
-            self.codeGen.PoStart()
+            self.codeGen.PoInstall()
+            self.poProject.startPoProject()
             return            
         if command == 'PO-SERVE':
             self.codeGen.PoServe()            

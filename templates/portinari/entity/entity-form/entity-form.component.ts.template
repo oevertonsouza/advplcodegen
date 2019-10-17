@@ -1,0 +1,34 @@
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { SharedModule } from '../../shared/shared.module';
+
+import { PoPageDynamicEditActions, PoPageDynamicEditField } from '@portinari/portinari-templates';
+
+@Component({
+  selector: 'app-${componentNameLower}-form',
+  templateUrl: './${componentNameLower}-form.component.html',
+  styleUrls: ['./${componentNameLower}-form.component.css']
+})
+export class ${componentCammelLower}FormComponent implements OnInit {
+  title = 'Novo';
+  serviceApi = this.sharedModule.serviceUri + '/${descriptionPath}';
+  readonly actions: PoPageDynamicEditActions = {
+    cancel: '/',
+    save: '/'
+  };
+
+${optionsVariables}
+
+${fields}
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    private sharedModule: SharedModule
+  ) { }
+
+  ngOnInit() {
+    this.activatedRoute.params.subscribe(params => {
+      this.title = params.id ? `Editando registro $${params.id}` : 'Novo registro';
+    });
+  }
+
+}

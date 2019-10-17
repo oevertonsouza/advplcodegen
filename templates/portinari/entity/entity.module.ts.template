@@ -1,0 +1,23 @@
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+import { SharedModule } from '../shared/shared.module';
+
+import { ${componentCammelLower}RoutingModule } from './${componentNameLower}-routing.module';
+import { ${componentCammelLower}ListComponent } from './${componentNameLower}-list/${componentNameLower}-list.component';
+import { ${componentCammelLower}ViewComponent } from './${componentNameLower}-view/${componentNameLower}-view.component';
+import { ${componentCammelLower}FormComponent } from './${componentNameLower}-form/${componentNameLower}-form.component';
+
+@NgModule({
+  declarations: [
+    ${componentCammelLower}ListComponent,
+    ${componentCammelLower}ViewComponent,
+    ${componentCammelLower}FormComponent
+  ],
+  imports: [
+    CommonModule,
+    ${componentCammelLower}RoutingModule,
+    SharedModule
+  ]
+})
+export class ${componentCammelLower}Module { }

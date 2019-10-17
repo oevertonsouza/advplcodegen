@@ -1,0 +1,25 @@
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { ${componentCammelLower}ListComponent } from './${componentNameLower}-list.component';
+
+describe('${componentCammelLower}ListComponent', () => {
+  let component: ${componentCammelLower}ListComponent;
+  let fixture: ComponentFixture<${componentCammelLower}ListComponent>;
+
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [ ${componentCammelLower}ListComponent ]
+    })
+    .compileComponents();
+  }));
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(${componentCammelLower}ListComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

@@ -3,7 +3,7 @@ import sys, os, csv, shutil
 import settings
 from core.codeGenerators.codeGenerator import codeGenerator
 from string import Template
-from core.daos.model import Entity, Column
+from core.daos.model import Entity, Colunas
 
 class MapperCodeGenerator(codeGenerator):
 
@@ -19,7 +19,7 @@ class MapperCodeGenerator(codeGenerator):
     def getVariables(self):
         mapper = ''
         
-        for column in Column.select().join(Entity).where(Entity.table == self.entity.table):
+        for column in Colunas.select().join(Entity).where(Entity.table == self.entity.table):
             mapper += '    aAdd(self:aFields,{"'+ column.dbField +'" ,"'+ column.name +'"})\n'
         
             variables = { 

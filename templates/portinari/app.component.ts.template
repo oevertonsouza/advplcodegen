@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+
 import { PoMenuItem } from '@portinari/portinari-ui';
 
 @Component({
@@ -9,12 +10,7 @@ import { PoMenuItem } from '@portinari/portinari-ui';
 export class AppComponent {
 
   readonly menus: Array<PoMenuItem> = [
-    { label: 'Home', link: '' },
-${menus}
+${menuList}
   ];
-
-  private onClick() {
-    alert('Teste')
-  }
 
 }

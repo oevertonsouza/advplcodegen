@@ -4,7 +4,7 @@ import settings
 from core import managedb
 from pathlib import Path
 import peewee
-from core.daos.model import Entity, Column
+from core.daos.model import Entity, Colunas
 
 class Storage:
 

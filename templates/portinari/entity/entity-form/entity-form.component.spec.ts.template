@@ -1,0 +1,25 @@
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { ${componentCammelLower}FormComponent } from './${componentNameLower}-form.component';
+
+describe('${componentCammelLower}FormComponent', () => {
+  let component: ${componentCammelLower}FormComponent;
+  let fixture: ComponentFixture<${componentCammelLower}FormComponent>;
+
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [ ${componentCammelLower}FormComponent ]
+    })
+    .compileComponents();
+  }));
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(${componentCammelLower}FormComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

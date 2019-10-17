@@ -3,7 +3,7 @@ import sys, os, csv, shutil
 import settings
 from core.codeGenerators.codeGenerator import codeGenerator
 from string import Template
-from core.daos.model import Entity, Column
+from core.daos.model import Entity, Colunas
 
 class TestCaseCodeGenerator(codeGenerator):
 
@@ -28,9 +28,9 @@ class TestCaseCodeGenerator(codeGenerator):
         descriptionPath = ''
         defaultVar = ''
         compareValue = ''
-        for column in Column.select().join(Entity).where(Entity.table == self.entity.table):
+        for column in Colunas.select().join(Entity).where(Entity.table == self.entity.table):
             compareValue = column.variabelName
-            #ajusto a declaração default da variável
+            #ajusto a declaraï¿½ï¿½o default da variï¿½vel
             if column.variabelName[0].upper() == "C":
                 defaultVar = '""'
             elif column.variabelName[0].upper() == "N":
@@ -48,7 +48,7 @@ class TestCaseCodeGenerator(codeGenerator):
                 body.append(''.rjust(24)+'\' "'+ column.name +'": \'+AllTrim(Str('+ column.variabelName +'))+\'')
             else:
                 body.append(''.rjust(24)+'\' "'+ column.name +'": "\'+'+ compareValue +'+\'"')
-            #B3A_CODIGO;obligationCode;string;3;1;1;Código da obrigação;cCode;;
+            #B3A_CODIGO;obligationCode;string;3;1;1;Cï¿½digo da obrigaï¿½ï¿½o;cCode;;
             if column.is_keyPathParam:
                 keyCollumn = column.variabelName
             if column.is_indice:

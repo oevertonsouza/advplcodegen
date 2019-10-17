@@ -3,7 +3,7 @@ import sys, os, csv, shutil
 import settings
 from core.codeGenerators.codeGenerator import codeGenerator
 from string import Template
-from core.daos.model import Entity, Column
+from core.daos.model import Entity, Colunas
 
 class entityCodeGenerator(codeGenerator):
 
@@ -19,7 +19,7 @@ class entityCodeGenerator(codeGenerator):
     def getVariables(self):
         serialize = ''
         fields    = ''
-        for column in Column.select().join(Entity).where(Entity.table == self.entity.table):
+        for column in Colunas.select().join(Entity).where(Entity.table == self.entity.table):
             serialize   += '    oJsonControl:setProp(oJson,"' + column.name + '",self:getValue("'+ column.name+'")) /* Column '+ column.dbField +' */ \n'
             fields      += '    self:oFields:push({"'+column.name+'", self:getValue("'+column.name +'")}) /* Column '+ column.dbField +' */ \n'
             

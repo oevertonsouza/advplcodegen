@@ -3,7 +3,7 @@ import sys, os, csv, shutil
 import settings
 from core.codeGenerators.codeGenerator import codeGenerator
 from string import Template
-from core.daos.model import Entity, Column
+from core.daos.model import Entity, Colunas
 
 class RequestCodeGenerator(codeGenerator):
 
@@ -21,7 +21,7 @@ class RequestCodeGenerator(codeGenerator):
         applyFilterSingle = ''
         prepFilter = ''
         
-        for column in Column.select().join(Entity).where(Entity.table == self.entity.table):
+        for column in Colunas.select().join(Entity).where(Entity.table == self.entity.table):
             applyFilterAll += ''.rjust(12)+'self:oCollection:setValue("'+ column.name +'",self:oRest:'+ column.name +')\n'
             
             if column.is_indice :

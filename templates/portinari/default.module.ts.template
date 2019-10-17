@@ -1,9 +1,0 @@
-import { NgModule } from "@angular/core";
-import { ${componentName}Component } from "./${componentNameLower}-dynamic-form.component"
-
-@NgModule({
-  exports: [ ${componentName}Component ],
-  declarations: [ ${componentName}Component ],
-})
-
-export class ${componentName}Module { }
