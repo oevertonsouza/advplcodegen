@@ -37,7 +37,7 @@ class EntityFormComponentTSGenerator(codeGenerator):
             descriptionPath = descriptionPath[0].lower() + descriptionPath[1:]
             for column in Colunas.select().join(Entity).where(Entity.table == self.entity.table):
                 fields += ''.rjust(4) + "{ property: '" + column.name + "', label: '" + column.desc + "' " 
-                fields += ", key: true" if column.is_indice else ""
+                fields += ", key: true" if column.is_keyPathParam else ""
                 #getting field options
                 if column.options != "":
                     fields += ", options: this." + column.name + " "
