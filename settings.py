@@ -32,8 +32,10 @@ PATH_SRC = os.path.join(PATH_PROJECT, "src")
 PATH_TEMPLATE = os.path.join(PATH_PROJECT, "templates")
 PATH_TEMP = os.path.join(PATH_PROJECT, "temp")
 PATH_FILESTORAGE = os.path.join(PATH_PROJECT, "filestorage")
+PATH_DATABASE = os.path.join(PATH_PROJECT, "sqliteadmin")
 PATH_PO = os.path.join(PATH_PROJECT, "my-po-project")
 PATH_PO_SRC = os.path.join(PATH_PO, "src")
+
 
 #Inside portinari
 PATH_PO_SRC_APP = os.path.join(PATH_PO_SRC, "app")
@@ -53,6 +55,7 @@ PATH_SRC_REQUEST = os.path.join(PATH_SRC, "request")
 PATH_SRC_COMMAND = os.path.join(PATH_SRC, "command")
 PATH_SRC_VALIDATE = os.path.join(PATH_SRC, "validate")
 
+
 #Inside Template
 PATH_TEMPLATE_LIBS = os.path.join(PATH_TEMPLATE, "libs")
 PATH_TEMPLATE_DOCS = os.path.join(PATH_TEMPLATE, "docs")
@@ -62,3 +65,4 @@ PATH_TEMPLATE_PO = os.path.join(PATH_TEMPLATE, "portinari")
 PATH_SRC_TEST_CASES = os.path.join(PATH_SRC_TEST, "cases")
 PATH_SRC_TEST_GROUP = os.path.join(PATH_SRC_TEST, "group")
 PATH_SRC_TEST_SUITE = os.path.join(PATH_SRC_TEST, "suite")
+
