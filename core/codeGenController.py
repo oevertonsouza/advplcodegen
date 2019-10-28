@@ -97,13 +97,14 @@ class codeGenController:
 
     def PoInstall(self):
         
-        # print('Instalando Angular')
-        # os.system('npm uninstall -g @angular/cli')
-        # os.system('npm cache clean --force')
-        # os.system('npm i -g @angular/cli')
+        print('Instalando Angular')
+        os.system('npm uninstall -g @angular/cli')
+        os.system('npm cache clean --force')
+        os.system('npm i -g @angular/cli')
+
         print('\nInstalando o projeto my-po-project')
         os.system('ng new my-po-project --skipInstall --interactive=false')
-        
+
         print('\nCopiando package.json.')
         shutil.copy(settings.PATH_TEMPLATE_PO + '\\package.json', settings.PATH_PO_SRC_APP + '\\package.json')
 
@@ -125,6 +126,11 @@ class codeGenController:
         print('\nInicializando o projeto')
         os.system('cd '+ settings.PATH_PO +' & ng serve -o')
 
+    def openDb(self):
+        os.system('cd '+ settings.PATH_DATABASE +' & start sqliteadmin.exe ' + os.path.join(settings.PATH_DATABASE,'advplcodegen.db'))
+
     def finishApi(self):
         ApiCodeGen = ApiCodeGenerator.ApiCodeGenerator()
         ApiCodeGen.finishApi()
+
+    
