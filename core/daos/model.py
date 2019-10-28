@@ -1,6 +1,8 @@
 import peewee
+import os
+import settings
  
-database = peewee.SqliteDatabase("advplcodegen.db")
+database = peewee.SqliteDatabase(os.path.join(settings.PATH_DATABASE,"advplcodegen.db"))
 
 def CreateTables():
     try:
@@ -10,6 +12,16 @@ def CreateTables():
 
     try:
         Colunas.create_table()
+    except peewee.OperationalError:
+        print ("Columns table already exists!")
+    
+    try:
+        Relations.create_table()
+    except peewee.OperationalError:
+        print ("Columns table already exists!")
+    
+    try:
+        FromTo.create_table()
     except peewee.OperationalError:
         print ("Columns table already exists!")
 
@@ -24,7 +36,29 @@ class Entity(peewee.Model):
     
     class Meta:
         database = database
- 
+
+########################################################################
+class Relations(peewee.Model):
+            
+    table = peewee.CharField()
+    tableRelation = peewee.CharField()
+    relationType = peewee.CharField()
+    behavior = peewee.CharField()
+  
+    class Meta:
+        database = database
+
+########################################################################
+class FromTo(peewee.Model):
+
+    relation = peewee.ForeignKeyField(Relations)
+
+    column = peewee.CharField()
+    columnRelation = peewee.CharField()
+    
+    class Meta:
+        database = database
+
 ########################################################################
 class Colunas(peewee.Model):
 
@@ -46,3 +80,4 @@ class Colunas(peewee.Model):
  
 if __name__ == "__main__":
     CreateTables()
+
