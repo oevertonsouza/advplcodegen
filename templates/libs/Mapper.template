@@ -14,6 +14,7 @@ Class ${prefix}Mapper
     Data oEntity
     Data nType
     Data aFields
+    Data aExpand    
 
     Method New() Constructor
     Method getEntity()
@@ -27,6 +28,7 @@ EndClass
 Method New(oEntity) Class ${prefix}Mapper
     self:oEntity := oEntity
     self:aFields := {}
+    self:aExpand := {}    
 Return self
 
 Method getEntity() Class ${prefix}Mapper

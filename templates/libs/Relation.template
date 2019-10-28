@@ -1,0 +1,98 @@
+#include "TOTVS.CH"
+#include 'FWMVCDEF.CH'
+
+#DEFINE NO_RELATION 0 // Sem Relação 
+#DEFINE N_TO_N      1 // Relação N para N
+#DEFINE ONE_TO_N    2 // Relação 1 para N
+#DEFINE N_TO_ONE    3 // Relação N para 1
+#DEFINE ZERO_TO     4 // Relação 0 para 1 ou N
+#DEFINE TO_ZERO     5 // Relação N ou 1 para 0
+
+#DEFINE NO_BEHAVIOR 0 // Sem comportamento  
+#DEFINE CASCADE 1     // Relacionamento em cascata
+
+/*/{Protheus.doc} 
+    Relation
+    Classe abstrata das Relações de uma entidade
+    Esta classe deve orquestrar as relações entre entidades
+    Isso envolve:
+        - Colação de dados para buscar elementos dela e de seus relacionamentos
+        - Fazer busca de Expandiveis pela API
+        - Fazer alterações, inclusões e deleções por relacionamento
+
+    @type  Class
+    @author lima.everton
+    @since 20191008
+/*/
+
+Class ${prefix}Relation
+	   
+    Data cName
+    Data oCollection
+    Data aFromTo
+    Data nRelationType
+    Data nBehavior
+
+    Method New() Constructor
+    Method destroy()
+    Method setName(cName)
+    Method setCollection(oCollection)
+    Method setFromTo(aFromTo)
+    Method setRelationType(nRelationType)
+    Method setBehavior(nBehavior)
+    Method getName()
+    Method getCollection()
+    Method getFromTo()
+    Method getRelationType()
+    Method getBehavior()
+
+EndClass
+
+Method New(oDao) Class ${prefix}Relation
+    self:cName := ""
+    self:oCollection := Nil
+    self:aFromTo := {}
+    self:nRelationType := NO_RELATION
+return self
+
+Method destroy() Class ${prefix}Relation
+return
+
+Method setName(cName) Class ${prefix}Relation
+    self:cName := cName
+return
+
+Method setCollection(oCollection) Class ${prefix}Relation
+    self:oCollection := oCollection
+return
+
+Method setFromTo(aFromTo) Class ${prefix}Relation
+    self:aFromTo := aFromTo
+return
+
+Method setRelationType(nRelationType) Class ${prefix}Relation
+    self:nRelationType := nRelationType
+return
+
+Method setBehavior(nBehavior) Class ${prefix}Relation
+    self:nBehavior := nBehavior
+return
+
+Method getName() Class ${prefix}Relation
+return self:cName
+
+Method getCollection() Class ${prefix}Relation
+return self:oCollection
+
+Method getFromTo() Class ${prefix}Relation
+return self:aFromTo
+
+Method getRelationType() Class ${prefix}Relation
+return self:nRelationType
+
+Method getBehavior() Class ${prefix}Relation
+return self:nBehavior
+
+Method destroy() Class CenObri
+	DelClassIntF()
+return

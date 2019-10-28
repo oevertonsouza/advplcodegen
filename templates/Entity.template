@@ -21,9 +21,10 @@ Return self
 
 Method serialize(oJsonControl) Class ${prefix}${className}
 
-	local oJson := JsonObject():New()
-	default oJsonControl := ${prefix}JsonControl():New()
+	Local oJson := JsonObject():New()
+	Default oJsonControl := ${prefix}JsonControl():New()
 
+$expandable
 $serialize
 Return oJson
 

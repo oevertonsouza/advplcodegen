@@ -21,6 +21,7 @@ Class ${prefix}Request
     Data cPropLote
     Data cFaultDesc
     Data cFaultDetail
+    Data aExpand
     Data lSuccess
     Data nStatus
     Data nFault
@@ -49,6 +50,8 @@ Class ${prefix}Request
     Method procLotePost(oCmd)
     Method procPut(oCmd)
     Method buildBody(oEntity)
+    Method applyExpand()
+    Method expand(oJson)    
     
 EndClass
 
@@ -65,6 +68,7 @@ Method New(oRest, cSvcName) Class ${prefix}Request
     self:cFaultDesc   := ''
     self:cResponse    := ''
     self:cFaultDetail := ''
+    self:aExpand      := {}    
 Return self
 
 Method destroy() Class ${prefix}Request
@@ -103,6 +107,27 @@ Return self:lSuccess
 Method applyFields() Class ${prefix}Request
     self:oRespControl:prepFields(self:oRest:fields)
 Return
+
+/*/{Protheus.doc} checkAuth
+Seta os os expandables solicitados na URL
+@author  lima.everton
+@since   20191025
+/*/
+Method applyExpand() Class ${prefix}Request
+    If self:lSuccess
+        if !empty(self:oRest:expand)
+            self:aExpand := StrTokArr2(self:oRest:expand, ",")
+            if self:oCollection:applyExpand(self:aExpand)
+                self:lSuccess := .T.
+            Else
+                self:nFault := 400
+                self:cFaultDesc := "Não foi possivel aplicar o(s) expandable(s)."
+                self:cFaultDetail := "expand="+self:oRest:expand
+                self:lSuccess := .F.
+            Endif
+        endif
+    EndIf
+Return self:lSuccess
 
 /*/{Protheus.doc} applyPageSize
 Aplica o tamanho da pagina para paginas do tipo colecao
@@ -196,20 +221,48 @@ Method serializeFault() Class ${prefix}Request
 
 Return oJson:toJson()
 
+/*/{Protheus.doc} serializeFault
+Percorre a lista de filhos
+@author  lima.everton
+@since   2019102019
+/*/
+Method expand(oJson) Class CenRequest
+    
+    Local nExp := 0
+    Default oJson := JsonObject():New()
+
+    For nExp:= 1 to Len(self:aExpand)
+        
+        oJson[self:aExpand[nExp]] := {}
+
+        self:oCollection:getRelation(self:aExpand[nExp]):buscar()
+        if self:oCollection:getRelation(self:aExpand[nExp]):found()
+            while self:oCollection:getRelation(self:aExpand[nExp]):hasNext()
+                oChildEnti := self:oCollection:getRelation(self:aExpand[nExp]):getNext()
+                aAdd(oJson[self:aExpand[nExp]], self:buildBody(oChildEnti))
+            enddo
+        EndIf
+    Next
+
+Return oJson
+
 Method checkAgreement() class ${prefix}Request
 Return .T.
 
 Method procGet(nType) Class ${prefix}Request
-    Local nRegistro     := 1
-    Local oEntity     := nil
+
+    Local nRegistro := 1
+    Local oEntity := nil
+    Local oJson := nil
 
     If self:lSuccess
         if self:oCollection:found()
             If nType == ALL
                 while self:oCollection:hasNext() .And. nRegistro <= Val(self:oCollection:getPageSize())
-                    oEntity := self:oCollection:getNext(oEntity)
+                    oEntity := self:oCollection:getNext()
                     oEntity:setHashFields(self:oRespControl:hmFields)
-                    aAdd(self:oRespBody['items'], self:buildBody(oEntity))
+                    oJson := self:expand(self:buildBody(oEntity))
+                    aAdd(self:oRespBody['items'], oJson)
                     nRegistro++
                 enddo
                 self:oRespBody["hasNext"] := self:oCollection:hasNext()
@@ -217,7 +270,8 @@ Method procGet(nType) Class ${prefix}Request
             Else
                 oEntity := self:oCollection:getNext(oEntity)
                 oEntity:setHashFields(self:oRespControl:hmFields)
-                self:jRequest := self:buildBody(oEntity)
+                oJson := self:expand(self:buildBody(oEntity))
+                self:jRequest := oJson
                 self:cResponse := self:jRequest:toJson()
             Endif
             oEntity:destroy()
@@ -228,12 +282,8 @@ Method procGet(nType) Class ${prefix}Request
                 self:oRespBody := JsonObject():New()
             EndIf
             self:cResponse := self:oRespBody:toJson()
-        Endif        
-    Else
-        self:nFault       := 404
-        self:nStatus      := 404
-        self:cFaultDesc   := "Operação não pode ser realizada."
-        self:cFaultDetail := "Registro não encontrado."
+        Endif
+    
     Endif
 
     FreeObj(oEntity)
@@ -243,33 +293,70 @@ Return self:lSuccess
 
 Method procDelete() Class ${prefix}Request
 
+    Local nI := 0
+    Local aRelList := {}
+
+    aRelList := self:oCollection:initRelation()
+    
     If self:lSuccess
+        self:oCollection:setKeyRelation()
+        For nI := 1 to Len(aRelList)
+            if aRelList[nI][COLLECTION]:getBehavior() == CASCADE
+                self:oCollection:getRelation(aRelList[nI][RELNAME]):delRelation()
+            EndIf
+        Next
         If (self:oCollection:delete())
             self:nStatus := 204
             self:cResponse := ""
         EndIf
+    Else
+        self:nFault       := 400
+        self:nStatus      := 400
+        self:cFaultDesc   := "Operação não pode ser realizada."
+        self:cFaultDetail := "Registro não existe no banco."        
     EndIf
 
 Return self:lSuccess
 
 Method procPost() Class ${prefix}Request
     
-    Local cJsonResp     := ""
-    Local oEntity   := nil
+    Local nI := 1
+    Local nJ := 1
+    Local nQtdExpand := 0
+    Local oEntity := nil
+    Local oCltRel := nil
+    Local cJsonResp := ""
+    Local aRelList := {}
     Local oCmd := CenCmdPostClt():New(self:oCollection)
-    
+
+    aRelList := self:oCollection:initRelation()
+   
     if self:lSuccess
         self:prepFilter(self:jRequest)
         self:buscar(INSERT)
         If self:lSuccess
             If self:oValidador:validate(self:oCollection) //Validate
                 If oCmd:execute()
+                    For nI:= 1 to Len(aRelList)
+                        oCltRel := self:oCollection:getRelation(aRelList[nI][RELNAME])
+                        For nJ:= 1 to Len(self:jRequest[aRelList[nI][RELNAME]])
+                            oCltRel:mapFromJson(self:jRequest[aRelList[nI][RELNAME]][nJ])
+                            oCmd := CenCmdPostClt():New(oCltRel)
+                            oCmd:execute()
+                        Next
+                    Next
                     self:nStatus := 201
                     If self:buscar(SINGLE)
+                        nJ := 1
+                        nQtdExpand := len(self:oCollection:oMapper:aExpand)
+                        self:aExpand := Array(1,nQtdExpand)
+                        For nJ := 1 to nQtdExpand
+                            self:aExpand[nJ] := self:oCollection:oMapper:aExpand[nJ][RELNAME]
+                        Next
                         oEntity := self:oCollection:getNext()
                         self:oRespBody := oEntity:serialize(self:oRespControl)
+                        self:oRespBody := self:expand(self:oRespBody)
                         cJsonResp := self:oRespBody:toJson()
-                        oEntity:destroy()
                     EndIf
                     self:cResponse := cJsonResp
                 Else
@@ -390,9 +477,14 @@ Method procLotePost(oCmd) Class ${prefix}Request
 Return self:lSuccess
 
 Method procPut(oCmd) Class ${prefix}Request
-    Local cJson     := ''
-    Local oEntity   := nil
-    Default oCmd := ${prefix}CmdPutClt():New(self:oCollection)
+
+    Local nI := 1
+    Local nJ := 1
+    Local oEntity := nil
+    Local aRelList := {}
+    Default oCmd := CenCmdPutClt():New(self:oCollection)
+
+    aRelList := self:oCollection:initRelation()
     
     If self:lSuccess
         self:prepFilter()
@@ -402,14 +494,30 @@ Method procPut(oCmd) Class ${prefix}Request
             If self:oValidador:validate(self:oCollection) //Validate
                 self:oCollection:mapDaoJson(self:jRequest)
                 If oCmd:execute()
+                    For nI:= 1 to Len(aRelList)
+                        oCltRel := self:oCollection:getRelation(aRelList[nI][RELNAME])
+                        For nJ:= 1 to Len(self:jRequest[aRelList[nI][RELNAME]])
+                            oCltRel:mapFromJson(self:jRequest[aRelList[nI][RELNAME]][nJ])
+                            If oCltRel:bscChaPrim()
+                                oCmd := CenCmdPutClt():New(oCltRel)
+                                oCmd:execute()
+                            EndIf
+                        Next
+                    Next
                     self:nStatus := 200
                     If self:buscar(SINGLE)
+                        nJ := 1
+                        nQtdExpand := len(self:oCollection:oMapper:aExpand)
+                        self:aExpand := Array(1,nQtdExpand)
+                        For nJ := 1 to nQtdExpand
+                            self:aExpand[nJ] := self:oCollection:oMapper:aExpand[nJ][RELNAME]
+                        Next
                         oEntity := self:oCollection:getNext()
                         self:oRespBody := oEntity:serialize(self:oRespControl)
-                        cJson := self:oRespBody:toJson()
-                        oEntity:destroy()
+                        self:oRespBody := self:expand(self:oRespBody)
+                        cJsonResp := self:oRespBody:toJson()
                     EndIf
-                    self:cResponse := cJson
+                    self:cResponse := cJsonResp
                 Else
                     self:lSuccess     := .F. 
                     self:nFault       := 400
@@ -429,17 +537,6 @@ Method procPut(oCmd) Class ${prefix}Request
     FreeObj(oEntity)
     oEntity := Nil
  
-Return self:lSuccess
-
-Method procDelete() Class RestRequest
-
-    If self:lSuccess
-        If (self:oCollection:delete())
-            self:nStatus := 204
-            self:cResponse := ""
-        EndIf
-    EndIf
-
 Return self:lSuccess
 
 Method buildBody(oEntity) Class ${prefix}Request

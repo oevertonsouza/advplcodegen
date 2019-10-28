@@ -1,10 +1,24 @@
 #include "TOTVS.CH"
 #INCLUDE 'FWMVCDEF.CH'
 
-/*/{Protheus.doc} 
+#DEFINE COLLECTION 2
+
+#DEFINE RELFIELD 1
+#DEFINE FIELD 2
+
+#DEFINE N_TO_N 1    // Relação N para N
+#DEFINE ONE_TO_N 2  // Relação 1 para N
+#DEFINE N_TO_ONE 3  // Relação N para 1
+#DEFINE ZERO_TO 4   // Relação 0 para 1 ou N
+#DEFINE TO_ZERO 5   // Relação N ou 1 para 0
+
+#DEFINE NONE 0    // Behavior Atribui alterações somente a colação principal
+#DEFINE CASCADE 1 // Behavior Realiza todas as operações em cascata
+
+/*/{Protheus.doc}
     Collection
     Classe abstrata de uma Coleção de registros de uma entifade.
-    Esta classe deve orquestrar as operações feitas em coleções de registros. 
+    Esta classe deve orquestrar as operações feitas em coleções de registros.
     Isso envolve:
         - Buscas de registros específicos
         - Buscas de coleções de registros
@@ -25,6 +39,7 @@ Class ${prefix}Collection
     Data nRecno
     Data cError
     Data lFault
+    Data hChildren    
 
     Method New() Constructor
     Method destroy()
@@ -51,6 +66,13 @@ Class ${prefix}Collection
     Method buscar()
     Method bscChaPrim()
     Method setEntity(oEntity)
+    Method setRelation(oRelation)
+    Method getRelation(cName)
+    Method setKeyRelation()
+    Method checkExpand(aExpand)
+    Method listRelations()
+    Method delRelation()
+    Method sethMap(hMap)    
 
 EndClass
 
@@ -59,8 +81,8 @@ Method New() Class ${prefix}Collection
     self:lFault := .F.
     self:cError := ""
     self:hMap := THashMap():New()
+    self:hChildren := THashMap():New()    
 return self
-
 
 Method destroy() Class ${prefix}Collection
 
@@ -83,6 +105,11 @@ Method destroy() Class ${prefix}Collection
 
 return
 
+Method sethMap(hMap) Class ${prefix}Collection
+    self:hMap := hMap
+    self:oDao:setHMap(hMap)
+return
+
 Method found() Class ${prefix}Collection
 return self:lFound
 
@@ -100,6 +127,8 @@ return self:getDao():hasNext(self:nRecno)
 Method getNext() Class ${prefix}Collection
     self:oMapper:setEntity(self:initEntity())
     self:oMapper:mapFromDao(self:getDao())
+    self:hMap := self:oMapper:getEntity():getHMap()
+    self:setKeyRelation()
     self:nRecno++
 return self:oMapper:getEntity()
 
@@ -108,12 +137,12 @@ Method mapFromJson(oJson) Class ${prefix}Collection
     self:oMapper:mapFromJson(oJson)
 return self:oMapper:getEntity()
 
-Method mapFromDao() Class CenCollection
+Method mapFromDao() Class ${prefix}Collection
     self:oMapper:setEntity(self)
     self:oMapper:mapFromDao(self:getDao())
 return self:oMapper:getEntity()
 
-Method mapDaoJson(oJson) Class CenCollection
+Method mapDaoJson(oJson) Class ${prefix}Collection
     self:mapFromDao()
     self:mapFromJson(oJson)
 return self:oMapper:getEntity()
@@ -157,7 +186,7 @@ Method commit() Class ${prefix}Collection
     EndIf
 Return self:found()
 
-Method insert() Class CenCollection
+Method insert() Class ${prefix}Collection
     self:lFound := self:getDao():insert()
     If !self:found()
         self:setError("Não conseguiu incluir o registro. " + self:getDao():getError() )
@@ -174,18 +203,87 @@ Method delete() Class ${prefix}Collection
     EndIf
 Return self:found()
 
+Method delRelation() Class ${prefix}Collection
+    self:lFound := self:getDao():delRelation()
+    If !self:found()
+        self:setError("Não conseguiu deletar o registro. " + self:getDao():getError())
+    EndIf
+Return self:found()
+
 Method buscar() Class ${prefix}Collection
     self:lFound := self:getDao():buscar()
     self:goTop()
 Return self:found()
 
-Method bscChaPrim() Class CenCollection
+Method bscChaPrim() Class ${prefix}Collection
     self:lFound := self:getDao():bscChaPrim()
     self:goTop()
 Return self:found()
 
-Method setEntity(oEntity) Class CenCollection
+Method setEntity(oEntity) Class ${prefix}Collection
     self:oMapper:setEntity(oEntity)
     self:oDao:setHMap(oEntity:getHMap())
 return
 
+Method setRelation(oRelation) Class ${prefix}Collection
+    self:hChildren:set(oRelation:getName(),oRelation)
+Return
+
+/*/
+    Seta as chaves de busca dos filhos 
+/*/
+Method setKeyRelation() Class ${prefix}Collection
+
+    Local nChild := 0
+    Local nFrTo := 0
+    Local aRelList := Nil
+    Local aFromTo := Nil
+
+    self:hChildren:list(@aRelList)
+
+    For nChild := 1 to Len(aRelList)
+        
+        oRelation := aRelList[nChild][COLLECTION]
+        aFromTo   := oRelation:getFromTo()
+        
+        /*/
+            Limpa variáveis, em POST, faz o insert e depos a busca,
+            variaveis ficam sujas para montar o Json de resposta
+        /*/
+        oRelation:getCollection():setHMap(THashMap():New())
+        
+        For nFrTo := 1 to len(aFromTo)
+            oRelation:getCollection():setValue(;
+                aFromTo[nFrTo][FIELD],self:getValue(aFromTo[nFrTo][RELFIELD]);
+            )
+        Next
+        self:setRelation(oRelation)
+    Next
+
+return
+
+Method listRelations() Class ${prefix}Collection
+    Local aRelList := {}
+    self:hChildren:list(@aRelList)
+return aRelList
+
+Method getRelation(cName) Class ${prefix}Collection
+    Local oRelation := Nil
+    self:hChildren:get(cName,@oRelation)
+Return oRelation:getCollection()
+
+Method checkExpand(aExpand) Class ${prefix}Collection
+
+    Local lOk := .T.
+    Local nExp := 1
+
+    Default aExpand := {}
+
+    For nExp := 1 to len(aExpand)
+        if !self:hChildren:get(aExpand[nExp])
+            lOk := .F.
+            Exit
+        EndIf
+    Next
+
+Return lOk

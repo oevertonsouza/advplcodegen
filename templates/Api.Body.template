@@ -1,5 +1,5 @@
 
-WSMETHOD GET ${classNameAbreviate}Collection QUERYPARAM page, pageSize, fields, order,;
+WSMETHOD GET ${classNameAbreviate}Collection QUERYPARAM page, pageSize, fields, order, expand,;
 ${varskey}
 ${varsNokey}
     WSSERVICE ${segment}
@@ -18,6 +18,7 @@ ${defaultVarsNoKey}
     if oRequest:checkAuth()
         oRequest:applyFilter(ALL)
         oRequest:applyFields(self:fields)
+        oRequest:applyExpand(self:expand)        
         oRequest:applyOrder(self:order)
         oRequest:applyPageSize()
         oRequest:buscar(BUSCA)
@@ -30,7 +31,7 @@ ${defaultVarsNoKey}
 
 Return .T.
 
-WSMETHOD GET ${classNameAbreviate}Single PATHPARAM;
+WSMETHOD GET ${classNameAbreviate}Single QUERYPARAM expand PATHPARAM;
     ${keyPath};
     QUERYPARAM;
     fields,;    
@@ -45,6 +46,7 @@ ${keyVarsNoKeyPath}
     if oRequest:checkAuth()
         oRequest:applyFilter(SINGLE)
         oRequest:applyFields(self:fields)
+        oRequest:applyExpand(self:expand)        
         oRequest:applyPageSize()
         oRequest:buscar(BUSCA)
         oRequest:procGet(SINGLE) 

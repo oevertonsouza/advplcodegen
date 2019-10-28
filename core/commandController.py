@@ -59,8 +59,11 @@ class ComandsController:
             self.poProject.startPoProject()
             return            
         if command == 'PO-SERVE':
-            self.codeGen.PoServe()            
+            self.codeGen.PoServe()
             return
+        if command == 'OPENDB':
+            self.codeGen.openDb()
+            return            
         if command == 'TESTEFUN':
             print("TESTE")
             return

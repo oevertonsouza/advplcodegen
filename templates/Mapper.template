@@ -10,4 +10,5 @@ Method New() Class ${prefix}Mpr${className}
     _Super:new()
 
 ${mapper}
+${expandable}
 Return self
