@@ -101,7 +101,6 @@ class codeGenController:
         os.system('npm uninstall -g @angular/cli')
         os.system('npm cache clean --force')
         os.system('npm i -g @angular/cli')
-
         print('\nInstalando o projeto my-po-project')
         os.system('ng new my-po-project --skipInstall --interactive=false')
 

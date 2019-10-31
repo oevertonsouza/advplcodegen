@@ -4,24 +4,24 @@ import os
 #DataBase Info
 DATABASES = {
     'default': {
-        'NAME': 'NAME',
-        'USER': 'USER',
-        'PASSWORD': 'PASSWORD',
-        'HOST': 'HOST',
+        'NAME': 'P12125MNTDB',
+        'USER': 'sa',
+        'PASSWORD': 'masterkey',
+        'HOST': 'localhost',
     }
 }
 
 #Protheus Info
 PROTHEUS_ENVIORMENT = {
     'default': {
-        'COMPANY' : 'COMPANY',
-        'FILIAL' : 'FILIAL',
-        'PREFIX' : 'PREFIX',
-        'SEGMENT' : 'SEGMENT',
-        'PRODUCT' : 'PRODUCT',
-        'PRDUCT_DESCRIPTION' : 'PRDUCT_DESCRIPTION',
-        'DICTIONARY_IN_DATABASE' : 'DICTIONARY_IN_DATABASE',
-        'CONTACT' : 'CONTACT',
+        'COMPANY' : 'T1',
+        'FILIAL' : '01',
+        'PREFIX' : 'Cen',
+        'SEGMENT' : 'healthcare' ,
+        'PRODUCT' : 'Central de Obrigacoes',
+        'PRDUCT_DESCRIPTION' : 'Central de Obrigacoes',
+        'DICTIONARY_IN_DATABASE' : True,
+        'CONTACT' : 'comiteintegracao@totvs.com.br',
     }
 }
 
@@ -35,10 +35,13 @@ PATH_FILESTORAGE = os.path.join(PATH_PROJECT, "filestorage")
 PATH_DATABASE = os.path.join(PATH_PROJECT, "sqliteadmin")
 PATH_PO = os.path.join(PATH_PROJECT, "my-po-project")
 PATH_PO_SRC = os.path.join(PATH_PO, "src")
+PATH_DATABASE = os.path.join(PATH_PROJECT, "sqliteadmin")
 
 
 #Inside portinari
+PATH_PO_SRC_ENVIRONMENTS = os.path.join(PATH_PO_SRC, "environments")
 PATH_PO_SRC_APP = os.path.join(PATH_PO_SRC, "app")
+PATH_PO_SRC_APP_SHARED = os.path.join(PATH_PO_SRC_APP, "shared")
 
 #Inside src
 PATH_SRC_API = os.path.join(PATH_SRC, "api")
@@ -60,6 +63,12 @@ PATH_SRC_VALIDATE = os.path.join(PATH_SRC, "validate")
 PATH_TEMPLATE_LIBS = os.path.join(PATH_TEMPLATE, "libs")
 PATH_TEMPLATE_DOCS = os.path.join(PATH_TEMPLATE, "docs")
 PATH_TEMPLATE_PO = os.path.join(PATH_TEMPLATE, "portinari")
+PATH_TEMPLATE_PO_SHARED = os.path.join(PATH_TEMPLATE_PO, "shared")
+PATH_TEMPLATE_PO_ENTITY = os.path.join(PATH_TEMPLATE_PO, "entity")
+PATH_TEMPLATE_PO_ENTITY_FORM = os.path.join(PATH_TEMPLATE_PO_ENTITY, "entity-form")
+PATH_TEMPLATE_PO_ENTITY_LIST = os.path.join(PATH_TEMPLATE_PO_ENTITY, "entity-list")
+PATH_TEMPLATE_PO_ENTITY_VIEW = os.path.join(PATH_TEMPLATE_PO_ENTITY, "entity-view")
+PATH_TEMPLATE_PO_ENVIRONMENTS = os.path.join(PATH_TEMPLATE_PO, "environments")
 
 #Inside Test
 PATH_SRC_TEST_CASES = os.path.join(PATH_SRC_TEST, "cases")

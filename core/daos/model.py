@@ -1,7 +1,7 @@
 import peewee
-import os
 import settings
- 
+import os
+
 database = peewee.SqliteDatabase(os.path.join(settings.PATH_DATABASE,"advplcodegen.db"))
 
 def CreateTables():
