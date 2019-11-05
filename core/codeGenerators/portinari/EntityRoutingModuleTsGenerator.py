@@ -30,4 +30,3 @@ class EntityRoutingModuleTsGenerator(codeGenerator):
                 'componentCammelLower' : componentCammelLower
             }
         return variables
-
