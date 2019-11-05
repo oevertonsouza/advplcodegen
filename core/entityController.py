@@ -56,7 +56,11 @@ class entityController:
             is_indice = field[0] in uniqueColumns
             is_keyPathParam = field[0] == entity.keyColumn 
             name = re.sub('[^A-Za-z0-9]+', '', field[2].title())
-            name = name[0].lower() + name[1:]
+            if not name.strip():
+                name = 'noEnglishName'
+            else:
+                name = name[0].lower() + name[1:] 
+            
             desc = field[7].strip()
             opcoes = field[6].strip().replace(";",",")
             length = str(field[4])
