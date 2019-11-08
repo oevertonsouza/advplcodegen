@@ -49,7 +49,7 @@ class CollectionCodeGenerator(codeGenerator):
             fromtoRelation =[] #limpa o array from to 
             
             if index < count:
-                relations += '    oRelation := CenRelation():New()\n\n'
+                relations += '    oRelation := CenRelation():New()\n\n' #quando há mais de uma relação 'expandable'
 
             index = index + 1
 

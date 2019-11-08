@@ -3,6 +3,9 @@
 
 #DEFINE COLLECTION 2
 
+#DEFINE NIVEL 1
+#DEFINE SUBNIVEL 2
+
 #DEFINE RELFIELD 1
 #DEFINE FIELD 2
 
@@ -69,10 +72,11 @@ Class ${prefix}Collection
     Method setRelation(oRelation)
     Method getRelation(cName)
     Method setKeyRelation()
-    Method checkExpand(aExpand)
     Method listRelations()
     Method delRelation()
-    Method sethMap(hMap)    
+    Method sethMap(hMap)
+    Method isRelation(cName)    
+    Method applyExpand(aExpand)
 
 EndClass
 
@@ -267,23 +271,37 @@ Method listRelations() Class ${prefix}Collection
     self:hChildren:list(@aRelList)
 return aRelList
 
+Method isRelation(cName) Class ${prefix}Collection
+Return self:hChildren:get(cName)
+
 Method getRelation(cName) Class ${prefix}Collection
     Local oRelation := Nil
     self:hChildren:get(cName,@oRelation)
 Return oRelation:getCollection()
 
-Method checkExpand(aExpand) Class ${prefix}Collection
-
+Method applyExpand(aExpand) Class CenCollection
+    
     Local lOk := .T.
     Local nExp := 1
-
+    Local aExpands := {}
     Default aExpand := {}
 
+    self:initRelation()
+    
     For nExp := 1 to len(aExpand)
-        if !self:hChildren:get(aExpand[nExp])
+        aExpands := StrTokArr2(aExpand[nExp], ".")
+        If self:isRelation(aExpands[NIVEL])
+            If len(aExpands) > 1
+                self:getRelation(aExpands[NIVEL]):initRelation()
+                If !self:getRelation(aExpands[NIVEL]):isRelation(aExpands[SUBNIVEL]) 
+                    //Não é um relacionamento
+                    lOk := .F.
+                EndIf
+            EndIf
+        Else
+            //Não é um relacionamento
             lOk := .F.
-            Exit
         EndIf
     Next
-
-Return lOk
+    
+return lOk

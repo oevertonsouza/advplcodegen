@@ -1,5 +1,8 @@
 #INCLUDE "TOTVS.CH"
 
+#DEFINE NIVEL 1
+#DEFINE SUBNIVEL 2
+
 #DEFINE SINGLE "01"
 #DEFINE ALL    "02"
 #DEFINE INSERT "03"
@@ -228,21 +231,41 @@ Percorre a lista de filhos
 /*/
 Method expand(oJson) Class CenRequest
     
-    Local nExp := 0
+    Local nExp := 1
+    Local aExpand := {}
+    Local oCltSub := Nil
     Default oJson := JsonObject():New()
 
     For nExp:= 1 to Len(self:aExpand)
-        
-        oJson[self:aExpand[nExp]] := {}
 
-        self:oCollection:getRelation(self:aExpand[nExp]):buscar()
-        if self:oCollection:getRelation(self:aExpand[nExp]):found()
-            while self:oCollection:getRelation(self:aExpand[nExp]):hasNext()
-                oChildEnti := self:oCollection:getRelation(self:aExpand[nExp]):getNext()
-                aAdd(oJson[self:aExpand[nExp]], self:buildBody(oChildEnti))
+        aExpand := StrTokArr2(self:aExpand[nExp],".")
+        oJson[aExpand[NIVEL]] := {}
+        
+        self:oCollection:getRelation(aExpand[NIVEL]):buscar()
+        if self:oCollection:getRelation(aExpand[NIVEL]):found()
+            while self:oCollection:getRelation(aExpand[NIVEL]):hasNext()
+                
+                oEntity := self:oCollection:getRelation(aExpand[NIVEL]):getNext()
+                aAdd(oJson[aExpand[NIVEL]], self:buildBody(oEntity))
+                
+                If Len(aExpand) > 1 //Expande o subnivel
+                    oJson[aExpand[NIVEL]][NIVEL][aExpand[SUBNIVEL]] := {}
+                    oCltSub := self:oCollection:getRelation(aExpand[NIVEL]):getRelation(aExpand[SUBNIVEL])
+                    oCltSub:buscar()
+                    if oCltSub:found()
+                        while oCltSub:hasNext()
+                            oEntity := oCltSub:getNext()
+                            aAdd(oJson[aExpand[NIVEL]][NIVEL][aExpand[SUBNIVEL]], self:buildBody(oEntity))
+                        enddo
+                    EndIf
+                EndIf
+                
             enddo
         EndIf
+
     Next
+
+    oEntity:destroy()
 
 Return oJson
 
