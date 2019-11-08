@@ -234,6 +234,7 @@ Method expand(oJson) Class CenRequest
     Local nExp := 1
     Local aExpand := {}
     Local oCltSub := Nil
+    Local oEntity := Nil
     Default oJson := JsonObject():New()
 
     For nExp:= 1 to Len(self:aExpand)
@@ -265,7 +266,8 @@ Method expand(oJson) Class CenRequest
 
     Next
 
-    oEntity:destroy()
+    FreeObj(oEntity)
+    oEntity := Nil
 
 Return oJson
 
