@@ -279,7 +279,7 @@ Method getRelation(cName) Class ${prefix}Collection
     self:hChildren:get(cName,@oRelation)
 Return oRelation:getCollection()
 
-Method applyExpand(aExpand) Class CenCollection
+Method applyExpand(aExpand) Class ${prefix}Collection
     
     Local lOk := .T.
     Local nExp := 1
