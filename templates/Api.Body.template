@@ -31,9 +31,10 @@ ${defaultVarsNoKey}
 
 Return .T.
 
-WSMETHOD GET ${classNameAbreviate}Single QUERYPARAM expand PATHPARAM;
+WSMETHOD GET ${classNameAbreviate}Single PATHPARAM;
     ${keyPath};
     QUERYPARAM;
+    expand,;
     fields,;    
 ${keyVarsNoKeyPath}
     WSSERVICE ${segment}

@@ -21,26 +21,38 @@ class CollectionCodeGenerator(codeGenerator):
         column = ''
         columnRelation = ''
         fromtoRelation = []
+        relationName = ''
+        count = Relations.select().where(Relations.table == self.entity.table).count()
+        index = 1
+
 
         for relation in Relations.select().where(Relations.table == self.entity.table):
             for entity in Entity.select().where(Entity.table == relation.tableRelation):
                 relations += '    oRelation:setCollection(CenClt' + entity.shortName +'():New())\n'
-                relations += '    oRelation:setName("'+ entity.name[:1].lower() + entity.name[1:].strip() +'")\n'
+                relationName = entity.name.title().replace(" ","").replace("-","").strip()
+                relationName = relationName[0].lower() + relationName[1:]
+                relations += '    oRelation:setName("'+ relationName +'")\n'
                 relations += '    oRelation:setRelationType(' + relation.relationType + ')\n'
                 relations += '    oRelation:setBehavior('+ relation.behavior +')\n'
                 
-                
-                for fromto in FromTo.select().where(FromTo.relation_id == relation.id):
-                    column = Colunas.select().where(Colunas.dbField == fromto.column)
-                    columnRelation = Colunas.select().where(Colunas.dbField == fromto.columnRelation)
-                    fromtoRelation.append('    {"'+column[0].name+'","'+columnRelation[0].name+'"}')
+            for fromto in FromTo.select().where(FromTo.relation_id == relation.id):
+                column = Colunas.select().where(Colunas.dbField == fromto.column)
+                columnRelation = Colunas.select().where(Colunas.dbField == fromto.columnRelation)
+                fromtoRelation.append('    {"'+column[0].name+'","'+columnRelation[0].name+'"}')
 
-                if len(fromtoRelation) > 0:
-                    relations += '    oRelation:setFromTo({;\n'
-                    relations += '    '+',;\n    '.join(fromtoRelation)  +';\n'
-                    relations += '    })\n'
-                    relations += '    self:setRelation(oRelation)\n'
-        
+            if len(fromtoRelation) > 0:
+                relations += '    oRelation:setFromTo({;\n'
+                relations += '    '+',;\n    '.join(fromtoRelation)  +';\n'
+                relations += '    })\n'
+                relations += '    self:setRelation(oRelation)\n\n'
+            
+            fromtoRelation =[] #limpa o array from to 
+            
+            if index < count:
+                relations += '    oRelation := CenRelation():New()\n\n' #quando há mais de uma relação 'expandable'
+
+            index = index + 1
+
         variables = { 
             'relations': relations,
             'prefix' : self.prefix,

@@ -49,7 +49,7 @@ class ApiCodeGenerator(codeGenerator):
                 keyPath = column.name
         if len(keyVarsNoKeyPath) > 0:
             keyVarsNoKeyPath.remove('    '+keyPath)
-            descriptionPath = self.entity.name.title().replace(" ","")
+            descriptionPath = self.entity.name.title().replace(" ","").replace("-","").strip()
             descriptionPath = descriptionPath[0].lower() + descriptionPath[1:]
             variables = {
                     'classNameAbreviate': self.entity.shortName,

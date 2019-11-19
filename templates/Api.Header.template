@@ -5,7 +5,7 @@
 #DEFINE ALL    "02"
 #DEFINE BUSCA  "07"
 
-WSRESTFUL ${segment} DESCRIPTION "Exemplo de serviço REST"
+WSRESTFUL ${segment} DESCRIPTION "Serviços REST do seguimento ${segment}"
 
     // Atributos padrao utilizados em todas ou em mais de uma solicitacao
     WSDATA apiVersion as STRING  OPTIONAL

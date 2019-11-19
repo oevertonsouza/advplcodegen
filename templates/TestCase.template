@@ -16,9 +16,9 @@ ENDCLASS
 
 METHOD ${prefix}${className}TestCase() CLASS ${prefix}${className}TestCase
 	_Super:FWDefaultTestCase()
+	self:AddTestMethod( "INSERT_003",,"Insere um registro na tabela ${table}." )
 	self:AddTestMethod( "GETSINGLE_001",,"Busca um registro na tabela ${table}." )
 	self:AddTestMethod( "GETCOLLECTION_002",,"Busca uma coleção de registros na tabela ${table}." )
-	self:AddTestMethod( "INSERT_003",,"Insere um registro na tabela ${table}." )
 	self:AddTestMethod( "UPDATE_004",,"Altera um registro na tabela ${table}." )
 	self:AddTestMethod( "DELETE_005",,"Deleta um registro na tabela ${table}." )
 	self:AddTestMethod( "ERROR_006",,"Testa o registro de um erro." )

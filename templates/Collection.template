@@ -13,7 +13,6 @@ Class ${prefix}Clt${className} from ${prefix}Collection
 	   
     Method New() Constructor
     Method initEntity()
-    Method applyExpand(aExpand)
     Method initRelation()
 
 EndClass
@@ -26,10 +25,6 @@ return self
 
 Method initEntity() Class ${prefix}Clt${className}
 return ${prefix}${className}():New()
-
-Method applyExpand(aExpand) Class ${prefix}Clt${className}
-    self:initRelation()
-return self:checkExpand(aExpand)
 
 Method initRelation() Class ${prefix}Clt${className}
 

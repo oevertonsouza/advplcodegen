@@ -26,7 +26,9 @@ class MapperCodeGenerator(codeGenerator):
 
         for relation in Relations.select().where(Relations.table == self.entity.table):
             for entity in Entity.select().where(Entity.table == relation.tableRelation):
-                expandables.append('"'+entity.name.strip()[:1].lower() + entity.name.strip()[1:] +'"')
+                expandable = entity.name.title().replace(" ","").replace("-","").strip()
+                expandable = expandable[0].lower() + expandable[1:]
+                expandables.append('"'+ expandable +'"')
         
         if len(expandables) > 0:
             expandable = '    aAdd(self:aExpand,{' + ','.join(expandables) + '})\n'

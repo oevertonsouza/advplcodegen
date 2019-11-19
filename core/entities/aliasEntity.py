@@ -24,13 +24,15 @@ class AliasEntity:
         return
 
     def setName(self, name):
-        self.name = name.strip().title()
+        self.name = name.replace("-"," ").replace("."," ")
+        self.name = self.name.strip().title()
         self.name = re.sub('[^A-Za-z0-9 ]+', '', self.name)
         self.name = self.name.replace("  "," ")
         return
 
     def setNamePortuguese(self, namePortuguese):
-        self.namePortuguese = namePortuguese.strip().title()
+        self.namePortuguese = namePortuguese.replace("-"," ").replace("."," ")
+        self.namePortuguese = self.namePortuguese.strip().title()
         self.namePortuguese = re.sub('[^A-Za-z0-9 ]+', '', self.namePortuguese)
         self.namePortuguese = self.namePortuguese.replace("  "," ")
         return
