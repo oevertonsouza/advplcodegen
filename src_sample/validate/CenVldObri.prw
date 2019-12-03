@@ -1,7 +1,7 @@
 #INCLUDE "PROTHEUS.CH"
 #INCLUDE "TOTVS.CH"
 
-Class CenVldObri from CenVldDIOPS
+Class CenVldObri from CenValidator
 
     Method New() Constructor
     Method validate(oEntity)
