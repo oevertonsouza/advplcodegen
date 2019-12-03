@@ -21,6 +21,9 @@ class ManagementDb:
         conn = self.conn()
         cursor = conn.cursor()
 
+        tableName = "B3K"
+
+
         cursor.execute("SELECT 1 ")
         row = cursor.fetchone()
         cursor.close()
@@ -48,6 +51,7 @@ class ManagementDb:
                     " FROM SX3" + settings.PROTHEUS_ENVIORMENT['default']['COMPANY'] + "0 "
                     " WHERE 1=1 "
                     "   AND X3_ARQUIVO = '"+ tableName[:3] +"' "
+                    "   AND X3_CAMPO  <> '"+ tableName[:3] +'_FILIAL'+ "' "
                     "   AND D_E_L_E_T_ = ' '"
                     "   AND X3_CONTEXT <> 'V'" #Não pega campos virtuais
                     "   AND X3_CONTEXT <> ''"  
