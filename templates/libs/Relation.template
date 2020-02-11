@@ -93,6 +93,6 @@ return self:nRelationType
 Method getBehavior() Class ${prefix}Relation
 return self:nBehavior
 
-Method destroy() Class CenObri
+Method destroy() Class ${prefix}Relation
 	DelClassIntF()
 return
