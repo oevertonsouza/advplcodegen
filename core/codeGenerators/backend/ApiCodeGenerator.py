@@ -30,6 +30,7 @@ class ApiCodeGenerator(codeGenerator):
         varsNokey = []
         keyVarsNoKeyPath = []
         keyPath = ''
+        variables = []
 
         for column in Colunas.select().join(Entity).where(Entity.table == self.entity.table):
 

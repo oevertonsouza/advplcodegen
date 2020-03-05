@@ -87,7 +87,7 @@ class entityController:
                             variabelName = varName,
                             options = opcoes)
             except peewee.IntegrityError:
-                new_column = Colunas.get(Column.dbField == field[0])
+                new_column = Colunas.get(Colunas.dbField == field[0])
                 new_column.entity = entity
                 new_column.dbField = field[0]
                 new_column.name = name

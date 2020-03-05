@@ -31,7 +31,7 @@ class ComandsController:
             shortName = run[4] if len(run) > 4 else ''
             name = run[5] if len(run) > 5 else ''
             namePortuguese = run[6] if len(run) > 6 else ''
-            entity = aliasEntity(table, name, keyColumn, namePortuguese, shortName)
+            entity = aliasEntity.AliasEntity(table, name, keyColumn, namePortuguese, shortName)
             self.entities.addEntity(entity)
             
             return
