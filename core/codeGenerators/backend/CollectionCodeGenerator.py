@@ -20,14 +20,14 @@ class CollectionCodeGenerator(codeGenerator):
         relations = ''
         column = ''
         columnRelation = ''
-        relationKey = []
+        relationsKey = []
         relationName = ''
         count = Relations.select().where(Relations.table == self.entity.table).count()
         index = 1
 
 
-        for relation in Relations.select().where(Relations.table == self.entity.table):
-            for entity in Entity.select().where(Entity.table == relation.tableRelation):
+        for relation in Relations.select().where(Relations.table == self.entity.shortName):
+            for entity in Entity.select().where(Entity.shortName == relation.tableRelation):
                 relations += '    oRelation:setCollection(CenClt' + entity.shortName +'():New())\n'
                 relationName = entity.name.title().replace(" ","").replace("-","").strip()
                 relationName = relationName[0].lower() + relationName[1:]
@@ -36,17 +36,18 @@ class CollectionCodeGenerator(codeGenerator):
                 relations += '    oRelation:setBehavior('+ relation.behavior +')\n'
                 
             for relationKey in RelationKeys.select().where(RelationKeys.relation_id == relation.id):
-                column = Colunas.select().where(Colunas.dbField == relationKey.column)
-                columnRelation = Colunas.select().where(Colunas.dbField == relationKey.columnRelation)
-                relationKey.append('    {"'+column[0].name+'","'+columnRelation[0].name+'"}')
+                # if relationKey.column.find("_FILIAL") == -1:
+                    # column = Colunas.select().where(Colunas.dbField == relationKey.column)
+                    # columnRelation = Colunas.select().where(Colunas.dbField == relationKey.columnRelation)
+                relationsKey.append('    {"'+relationKey.column+'","'+relationKey.columnRelation+'"}')
 
-            if len(relationKey) > 0:
+            if len(relationsKey) > 0:
                 relations += '    oRelation:setRelationKey({;\n'
-                relations += '    '+',;\n    '.join(relationKey)  +';\n'
+                relations += '    '+',;\n    '.join(relationsKey)  +';\n'
                 relations += '    })\n'
                 relations += '    self:setRelation(oRelation)\n\n'
             
-            relationKey =[] #limpa o array from to 
+            relationsKey =[] #limpa o array from to 
             
             if index < count:
                 relations += '    oRelation := CenRelation():New()\n\n' #quando h� mais de uma rela��o 'expandable'
