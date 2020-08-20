@@ -40,8 +40,8 @@ class Entity(peewee.Model):
 ########################################################################
 class Relations(peewee.Model):
             
-    table = peewee.CharField()
-    tableRelation = peewee.CharField()
+    table = peewee.CharField(unique=True)
+    tableRelation = peewee.CharField(unique=True)
     relationType = peewee.CharField()
     behavior = peewee.CharField()
   
@@ -53,7 +53,7 @@ class FromTo(peewee.Model):
 
     relation = peewee.ForeignKeyField(Relations)
 
-    column = peewee.CharField()
+    column = peewee.CharField(unique=True)
     columnRelation = peewee.CharField()
     
     class Meta:

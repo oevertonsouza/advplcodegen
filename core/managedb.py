@@ -53,7 +53,7 @@ class ManagementDb:
                     "   AND X3_ARQUIVO = '"+ tableName[:3] +"' "
                     "   AND X3_CAMPO  <> '"+ tableName[:3] +'_FILIAL'+ "' "
                     "   AND D_E_L_E_T_ = ' '"
-                    "   AND X3_CONTEXT <> 'V'" #Não pega campos virtuais
+                    "   AND X3_CONTEXT <> 'V'" #Nï¿½o pega campos virtuais
                     "   AND X3_CONTEXT <> ''"  
                     " ORDER BY X3_ORDEM"
                 )

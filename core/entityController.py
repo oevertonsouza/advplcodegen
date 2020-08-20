@@ -3,7 +3,7 @@ import sys, os, csv, re
 import settings
 from core import managedb, storage
 from pathlib import Path
-from core.daos.model import Entity, Colunas
+from core.daos.model import Entity, Colunas, Relations, FromTo
 from core.entities import aliasEntity
 import peewee
 
@@ -24,6 +24,11 @@ class entityController:
             entity.namePortuguese = tableInfo[0][1]
         new_entity = self.saveEntity(entity)
         self.saveColumns(new_entity)
+        return
+    
+    def addRelation(self, relation):
+        new_relation = self.saveRelation(relation)
+        self.saveRelationKeys(new_relation,relation.keys)
         return
 
     def saveEntity(self, entity):
@@ -119,6 +124,44 @@ class entityController:
                 entity = aliasEntity.AliasEntity(entity, name, keyColumn, namePortuguese, shortName)
                 self.addEntity(entity)
 
+        return
+
+    def saveRelation(self, relation):
+        operationMessage = 'saved'
+        try:
+            new_relation = Relations.create(table = relation.tableFather,
+                    tableRelation = relation.tableSon,
+                    relationType = relation.relationType,
+                    behavior = relation.behavior)
+            operationMessage = 'added'
+        except peewee.IntegrityError:
+            new_relation = Relations.get(table = relation.tableFather)
+            new_relation.tableRelation = relation.tableSon
+            new_relation.relationType = relation.relationType
+            new_relation.behavior = relation.behavior
+            new_relation.save()
+            operationMessage = 'updated'
+        print('Relation '+ relation.tableFather + ' successfully ' + operationMessage + '!')
+        return new_relation
+
+    def saveRelationKeys(self, relation, keys):
+        operationMessage = 'saved'
+        for key in keys:
+            keysList = key.split("=")
+            try:
+                new_KeyRelation = FromTo.create(relation = relation,
+                        column = keysList[0],
+                        columnRelation = keysList[1])
+                operationMessage = 'added'
+            except peewee.IntegrityError:
+                new_KeyRelation = FromTo.get(relation = relation)
+                new_KeyRelation.columnRelation = keysList[1]
+                new_KeyRelation.save()
+                operationMessage = 'updated'
+        if len(keys) > 0:
+            print('Relation '+ relation.table + ' keys ' + operationMessage + '!')
+        else:
+            print('Relation '+ relation.table + ' without keys in database!')
         return
 
     #List Entity

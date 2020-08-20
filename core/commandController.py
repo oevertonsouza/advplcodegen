@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys, os, settings
 from core import managedb, codeGenController, project, poProject, entityController
-from core.entities import aliasEntity
+from core.entities import aliasEntity,aliasRelation
 
 class ComandsController:
     
@@ -33,6 +33,20 @@ class ComandsController:
             namePortuguese = run[6] if len(run) > 6 else ''
             entity = aliasEntity.AliasEntity(table, name, keyColumn, namePortuguese, shortName)
             self.entities.addEntity(entity)
+            
+            return
+        if command == 'ADDRELATION':
+            tableFather = run[2] if len(run) > 1 else ''
+            tableSon = run[3] if len(run) > 2 else ''
+            behavior = run[4] if len(run) > 3 else ''
+            relationType = run[5] if len(run) > 4 else ''
+            keys = run[6] if len(run) > 5 else ''
+            # shortName = run[4] if len(run) > 4 else ''
+            # name = run[5] if len(run) > 5 else ''
+            # namePortuguese = run[6] if len(run) > 6 else ''
+            # entity = aliasEntity.AliasEntity(table, name, keyColumn, namePortuguese, shortName)
+            relation = aliasRelation.AliasRelation(tableFather, tableSon, behavior, relationType, keys)
+            self.entities.addRelation(relation)
             
             return
         if command == 'ADDENTITIES':
