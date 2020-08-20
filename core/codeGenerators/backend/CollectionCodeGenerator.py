@@ -3,7 +3,7 @@ import sys, os, csv, shutil
 import settings
 from string import Template
 from core.codeGenerators.codeGenerator import codeGenerator
-from core.daos.model import Entity, Colunas, FromTo, Relations
+from core.daos.model import Entity, Colunas, RelationKeys, Relations
 
 class CollectionCodeGenerator(codeGenerator):
 
@@ -20,7 +20,7 @@ class CollectionCodeGenerator(codeGenerator):
         relations = ''
         column = ''
         columnRelation = ''
-        fromtoRelation = []
+        relationKey = []
         relationName = ''
         count = Relations.select().where(Relations.table == self.entity.table).count()
         index = 1
@@ -35,21 +35,21 @@ class CollectionCodeGenerator(codeGenerator):
                 relations += '    oRelation:setRelationType(' + relation.relationType + ')\n'
                 relations += '    oRelation:setBehavior('+ relation.behavior +')\n'
                 
-            for fromto in FromTo.select().where(FromTo.relation_id == relation.id):
-                column = Colunas.select().where(Colunas.dbField == fromto.column)
-                columnRelation = Colunas.select().where(Colunas.dbField == fromto.columnRelation)
-                fromtoRelation.append('    {"'+column[0].name+'","'+columnRelation[0].name+'"}')
+            for relationKey in RelationKeys.select().where(RelationKeys.relation_id == relation.id):
+                column = Colunas.select().where(Colunas.dbField == relationKey.column)
+                columnRelation = Colunas.select().where(Colunas.dbField == relationKey.columnRelation)
+                relationKey.append('    {"'+column[0].name+'","'+columnRelation[0].name+'"}')
 
-            if len(fromtoRelation) > 0:
-                relations += '    oRelation:setFromTo({;\n'
-                relations += '    '+',;\n    '.join(fromtoRelation)  +';\n'
+            if len(relationKey) > 0:
+                relations += '    oRelation:setRelationKey({;\n'
+                relations += '    '+',;\n    '.join(relationKey)  +';\n'
                 relations += '    })\n'
                 relations += '    self:setRelation(oRelation)\n\n'
             
-            fromtoRelation =[] #limpa o array from to 
+            relationKey =[] #limpa o array from to 
             
             if index < count:
-                relations += '    oRelation := CenRelation():New()\n\n' #quando há mais de uma relação 'expandable'
+                relations += '    oRelation := CenRelation():New()\n\n' #quando hï¿½ mais de uma relaï¿½ï¿½o 'expandable'
 
             index = index + 1
 

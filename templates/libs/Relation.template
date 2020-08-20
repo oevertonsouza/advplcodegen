@@ -1,24 +1,24 @@
 #include "TOTVS.CH"
 #include 'FWMVCDEF.CH'
 
-#DEFINE NO_RELATION 0 // Sem Relação 
-#DEFINE N_TO_N      1 // Relação N para N
-#DEFINE ONE_TO_N    2 // Relação 1 para N
-#DEFINE N_TO_ONE    3 // Relação N para 1
-#DEFINE ZERO_TO     4 // Relação 0 para 1 ou N
-#DEFINE TO_ZERO     5 // Relação N ou 1 para 0
+#DEFINE NO_RELATION 0 // Sem Relaï¿½ï¿½o 
+#DEFINE N_TO_N      1 // Relaï¿½ï¿½o N para N
+#DEFINE ONE_TO_N    2 // Relaï¿½ï¿½o 1 para N
+#DEFINE N_TO_ONE    3 // Relaï¿½ï¿½o N para 1
+#DEFINE ZERO_TO     4 // Relaï¿½ï¿½o 0 para 1 ou N
+#DEFINE TO_ZERO     5 // Relaï¿½ï¿½o N ou 1 para 0
 
 #DEFINE NO_BEHAVIOR 0 // Sem comportamento  
 #DEFINE CASCADE 1     // Relacionamento em cascata
 
 /*/{Protheus.doc} 
     Relation
-    Classe abstrata das Relações de uma entidade
-    Esta classe deve orquestrar as relações entre entidades
+    Classe abstrata das Relaï¿½ï¿½es de uma entidade
+    Esta classe deve orquestrar as relaï¿½ï¿½es entre entidades
     Isso envolve:
-        - Colação de dados para buscar elementos dela e de seus relacionamentos
+        - Colaï¿½ï¿½o de dados para buscar elementos dela e de seus relacionamentos
         - Fazer busca de Expandiveis pela API
-        - Fazer alterações, inclusões e deleções por relacionamento
+        - Fazer alteraï¿½ï¿½es, inclusï¿½es e deleï¿½ï¿½es por relacionamento
 
     @type  Class
     @author lima.everton
@@ -29,7 +29,7 @@ Class ${prefix}Relation
 	   
     Data cName
     Data oCollection
-    Data aFromTo
+    Data aRelationKey
     Data nRelationType
     Data nBehavior
 
@@ -37,12 +37,12 @@ Class ${prefix}Relation
     Method destroy()
     Method setName(cName)
     Method setCollection(oCollection)
-    Method setFromTo(aFromTo)
+    Method setRelationKey(aRelationKey)
     Method setRelationType(nRelationType)
     Method setBehavior(nBehavior)
     Method getName()
     Method getCollection()
-    Method getFromTo()
+    Method getRelationKey()
     Method getRelationType()
     Method getBehavior()
 
@@ -51,7 +51,7 @@ EndClass
 Method New(oDao) Class ${prefix}Relation
     self:cName := ""
     self:oCollection := Nil
-    self:aFromTo := {}
+    self:aRelationKey := {}
     self:nRelationType := NO_RELATION
 return self
 
@@ -66,8 +66,8 @@ Method setCollection(oCollection) Class ${prefix}Relation
     self:oCollection := oCollection
 return
 
-Method setFromTo(aFromTo) Class ${prefix}Relation
-    self:aFromTo := aFromTo
+Method setRelationKey(aRelationKey) Class ${prefix}Relation
+    self:aRelationKey := aRelationKey
 return
 
 Method setRelationType(nRelationType) Class ${prefix}Relation
@@ -84,8 +84,8 @@ return self:cName
 Method getCollection() Class ${prefix}Relation
 return self:oCollection
 
-Method getFromTo() Class ${prefix}Relation
-return self:aFromTo
+Method getRelationKey() Class ${prefix}Relation
+return self:aRelationKey
 
 Method getRelationType() Class ${prefix}Relation
 return self:nRelationType

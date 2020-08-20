@@ -3,7 +3,7 @@ import sys, os, csv, re
 import settings
 from core import managedb, storage
 from pathlib import Path
-from core.daos.model import Entity, Colunas, Relations, FromTo
+from core.daos.model import Entity, Colunas, Relations, RelationKeys
 from core.entities import aliasEntity
 import peewee
 
@@ -149,12 +149,12 @@ class entityController:
         for key in keys:
             keysList = key.split("=")
             try:
-                new_KeyRelation = FromTo.create(relation = relation,
+                new_KeyRelation = RelationKeys.create(relation = relation,
                         column = keysList[0],
                         columnRelation = keysList[1])
                 operationMessage = 'added'
             except peewee.IntegrityError:
-                new_KeyRelation = FromTo.get(relation = relation)
+                new_KeyRelation = RelationKeys.get(relation = relation)
                 new_KeyRelation.columnRelation = keysList[1]
                 new_KeyRelation.save()
                 operationMessage = 'updated'

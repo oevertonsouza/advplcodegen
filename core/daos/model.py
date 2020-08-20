@@ -21,7 +21,7 @@ def CreateTables():
         print ("Columns table already exists!")
     
     try:
-        FromTo.create_table()
+        RelationKeys.create_table()
     except peewee.OperationalError:
         print ("Columns table already exists!")
 
@@ -49,7 +49,7 @@ class Relations(peewee.Model):
         database = database
 
 ########################################################################
-class FromTo(peewee.Model):
+class RelationKeys(peewee.Model):
 
     relation = peewee.ForeignKeyField(Relations)
 

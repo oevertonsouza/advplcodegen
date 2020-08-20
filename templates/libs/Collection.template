@@ -9,24 +9,24 @@
 #DEFINE RELFIELD 1
 #DEFINE FIELD 2
 
-#DEFINE N_TO_N 1    // Relação N para N
-#DEFINE ONE_TO_N 2  // Relação 1 para N
-#DEFINE N_TO_ONE 3  // Relação N para 1
-#DEFINE ZERO_TO 4   // Relação 0 para 1 ou N
-#DEFINE TO_ZERO 5   // Relação N ou 1 para 0
+#DEFINE N_TO_N 1    // Relaï¿½ï¿½o N para N
+#DEFINE ONE_TO_N 2  // Relaï¿½ï¿½o 1 para N
+#DEFINE N_TO_ONE 3  // Relaï¿½ï¿½o N para 1
+#DEFINE ZERO_TO 4   // Relaï¿½ï¿½o 0 para 1 ou N
+#DEFINE TO_ZERO 5   // Relaï¿½ï¿½o N ou 1 para 0
 
-#DEFINE NONE 0    // Behavior Atribui alterações somente a colação principal
-#DEFINE CASCADE 1 // Behavior Realiza todas as operações em cascata
+#DEFINE NONE 0    // Behavior Atribui alteraï¿½ï¿½es somente a colaï¿½ï¿½o principal
+#DEFINE CASCADE 1 // Behavior Realiza todas as operaï¿½ï¿½es em cascata
 
 /*/{Protheus.doc}
     Collection
-    Classe abstrata de uma Coleção de registros de uma entifade.
-    Esta classe deve orquestrar as operações feitas em coleções de registros.
+    Classe abstrata de uma Coleï¿½ï¿½o de registros de uma entifade.
+    Esta classe deve orquestrar as operaï¿½ï¿½es feitas em coleï¿½ï¿½es de registros.
     Isso envolve:
-        - Buscas de registros específicos
-        - Buscas de coleções de registros
-        - Iterações sobre cada registro retornado
-        - Deleção ou atualização de coleções de registros
+        - Buscas de registros especï¿½ficos
+        - Buscas de coleï¿½ï¿½es de registros
+        - Iteraï¿½ï¿½es sobre cada registro retornado
+        - Deleï¿½ï¿½o ou atualizaï¿½ï¿½o de coleï¿½ï¿½es de registros
 
     @type  Class
     @author everton.mateus
@@ -186,14 +186,14 @@ Return anyValue
 Method commit() Class ${prefix}Collection
     self:lFound := self:getDao():commit()
     If !self:found()
-        self:setError("Não conseguiu incluir o registro. " + self:getDao():getError() )
+        self:setError("Nï¿½o conseguiu incluir o registro. " + self:getDao():getError() )
     EndIf
 Return self:found()
 
 Method insert() Class ${prefix}Collection
     self:lFound := self:getDao():insert()
     If !self:found()
-        self:setError("Não conseguiu incluir o registro. " + self:getDao():getError() )
+        self:setError("Nï¿½o conseguiu incluir o registro. " + self:getDao():getError() )
     EndIf
 Return self:found()
 
@@ -203,14 +203,14 @@ Return self:commit()
 Method delete() Class ${prefix}Collection
     self:lFound := self:getDao():delete()
     If !self:found()
-        self:setError("Não conseguiu deletar o registro. " + self:getDao():getError())
+        self:setError("Nï¿½o conseguiu deletar o registro. " + self:getDao():getError())
     EndIf
 Return self:found()
 
 Method delRelation() Class ${prefix}Collection
     self:lFound := self:getDao():delRelation()
     If !self:found()
-        self:setError("Não conseguiu deletar o registro. " + self:getDao():getError())
+        self:setError("Nï¿½o conseguiu deletar o registro. " + self:getDao():getError())
     EndIf
 Return self:found()
 
@@ -241,24 +241,24 @@ Method setKeyRelation() Class ${prefix}Collection
     Local nChild := 0
     Local nFrTo := 0
     Local aRelList := Nil
-    Local aFromTo := Nil
+    Local aRelationKey := Nil
 
     self:hChildren:list(@aRelList)
 
     For nChild := 1 to Len(aRelList)
         
         oRelation := aRelList[nChild][COLLECTION]
-        aFromTo   := oRelation:getFromTo()
+        aRelationKey   := oRelation:getRelationKey()
         
         /*/
-            Limpa variáveis, em POST, faz o insert e depos a busca,
+            Limpa variï¿½veis, em POST, faz o insert e depos a busca,
             variaveis ficam sujas para montar o Json de resposta
         /*/
         oRelation:getCollection():setHMap(THashMap():New())
         
-        For nFrTo := 1 to len(aFromTo)
+        For nFrTo := 1 to len(aRelationKey)
             oRelation:getCollection():setValue(;
-                aFromTo[nFrTo][FIELD],self:getValue(aFromTo[nFrTo][RELFIELD]);
+                aRelationKey[nFrTo][FIELD],self:getValue(aRelationKey[nFrTo][RELFIELD]);
             )
         Next
         self:setRelation(oRelation)
@@ -294,12 +294,12 @@ Method applyExpand(aExpand) Class ${prefix}Collection
             If len(aExpands) > 1
                 self:getRelation(aExpands[NIVEL]):initRelation()
                 If !self:getRelation(aExpands[NIVEL]):isRelation(aExpands[SUBNIVEL]) 
-                    //Não é um relacionamento
+                    //Nï¿½o ï¿½ um relacionamento
                     lOk := .F.
                 EndIf
             EndIf
         Else
-            //Não é um relacionamento
+            //Nï¿½o ï¿½ um relacionamento
             lOk := .F.
         EndIf
     Next
