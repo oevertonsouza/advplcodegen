@@ -24,14 +24,14 @@ class DaoCodeGenerator(codeGenerator):
         cfieldOrder = []
 
         for column in Colunas.select().join(Entity).where(Entity.table == self.entity.table):
-            loadOrder += ''.rjust(4)+'self:oHashOrder:set("'+ column.dbField +'", "'+ column.name +'")\n'
+            loadOrder += ''.rjust(4)+'self:oHashOrder:set("'+ column.dbField.strip() +'", "'+ column.dbField.strip() +'")\n'
             if column.is_indice:
-                cfieldOrder.append(column.dbField)
-                commitKey += ''.rjust(12)+self.alias+'->'+column.dbField+' := _Super:normalizeType('+ self.alias +'->'+ column.dbField +',self:getValue("'+ column.name +'")) /* Column '+ column.dbField +' */\n'
-                bscChaPrim += ''.rjust(4)+'cQuery += " AND ' +column.dbField+ ' = ? "\n'
-                bscChaPrim += ''.rjust(4)+'aAdd(self:aMapBuilder, self:toString(self:getValue("'+column.name+'")))\n'
+                cfieldOrder.append(column.dbField.strip())
+                commitKey += ''.rjust(12)+self.alias+'->'+column.dbField.strip()+' := _Super:normalizeType('+ self.alias +'->'+ column.dbField.strip() +',self:getValue("'+ column.dbField.strip() +'")) \n'
+                bscChaPrim += ''.rjust(4)+'cQuery += " AND ' +column.dbField.strip()+ ' = ? "\n'
+                bscChaPrim += ''.rjust(4)+'aAdd(self:aMapBuilder, self:toString(self:getValue("'+column.dbField.strip()+'")))\n'
             else:
-                commitNoKey += ''.rjust(8)+self.alias+'->'+column.dbField+' := _Super:normalizeType('+ self.alias +'->'+ column.dbField +',self:getValue("'+ column.name +'")) /* Column '+ column.dbField +' */\n'
+                commitNoKey += ''.rjust(8)+self.alias+'->'+column.dbField.strip()+' := _Super:normalizeType('+ self.alias +'->'+ column.dbField.strip() +',self:getValue("'+ column.dbField.strip() +'")) \n'
                     
             variables = { 
                     'className': self.entity.shortName,

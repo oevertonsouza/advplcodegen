@@ -23,8 +23,8 @@ class entityCodeGenerator(codeGenerator):
         fields     = ''
         
         for column in Colunas.select().join(Entity).where(Entity.table == self.entity.table):
-            serialize += '    oJsonControl:setProp(oJson,"' + column.name + '",self:getValue("'+ column.name+'")) /* Column '+ column.dbField +' */ \n'
-            fields    += '    self:oFields:push({"'+column.name+'", self:getValue("'+column.name +'")}) /* Column '+ column.dbField +' */ \n'
+            serialize += '    oJsonControl:setProp(oJson,"' + column.name + '",self:getValue("'+ column.dbField.strip()+'")) \n'
+            fields    += '    self:oFields:push({"'+column.name+'", self:getValue("'+column.dbField.strip() +'")}) \n'
 
         for relation in Relations.select().where(Relations.table == self.entity.table):
             for entity in Entity.select().where(Entity.table == relation.tableRelation):

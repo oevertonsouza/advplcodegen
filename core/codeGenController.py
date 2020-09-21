@@ -45,9 +45,9 @@ class codeGenController:
         generators.append(RequestCodeGenerator.RequestCodeGenerator())
         generators.append(CommandCodeGenerator.CommandCodeGenerator())
         generators.append(ValidateCodeGenerator.ValidateCodeGenerator())
-        generators.append(DocApiSchemaCodeGenerator.DocApiSchemaCodeGenerator())
-        generators.append(DocApiCodeGenerator.DocApiCodeGenerator())
-        generators.append(ApiCodeGenerator.ApiCodeGenerator())
+        # generators.append(DocApiSchemaCodeGenerator.DocApiSchemaCodeGenerator())
+        # generators.append(DocApiCodeGenerator.DocApiCodeGenerator())
+        # generators.append(ApiCodeGenerator.ApiCodeGenerator())
 
         return generators
 

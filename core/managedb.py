@@ -54,7 +54,6 @@ class ManagementDb:
                     "   AND X3_CAMPO  <> '"+ tableName[:3] +'_FILIAL'+ "' "
                     "   AND D_E_L_E_T_ = ' '"
                     "   AND X3_CONTEXT <> 'V'" #N�o pega campos virtuais
-                    "   AND X3_CONTEXT <> ''"  
                     " ORDER BY X3_ORDEM"
                 )
 
