@@ -54,7 +54,10 @@ class entityController:
     def saveColumns(self, entity):
         mdb = managedb.ManagementDb()
         tableInfo = mdb.getTableInfo(entity.table)
-        uniqueColumns = tableInfo[0][2].strip().split('+')
+        # uniqueColumns = tableInfo[0][2].strip().split('+')
+        indices = mdb.getIndices(entity.table)
+        if len(indices) > 0:
+            uniqueColumns = indices[0][1].strip().split('+')
         columnList = mdb.getColumnDesc(entity.table)
        
         for field in columnList:

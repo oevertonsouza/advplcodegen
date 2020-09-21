@@ -79,3 +79,19 @@ class ManagementDb:
         cursor.close()
 
         return result
+    def getIndices(self, tableName):
+
+        conn = self.conn()
+        query = (
+                    " SELECT ORDEM, CHAVE "
+                    " FROM SIX" + settings.PROTHEUS_ENVIORMENT['default']['COMPANY'] + "0 "
+                    " WHERE 1=1 "
+                    "   AND INDICE = '"+ tableName[:3] +"' "
+                    "   AND D_E_L_E_T_ = ' ' "
+                    "  ORDER BY INDICE,ORDEM ")
+        cursor = conn.cursor()
+        cursor.execute(query)
+        result = cursor.fetchall()
+        cursor.close()
+
+        return result
