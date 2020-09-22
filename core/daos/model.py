@@ -72,7 +72,7 @@ class Colunas(peewee.Model):
     is_keyPathParam = peewee.BooleanField()
     is_required = peewee.BooleanField()
     desc = peewee.CharField()
-    variabelName = peewee.CharField()
+    variablename = peewee.CharField()
     options = peewee.CharField()
  
     class Meta:

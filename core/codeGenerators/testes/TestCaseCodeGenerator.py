@@ -45,19 +45,19 @@ class TestCaseCodeGenerator(codeGenerator):
             order.append(column.name)
 
             if column.dataType == 'float':
-                body.append(''.rjust(24)+'\' "'+ column.name +'": \'+AllTrim(Str('+ column.variabelName +'))+\'')
+                body.append(''.rjust(24)+'\' "'+ column.name +'": \'+AllTrim(Str('+ column.variablename +'))+\'')
             else:
                 body.append(''.rjust(24)+'\' "'+ column.name +'": "\'+'+ compareValue +'+\'"')
             
             #B3A_CODIGO;obligationCode;string;3;1;1;C�digo da obriga��o;cCode;;
             if column.is_keyPathParam:
-                keyCollumn = column.variabelName
+                keyCollumn = column.variablename
             if column.is_indice:
-                keyVariables += ''.rjust(4)+'Local '+ column.variabelName +' := '+defaultVar+' /*Column ' + column.dbField + '*/\n'
+                keyVariables += ''.rjust(4)+'Local '+ column.variablename +' := '+defaultVar+' /*Column ' + column.dbField + '*/\n'
                 if not column.is_keyPathParam:
                     queryParams.append(''.rjust(20)+'"&'+ column.name +'="+escape('+ compareValue +')+;')
             else:
-                noKeyVariables += ''.rjust(4)+'Local '+ column.variabelName +' := '+defaultVar+' /*Column ' + column.dbField + '*/\n'
+                noKeyVariables += ''.rjust(4)+'Local '+ column.variablename +' := '+defaultVar+' /*Column ' + column.dbField + '*/\n'
         
         dictBodys['body'] = body
 
@@ -144,14 +144,14 @@ class TestCaseCodeGenerator(codeGenerator):
     def getVarName(self,varName):
         defaultVar = ""
         compareValue = ""
-        compareValue = varName.variabelName
-        if varName.variabelName[0].upper() == "C":
+        compareValue = varName.variablename
+        if varName.variablename[0].upper() == "C":
             defaultVar = '""'
-        elif varName.variabelName[0].upper() == "N":
+        elif varName.variablename[0].upper() == "N":
             defaultVar = "0"
-        elif varName.variabelName[0].upper() == "D":
+        elif varName.variablename[0].upper() == "D":
             defaultVar = 'StoD("")'
-            compareValue = 'DtoS('+varName.variabelName+')'
+            compareValue = 'DtoS('+varName.variablename+')'
         else:
             defaultVar = "Nil"
         

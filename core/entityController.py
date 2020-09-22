@@ -92,7 +92,7 @@ class entityController:
                             is_required = False,
                             is_keyPathParam = is_keyPathParam,
                             desc = desc,
-                            variabelName = varName,
+                            variablename = varName,
                             options = opcoes)
             except peewee.IntegrityError:
                 new_column = Colunas.get(Colunas.dbField == field[0])
@@ -105,7 +105,7 @@ class entityController:
                 new_column.is_keyPathParam = is_keyPathParam
                 new_column.is_required = is_indice
                 new_column.desc = desc
-                new_column.variabelName = varName
+                new_column.variablename = varName
                 new_column.options = opcoes
                 new_column.save()
         if len(columnList) > 0:
