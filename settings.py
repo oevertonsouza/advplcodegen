@@ -16,10 +16,10 @@ PROTHEUS_ENVIORMENT = {
     'default': {
         'COMPANY' : 'T1',
         'FILIAL' : '01',
-        'PREFIX' : 'Cen',
+        'PREFIX' : 'PLS',
         'SEGMENT' : 'healthcare' ,
-        'PRODUCT' : 'Central de Obrigacoes',
-        'PRDUCT_DESCRIPTION' : 'Central de Obrigacoes',
+        'PRODUCT' : 'Plano de Saúde',
+        'PRDUCT_DESCRIPTION' : 'Plano de Saúde',
         'DICTIONARY_IN_DATABASE' : True,
         'CONTACT' : 'comiteintegracao@totvs.com.br',
     }

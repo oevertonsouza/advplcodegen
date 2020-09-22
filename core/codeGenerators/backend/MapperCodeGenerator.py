@@ -22,7 +22,7 @@ class MapperCodeGenerator(codeGenerator):
         expandable = ''
         
         for column in Colunas.select().join(Entity).where(Entity.table == self.entity.table):
-            mapper += '    aAdd(self:aFields,{"'+ column.dbField +'" ,"'+ column.name +'"})\n'
+            mapper += '    aAdd(self:aFields,{"'+ column.dbField.strip() +'" ,"'+ column.name +'"})\n'
 
         for relation in Relations.select().where(Relations.table == self.entity.table):
             for entity in Entity.select().where(Entity.table == relation.tableRelation):

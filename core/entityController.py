@@ -97,7 +97,7 @@ class entityController:
             except peewee.IntegrityError:
                 new_column = Colunas.get(Colunas.dbField == field[0])
                 new_column.entity = entity
-                new_column.dbField = field[0]
+                new_column.dbField = field[0].strip()
                 new_column.name = name
                 new_column.dataType = dataType
                 new_column.length = length

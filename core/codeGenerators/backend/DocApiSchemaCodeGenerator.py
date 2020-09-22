@@ -31,7 +31,7 @@ class DocApiSchemaCodeGenerator(codeGenerator):
                 '                    "x-totvs": [\n'
                 '		                {\n'
                 '                           "product": "'+ self.product +'",\n'
-                '                           "field": "'+ self.alias +'.'+column.dbField+'",\n'
+                '                           "field": "'+ self.alias +'.'+column.dbField.strip()+'",\n'
                 '                           "required": '+required+',\n'
                 '                           "type": "'+column.dataType+'",\n'
                 '                           "length": "'+str(column.length)+'",\n'
