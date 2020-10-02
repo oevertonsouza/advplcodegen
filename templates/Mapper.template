@@ -1,6 +1,6 @@
 #include "TOTVS.CH"
 
-Class ${prefix}Mpr${className} from ${prefix}Mapper
+Class ${prefix}Mpr${className} from CenMapper
 
     Method New() Constructor
 

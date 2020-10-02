@@ -6,7 +6,7 @@
     @author FrameworkApi 1.0
     @since 20190211
 /*/
-Class ${prefix}${className} from ${prefix}Entity
+Class ${prefix}${className} from CenEntity
 
     Method New()
   

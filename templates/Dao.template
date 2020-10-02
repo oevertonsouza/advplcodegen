@@ -3,7 +3,7 @@
 #Define DBFIELD 1
 #Define JSONFIELD 2
 
-Class ${prefix}Dao${className} from ${prefix}Dao
+Class ${prefix}Dao${className} from CenDao
 
     Method New(aFields) Constructor
 

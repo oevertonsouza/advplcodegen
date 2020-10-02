@@ -9,7 +9,7 @@
 #DEFINE UPDATE "05"
 #DEFINE BUSCA  "07"
 
-Class ${prefix}Req${className} from ${prefix}Request
+Class ${prefix}Req${className} from CenRequest
 
     Method New(oRest,cSvcName) Constructor
     Method destroy()

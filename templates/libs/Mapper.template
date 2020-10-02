@@ -4,7 +4,7 @@
 #Define JSONFIELD 2
 
 /*/{Protheus.doc} 
-    Classe abstrata de um ${prefix}Mapper
+    Classe abstrata de um CenMapper
     @type  Class
     @author victor.silva
     @since 20180718
