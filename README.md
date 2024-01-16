@@ -1,8 +1,8 @@
 # advplcodegen
-Framework de geração de códigos ADVPL orientado a objetos.
+Framework de geração de códigos ADVPL orientado a objetos para API's.
 
 # Sobre o projeto
-O propósito desse projeto é utilizar classes abstratas que possuam métodos que abrangem o máximo de funções necessárias prédispostas para qualquer projeto ADVPL, tais como, CRUD, paginação de busca, ordenação de resultados, retorno de colunas especificas de um resultado para API's, mapper de objeto para Json e geração de endpoints.
+O propósito desse projeto é utilizar classes abstratas que possuam métodos que abrangem o máximo de funções necessárias prédispostas para qualquer projeto ADVPL, tais como, CRUD, paginação de busca, ordenação de resultados, retorno de colunas especificas de um resultado para API's dos verbos GET, PUT, POST e DELETE, mapper de objeto para Json e geração de endpoints.
 
 # Compatibilidade / Ambientes homologados
 
